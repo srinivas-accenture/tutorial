@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Docker: Zero to DCA</title>
+<link rel="stylesheet" href="assets/css/course.css">
+<script src="assets/js/theme.js"></script>
+</head>
+<body>
+<nav id="sidebar" aria-label="Course navigation"></nav>
+<div class="page">
+  <header id="site-header" class="topbar"></header>
+  <main id="main" tabindex="-1"><noscript><p>This course needs JavaScript enabled.</p></noscript></main>
+  <footer id="site-footer" class="sitefoot"></footer>
+</div>
+
+<!-- Home view. app.js clones this into <main> for #home and fills #grid, #examtbl, #ladtbl and #glos from course-data.js. -->
+<template id="home-tpl">
+<div class="wrap">
+<div class="hero">
+<h1>Docker, from your first container to production and the DCA.</h1>
+<p>Ten days in two weeks, run as three tracks at once: <b>how Docker really works</b> (architecture and Linux internals), <b>hands-on production Docker</b> for React, FastAPI, Redis and PostgreSQL stacks, and <b>Docker Certified Associate (DCA) preparation</b> with scenario questions and a mock exam.</p>
+<a class="cta" href="#d1-why-containers">Start at Day 1</a><a class="cta alt" id="cont" href="#" hidden>Continue where you left off</a><a class="cta alt" href="#exam">DCA exam map</a><a class="cta alt" href="#glossary">Glossary</a>
+</div>
+
+<h2>How every topic is taught</h2>
+<ol class="pts">
+<li><b>What it is</b>, twice: an “Explain like I’m 5” tab for the mental model and a technical tab for the exact behavior.</li>
+<li><b>Why it exists</b>: the problem it solves.</li>
+<li><b>Architecture</b>: a diagram with numbered steps.</li>
+<li><b>Commands</b>: copy-paste commands with typical output.</li>
+<li><b>What happens internally</b>: what the Engine, containerd, runc and the kernel do.</li>
+<li><b>Production example</b>: how the topic shows up in a real deployment.</li>
+<li><b>Certification &amp; interview questions</b> with model answers. The DCA badge marks exam-style questions.</li>
+</ol>
+<p>After the seven steps come hidden edge cases, best practices, a <b>hands-on lab</b> and a two-minute “teach it” script. Each day ends with a scenario quiz.</p>
+
+<h2>Before you start</h2>
+<ul class="pts">
+<li><b>Install Docker.</b> Use Docker Desktop on macOS or Windows, or Docker Engine on Linux. Check it with <code>docker version</code> and <code>docker run --rm hello-world</code>.</li>
+<li><b>Type the commands; don't just read them.</b> The DCA tests real-world use. Each lab says what “done” looks like.</li>
+<li><b>Linux internals labs</b> (namespaces, cgroups, <code>/proc</code>) work best on a Linux host or VM. Docker Desktop runs containers inside a small Linux VM, so some host-level paths differ there.</li>
+<li><b>About the DCA:</b> it is aimed at people with roughly 6–12 months of Docker experience. These ten days build the full foundation. Pass the exam by repeating the labs and the mock exam until the answers are automatic. Check the current official exam guide for format, weights and availability before you book.</li>
+<li>A <b>revision sheet</b> closes every week. Progress is saved in this browser. Use Print (Ctrl/Cmd+P) for a clean copy.</li>
+</ul>
+
+<h2>The 10-day plan</h2>
+<div class="wkgrid" id="grid"></div>
+
+<h2 id="exam">DCA exam map: where each domain is covered</h2>
+<table id="examtbl"><thead><tr><th>Domain</th><th>Weight</th><th>Days</th><th>What to be able to do</th></tr></thead><tbody></tbody></table>
+<p class="ui" style="color:var(--muted);font-size:14px">The weights are as commonly published for the DCA (55 questions in 90 minutes, mixing multiple-choice and DOMC items). Confirm against the current official guide.</p>
+
+<h2 id="ladder">Career ladder: what to master for each level</h2>
+<table id="ladtbl"><thead><tr><th>Level</th><th>Days</th><th>You should be able to…</th></tr></thead><tbody></tbody></table>
+
+<h2 id="glossary">Glossary</h2>
+<table id="glos"><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody></tbody></table>
+</div>
+</template>
+
+<script src="assets/js/course-data.js"></script>
+<script src="assets/js/render.js"></script>
+<script src="assets/js/components/header.js"></script>
+<script src="assets/js/components/sidebar.js"></script>
+<script src="assets/js/components/footer.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
