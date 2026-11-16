@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 10: Gap-filler II | JavaScript Zero to Architect</title><style>
+:root{--bg:#eef2f6;--card:#fff;--ink:#1b2a41;--muted:#5b6b7f;--line:#d5dde6;--accent:#0e7c86;--accent-soft:#dff1f2;--warm:#b45309;--warm-soft:#fdf0dc;--code:#0f1b2b;--code-ink:#e6edf5;--sbw:312px;--ok:#2f855a;--bad:#c53030}
+[data-theme=dark]{--bg:#0e151d;--card:#16212d;--ink:#e6edf5;--muted:#93a4b8;--line:#263445;--accent:#4fd1c5;--accent-soft:#12303a;--warm:#f6ad55;--warm-soft:#33260f;--code:#0a1119;--code-ink:#dbe6f2}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 Charter,"Iowan Old Style",Georgia,serif}
+a{color:var(--accent)}code,pre,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ui{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sbw);background:var(--card);border-right:1px solid var(--line);overflow-y:auto;padding:16px 14px 40px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.4;z-index:20;transition:transform .2s}
+#sidebar .brand{display:block;font-weight:700;font-size:16px;color:var(--ink);text-decoration:none;margin-bottom:10px}
+#sidebar .tools{display:flex;gap:8px;margin-bottom:10px}
+#search{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:7px 10px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:4px 0 4px}.prog i{display:block;height:100%;background:var(--accent);width:0}
+.proglabel{color:var(--muted);font-size:12px;margin-bottom:12px}
+#sidebar details{border-top:1px solid var(--line);padding:6px 0}
+#sidebar summary{cursor:pointer;font-weight:700;padding:4px 2px;list-style:none}
+#sidebar summary::-webkit-details-marker{display:none}
+#sidebar summary:before{content:"▸";display:inline-block;width:14px;color:var(--muted)}
+#sidebar details[open]>summary:before{content:"▾"}
+#sidebar .wk>summary{font-size:13px;color:var(--accent)}
+#sidebar .dy{margin-left:10px;border-top:0;padding:2px 0}
+#sidebar .dy>summary{font-weight:600}
+#sidebar ul{list-style:none;margin:2px 0 6px 16px;padding:0}
+#sidebar li a{display:block;padding:3px 6px;border-radius:5px;color:var(--ink);text-decoration:none;border-left:2px solid transparent}
+#sidebar li a:hover{background:var(--bg)}#sidebar li a.on{background:var(--accent-soft);border-left-color:var(--accent);font-weight:600}
+#sidebar .tick{color:var(--ok);margin-left:4px}
+#sidebar .hide{display:none}
+main{margin-left:var(--sbw);padding:28px 36px 90px;max-width:calc(var(--sbw) + 940px)}
+.wrap{max-width:820px}
+#menu{display:none;position:fixed;top:10px;left:10px;z-index:30}
+.weekhead{margin:0 0 28px}.weekhead .kicker{font:600 14px system-ui,sans-serif;color:var(--accent)}
+.weekhead h1{font-size:clamp(30px,4.2vw,46px);line-height:1.12;margin:4px 0 10px;letter-spacing:-.01em}
+.weekhead p{color:var(--muted);margin:0}
+.day{margin-top:56px}
+.dayhead{border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:22px}
+.dayhead .dn{font:700 14px system-ui,sans-serif;color:var(--accent)}
+.dayhead h2{font-size:clamp(26px,3.2vw,36px);margin:2px 0 6px;line-height:1.15}
+.dayhead .goal{margin:0;color:var(--muted)}
+.topic{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:0 0 28px;overflow:hidden}
+.topic>header{padding:18px 22px 6px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;justify-content:space-between}
+.topic h3{margin:0;font-size:26px;line-height:1.2}
+.lvls{font:600 12px system-ui,sans-serif;color:var(--muted)}
+.lvls b{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:99px;margin-left:4px;font-weight:600}
+.tabs{display:flex;margin:12px 22px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-family:system-ui,sans-serif}
+.tabs button{flex:1;padding:10px 12px;border:0;background:var(--bg);color:var(--muted);font:600 15px system-ui,sans-serif;cursor:pointer;border-right:1px solid var(--line)}
+.tabs button:last-child{border-right:0}
+.tabs button[aria-selected=true].t-eli{background:var(--warm-soft);color:var(--warm);box-shadow:inset 0 -3px 0 var(--warm)}
+.tabs button[aria-selected=true].t-tech{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent)}
+.pane{margin:0 22px;padding:16px 18px;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px}
+.pane.p-eli{background:var(--warm-soft)}.pane.p-tech{background:var(--accent-soft)}
+.pane[hidden]{display:none}.pane p:first-child{margin-top:0}.pane>*:last-child{margin-bottom:0}
+.pane h5,.blk h4{font:700 15px system-ui,sans-serif;margin:16px 0 4px}
+.blk{padding:6px 22px 4px}.blk h4{font-size:16px;margin:18px 0 8px;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:4px}
+.blk:last-child{padding-bottom:18px}
+code{background:rgba(127,127,127,.16);padding:1px 5px;border-radius:4px;font-size:.88em}
+pre{margin:10px 0;background:var(--code);color:var(--code-ink);padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.55}
+pre code{background:none;padding:0;font-size:inherit}
+.k{color:#7cc4ff}.s{color:#9fe3a0}.c{color:#7d8da1;font-style:italic}.n{color:#f7b267}
+.ex{margin:14px 0}.ex .et{font:600 14px system-ui,sans-serif;margin-bottom:2px}
+.ex .bar{display:flex;gap:8px;align-items:center;margin:-4px 0 6px;font:13px system-ui,sans-serif}
+.run{background:var(--accent);color:#fff;border:0;border-radius:5px;padding:5px 12px;font:600 13px system-ui,sans-serif;cursor:pointer}
+[data-theme=dark] .run{color:#06222a}
+.out{white-space:pre-wrap;background:#06101a;color:#b9f3c0;border-left:4px solid var(--ok);padding:10px 14px;border-radius:6px;font:13px/1.5 ui-monospace,Menlo,monospace;margin:4px 0 8px}
+.out:empty,.out[hidden]{display:none}
+ul.pts{margin:6px 0;padding-left:22px}ul.pts li{margin:4px 0}
+.gotcha li::marker{color:var(--bad)}.best li::marker{color:var(--ok)}
+.diagram{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;font-family:system-ui,sans-serif;font-size:14px}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;justify-content:center}
+.flow.v{flex-direction:column;align-items:center}
+.fb{background:var(--card);border:2px solid var(--accent);border-radius:8px;padding:8px 12px;text-align:center;line-height:1.3;min-width:96px}
+.fb small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.fb.w{border-color:var(--warm)}.fb.g{border-color:var(--ok)}.fb.r{border-color:var(--bad)}
+.ar{align-self:center;color:var(--muted);font-weight:700}
+.flow.v .ar{transform:rotate(90deg);line-height:1}
+.lane{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.lane>div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px}
+.lane h6{margin:0 0 6px;font-size:13px;color:var(--accent)}
+.lane .it{background:var(--accent-soft);border-radius:4px;padding:3px 7px;margin:3px 0;font-size:13px}
+.dsteps{counter-reset:s;list-style:none;padding:0;margin:12px 0 0}
+.dsteps li{counter-increment:s;position:relative;padding:4px 0 4px 34px;margin:2px 0}
+.dsteps li:before{content:counter(s);position:absolute;left:0;top:4px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font:700 13px/24px system-ui,sans-serif;text-align:center}
+[data-theme=dark] .dsteps li:before{color:#06222a}
+details.iq{border:1px solid var(--line);border-radius:8px;margin:8px 0;background:var(--bg)}
+details.iq summary{cursor:pointer;padding:9px 12px;font-weight:600}
+details.iq .ans{padding:2px 14px 12px;border-top:1px solid var(--line)}
+.badge{display:inline-block;font:700 11px system-ui,sans-serif;padding:2px 7px;border-radius:99px;margin-right:6px;vertical-align:1px;color:#fff}
+.b-fresher{background:#2f855a}.b-mid{background:#2b6cb0}.b-senior{background:#6b46c1}.b-lead{background:#b7791f}.b-architect{background:#c53030}
+.teach{margin:6px 22px 22px;padding:14px 16px;border:2px dashed var(--accent);border-radius:8px;background:var(--card)}
+.teach b.h{font:700 14px system-ui,sans-serif;color:var(--accent);display:block;margin-bottom:4px}
+.quiz{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 22px 14px;margin:0 0 20px}
+.quiz h3{margin:14px 0 4px;font-size:22px}
+.daydone{margin:14px 0 0;display:flex;gap:10px;align-items:center;font-family:system-ui,sans-serif}
+.rev{background:var(--card);border:2px solid var(--ink);border-radius:10px;padding:8px 24px 16px;margin-top:56px}
+.rev h2{margin:12px 0 4px}
+.pager{display:flex;justify-content:space-between;margin-top:40px;font-family:system-ui,sans-serif}
+.pager a{padding:10px 16px;border:1px solid var(--line);border-radius:8px;background:var(--card);text-decoration:none;font-weight:600}
+#top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:0;font-size:20px;cursor:pointer;display:none;z-index:15}
+[data-theme=dark] #top{color:#06222a}
+table{border-collapse:collapse;width:100%;font:14px/1.5 system-ui,sans-serif;margin:10px 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}th{background:var(--bg)}
+/* index */
+.hero{padding:34px 0 10px}.hero h1{font-size:clamp(36px,6vw,64px);line-height:1.05;margin:0 0 14px;letter-spacing:-.02em}
+.hero p{font-size:19px;max-width:640px;color:var(--muted)}
+.cta{display:inline-block;margin:6px 10px 6px 0;padding:11px 20px;border-radius:8px;font:700 15px system-ui,sans-serif;text-decoration:none;background:var(--accent);color:#fff}
+[data-theme=dark] .cta{color:#06222a}.cta.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.wkgrid{display:grid;gap:18px;margin:22px 0}
+.wkcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 20px}
+.wkcard h3{margin:0 0 2px}.wkcard .sub{color:var(--muted);font:14px system-ui,sans-serif;margin-bottom:8px}
+.wkcard .dd{margin:8px 0;font-family:system-ui,sans-serif;font-size:15px}
+.wkcard .dd b a{color:var(--ink);text-decoration:none}.wkcard .dd span a{font-size:13px;margin-right:10px}
+@media(max-width:900px){#sidebar{transform:translateX(-105%)}body.nav #sidebar{transform:none;box-shadow:0 0 40px rgba(0,0,0,.4)}main{margin-left:0;padding:60px 16px 80px}#menu{display:block}.tabs{margin-left:12px;margin-right:12px}.pane,.teach{margin-left:12px;margin-right:12px}.blk{padding-left:12px;padding-right:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#sidebar{transition:none}}
+@media print{#sidebar,#menu,#top,.run,.tabs,.daydone,.pager{display:none!important}main{margin:0;padding:0}.pane[hidden]{display:block!important}.topic{break-inside:avoid-page}details>*{display:block!important}.out{display:none}body{background:#fff;color:#000;font-size:12px}}
+/* layout fixes: sidebar overflow, menu button overlap */
+#sidebar{overflow-x:hidden}
+#search{min-width:0;width:0}
+#sidebar .tools .btn{flex:none}
+#menu{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+@media(max-width:900px){html{scroll-padding-top:68px}#sidebar{padding-top:60px}}
+
+</style></head>
+<body><button id="menu" class="btn ui" aria-label="Open menu">☰ Menu</button><nav id="sidebar" aria-label="Course navigation"></nav><main></main><button id="top" aria-label="Back to top">↑</button>
+<script>
+window.COURSE=[
+{w:1,file:"week1.html",title:"Foundations",sub:"From zero: how JS runs, values, coercion, functions, scope, this, strings, arrays, objects",days:[
+{n:1,t:"Getting started: values and variables",tp:[["d1-intro","What JavaScript is and how it runs","history engine console script strict"],["d1-vars","Variables: var, let, const","declare hoist block"],["d1-types","Data types and typeof","primitive object null undefined bigint symbol"]]},
+{n:2,t:"Numbers, coercion and control flow",tp:[["d2-numbers","Numbers, operators and floating point","float bigint nan infinity math"],["d2-coercion","Type coercion and equality","== === truthy falsy toprimitive"],["d2-control","Control flow and loops","if switch for while break label"]]},
+{n:3,t:"Functions, scope and hoisting",tp:[["d3-functions","Functions in depth","arrow default rest arguments iife"],["d3-scope","Scope and the scope chain","lexical block global"],["d3-hoisting","Hoisting and the temporal dead zone","tdz var let"]]},
+{n:4,t:"this, strings and regular expressions",tp:[["d4-this","The this keyword","bind call apply arrow"],["d4-strings","Strings, Unicode and template literals","utf-16 emoji intl segmenter"],["d4-regex","Regular expressions","regexp escape named groups"]]},
+{n:5,t:"Arrays, objects, collections and dates",tp:[["d5-arrays","Arrays and their methods","map filter reduce sort holes toSorted"],["d5-objects","Objects, property order and copying","spread freeze groupBy"],["d5-collections","Map, Set, WeakMap and WeakSet","set methods union"],["d5-dates","Dates and Temporal","date timezone temporal"]]}]},
+{w:2,file:"week2.html",title:"Core language depth",sub:"Closures, prototypes, classes, iterators, generators, Proxy, immutability",days:[
+{n:6,t:"Closures",tp:[["d6-closures","Closures","lexical environment loop"],["d6-closure-uses","Closure patterns: once, memoize, modules","private state"]]},
+{n:7,t:"Prototypes",tp:[["d7-prototypes","The prototype chain","__proto__ inheritance"],["d7-new","new, constructors and Object.create","constructor"]]},
+{n:8,t:"Classes",tp:[["d8-classes","Classes","extends super"],["d8-private","Private fields, static blocks and accessors","# getter setter decorators"]]},
+{n:9,t:"Iterators and generators",tp:[["d9-iterators","Iterators and iterables","symbol.iterator for of"],["d9-generators","Generators","yield"],["d9-helpers","Iterator helpers (ES2025/26)","lazy take drop"]]},
+{n:10,t:"Destructuring, Proxy and immutability",tp:[["d10-destructuring","Destructuring, spread and rest","default"],["d10-symbol","Symbols, Proxy and Reflect","metaprogramming"],["d10-immutable","Immutability, structuredClone and using","freeze dispose"]]}]},
+{w:3,file:"week3.html",title:"Async and the runtime",sub:"Callbacks, Promises, async/await, the event loop, workers, streams, errors",days:[
+{n:11,t:"Callbacks and Promises",tp:[["d11-callbacks","Callbacks and the problem they solve","callback hell"],["d11-promises","Promises","then catch finally"]]},
+{n:12,t:"async/await and patterns",tp:[["d12-async","async and await","try catch"],["d12-combinators","Promise combinators and async patterns","all allSettled any race pool retry"]]},
+{n:13,t:"The event loop",tp:[["d13-eventloop","The event loop","call stack queue"],["d13-puzzles","Microtasks vs macrotasks: output puzzles","queueMicrotask"]]},
+{n:14,t:"Timers and workers",tp:[["d14-timers","Timers and scheduling","setTimeout raf clamping"],["d14-workers","Web Workers and concurrency","postMessage transfer"]]},
+{n:15,t:"Streams and errors",tp:[["d15-streams","Streams and AbortController","backpressure cancel"],["d15-errors","Error handling","unhandled rejection"]]}]},
+{w:4,file:"week4.html",title:"Browser internals",sub:"DOM, events, rendering pipeline, storage, fetch and CORS, security",days:[
+{n:16,t:"The DOM",tp:[["d16-dom","The DOM","tree node"],["d16-dom-ops","Working with the DOM efficiently","fragment"]]},
+{n:17,t:"Events and observers",tp:[["d17-events","Event flow and delegation","capture bubble passive"],["d17-observers","Observers and custom events","intersection mutation resize"]]},
+{n:18,t:"Rendering",tp:[["d18-pipeline","The browser rendering pipeline","parse style layout paint composite"],["d18-layout","Reflow, repaint and layout thrashing","forced reflow"]]},
+{n:19,t:"Storage and the network",tp:[["d19-storage","Browser storage","localstorage indexeddb cookies quota"],["d19-fetch","fetch, HTTP and CORS","preflight"]]},
+{n:20,t:"Security",tp:[["d20-xss","XSS, CSP and Trusted Types","innerhtml"],["d20-csrf","CSRF, cookies and auth storage","samesite"]]}]},
+{w:5,file:"week5.html",title:"Engine, performance and modules",sub:"V8, garbage collection, leaks, Web Vitals, bundling, ES modules",days:[
+{n:21,t:"Inside V8",tp:[["d21-v8","How V8 runs your code","ignition turbofan jit"],["d21-shapes","Hidden classes and inline caches","maps deopt"]]},
+{n:22,t:"Memory",tp:[["d22-gc","Garbage collection","orinoco scavenger"],["d22-leaks","Memory leaks and how to find them","heap snapshot"]]},
+{n:23,t:"Performance",tp:[["d23-vitals","Core Web Vitals and profiling","lcp inp cls"],["d23-patterns","Performance patterns: debounce, throttle, virtualization",""]]},
+{n:24,t:"Bundling and loading",tp:[["d24-bundling","Bundling and tree-shaking","vite rolldown"],["d24-loading","Script loading and code splitting","async defer"]]},
+{n:25,t:"Modules",tp:[["d25-esm","ES modules vs CommonJS","import require"],["d25-interop","Interop, dynamic import and import attributes","json modules"]]}]},
+{w:6,file:"week6.html",title:"Node, tooling and architecture",sub:"Node.js, testing, patterns, state, rendering strategies, capstone",days:[
+{n:26,t:"Node.js",tp:[["d26-node","Node.js essentials","fs path process"],["d26-nodeloop","The Node event loop","libuv nexttick setimmediate"]]},
+{n:27,t:"Testing and tooling",tp:[["d27-testing","Testing JavaScript","vitest node:test mock"],["d27-tooling","Linting, formatting and TypeScript in context","eslint flat config"]]},
+{n:28,t:"Patterns and state",tp:[["d28-patterns","Design patterns in JavaScript","observer factory singleton"],["d28-state","State management concepts","store immutable derived"]]},
+{n:29,t:"Architecture",tp:[["d29-rendering","SSR, CSR, SSG, ISR and micro-frontends","hydration"],["d29-scale","Monorepos, API design and observability","pagination otel"]]},
+{n:30,t:"Capstone",tp:[["d30-mock","Mock interview bank","fresher mid senior lead architect"],["d30-system","System design walkthrough","autocomplete"],["d30-cheat","Final cheat sheet","revision"]]}]},
+{w:7,file:"week7.html",title:"Interview bootcamp I: coding rounds",sub:"Method, output puzzles, polyfills, async implementations, data structures, algorithms, UI machine coding",days:[
+{n:31,t:"Interview method and output drills",tp:[["d31-method","The interview method: clarify, plan, code, test","big-o edge cases communication"],["d31-output","Output-prediction drills","hoisting this closure coercion event loop"]]},
+{n:32,t:"Polyfills and utilities",tp:[["d32-fn-polyfills","Function polyfills: call, bind, curry, memoize, debounce","bind curry compose throttle"],["d32-data-polyfills","Data utilities: map, reduce, groupBy, deepEqual, get/set","flatten deep equal path"]]},
+{n:33,t:"Async implementations",tp:[["d33-promise-impl","Implement a Promise and its combinators","thenable microtask all any"],["d33-async-utils","Async utilities: retry, timeout, limiter, dedupe","pool promisify"]]},
+{n:34,t:"Classic classes and algorithm patterns",tp:[["d34-utilities","EventEmitter, LRU, rate limiter and Observable","token bucket pubsub"],["d34-dsa","Algorithm patterns in JavaScript","two pointers sliding window dp bfs"]]},
+{n:35,t:"UI machine coding and DOM challenges",tp:[["d35-ui-widgets","Machine-coding rounds: widgets and accessibility","tabs aria keyboard autocomplete"],["d35-dom-challenges","DOM and virtual-DOM challenges","vdom diff delegation"]]}]},
+{w:8,file:"week8.html",title:"Interview bootcamp II: architecture and leadership",sub:"System design toolkit, real-time, offline, performance cases, reliability, behavioral, trade-offs, final mock plan",days:[
+{n:36,t:"Frontend system design toolkit",tp:[["d36-sd-toolkit","The design toolkit and back-of-envelope estimation","requirements capacity latency"],["d36-feed-chat","Design a news feed and a chat app","pagination optimistic websocket ordering"]]},
+{n:37,t:"Real-time and offline systems",tp:[["d37-realtime","Real-time and collaborative systems","websocket sse crdt ot"],["d37-offline","Offline-first apps and PWAs","service worker cache outbox"]]},
+{n:38,t:"Performance cases and reliability",tp:[["d38-perf-playbook","Performance playbook: why is the page slow?","triage lcp inp cls"],["d38-reliability","Reliability, security and safe rollout","feature flag canary circuit breaker"]]},
+{n:39,t:"Leadership and decisions",tp:[["d39-behavioral","Behavioral and leadership interviews","star stories conflict"],["d39-decisions","Architecture decisions and trade-off debates","adr matrix monorepo"]]},
+{n:40,t:"Final gauntlet",tp:[["d40-rapid-fire","Rapid-fire round: one-line answers","quick review"],["d40-final","Mock plan, rubric and day-before checklist","self assessment schedule"]]}]},
+{w:9,file:"week9.html",title:"Gap-filler I: language depth",sub:"OOP and SOLID, functional programming, recursion, heaps, tries, graphs, binary data, Intl, debugging",days:[
+{n:41,t:"Object-oriented programming",tp:[["d41-oop-pillars","OOP in JavaScript: the four pillars, composition and mixins","encapsulation inheritance polymorphism abstraction"],["d41-solid","SOLID in JavaScript and class-design exercises","parking lot dependency injection"]]},
+{n:42,t:"Functional programming and recursion",tp:[["d42-fp","Functional programming in JavaScript","pure immutable compose maybe result"],["d42-recursion","Recursion, stack depth and trampolines","tail call memoization"]]},
+{n:43,t:"Algorithms II",tp:[["d43-heap-trie","Heaps, priority queues and tries","min heap autocomplete median"],["d43-graphs","Graphs: BFS, DFS, topological sort, union-find, Dijkstra","shortest path islands"]]},
+{n:44,t:"Binary data and internationalization",tp:[["d44-binary","Binary data: typed arrays, DataView, Blob and base64","arraybuffer endianness bitmask"],["d44-intl","Internationalization with Intl","locale plural currency timezone"]]},
+{n:45,t:"Debugging",tp:[["d45-debug-tools","Debugging tools: DevTools, console and Node inspector","breakpoint logpoint source map"],["d45-debug-method","A debugging method: reproduce, minimize, bisect","delta debugging"]]}]},
+{w:10,file:"week10.html",title:"Gap-filler II: browser platform",sub:"Routing, URLs, forms, files, accessibility, Web Components, graphics, device APIs, authentication, security",days:[
+{n:46,t:"Routing and URLs",tp:[["d46-history-routing","Client-side routing and the History API","pushState popstate spa"],["d46-url-patterns","URLs, query state and safe redirects","urlsearchparams open redirect"]]},
+{n:47,t:"Forms and files",tp:[["d47-forms-validation","Forms and the Constraint Validation API","formdata validity"],["d47-files-clipboard-dnd","Files, uploads, drag and drop, clipboard","blob file chunk upload"]]},
+{n:48,t:"Accessibility and Web Components",tp:[["d48-a11y","Accessibility beyond widgets: WCAG, focus, contrast","screen reader aria live"],["d48-web-components","Web Components and Shadow DOM","custom elements slots"]]},
+{n:49,t:"Graphics and device APIs",tp:[["d49-graphics-animation","Canvas, SVG and animation","canvas raf easing"],["d49-device-apis","Device and platform APIs and progressive enhancement","geolocation broadcastchannel locks"]]},
+{n:50,t:"Authentication and security II",tp:[["d50-auth","Authentication: sessions, JWT, OAuth/PKCE, passwords","jwt oauth pkce pbkdf2"],["d50-web-security-extra","Security headers, SRI and supply chain","sri headers dependencies"]]}]},
+{w:11,file:"week11.html",title:"Gap-filler III: backend, delivery and tools",sub:"Node APIs, streams, databases, caching, Git and CI, containers, WebAssembly, ASTs, final capstone",days:[
+{n:51,t:"Node APIs and streams",tp:[["d51-node-http","Building an HTTP API in Node","router middleware rest"],["d51-node-streams-files","Streams, files and CLIs in Node","pipeline buffer gzip"]]},
+{n:52,t:"Databases and caching",tp:[["d52-databases","Databases for JavaScript developers","sql index transaction n+1 injection"],["d52-caching","Caching layers and invalidation","cache-control etag stampede redis"]]},
+{n:53,t:"Git, CI and deployment",tp:[["d53-git-ci","Git workflows and CI pipelines","rebase conventional commits semver"],["d53-containers-deploy","Containers, 12-factor and deployment","docker serverless graceful shutdown"]]},
+{n:54,t:"Advanced runtime and tools",tp:[["d54-wasm-concurrency","WebAssembly, SharedArrayBuffer and Atomics","wasm memory atomics"],["d54-compilers-ast","How tools work: tokenizer, parser, AST","babel eslint pratt"]]},
+{n:55,t:"Capstone II",tp:[["d55-integration","End-to-end blueprint: a feature through every layer","architecture checklist"],["d55-final-review","Final review: rapid-fire and updated study plan","self assessment"]]}]}
+];
+window.GLOSSARY=[
+["Call stack","The structure that tracks which function is running and where to return. One stack per thread."],
+["Closure","A function plus a live reference to the variables of the scope where it was created."],
+["Coercion","Automatic or explicit conversion of a value from one type to another."],
+["Event loop","The mechanism that takes tasks from queues and runs them one at a time on the call stack, draining microtasks between tasks."],
+["Hoisting","Declarations are registered when a scope is created, before any line of that scope runs."],
+["Hidden class (Map/shape)","V8's internal description of an object's property layout, shared by objects built the same way."],
+["Inline cache","A per-call-site cache of the shapes seen, used to make property access fast."],
+["Microtask","A small job (promise reaction, queueMicrotask) that runs as soon as the stack is empty, before the next task."],
+["Prototype","The object another object delegates to when a property is not found on itself."],
+["Reflow (layout)","Recomputing sizes and positions of elements."],
+["Repaint","Redrawing pixels without recomputing layout."],
+["Temporal dead zone","The span between entering a scope and the line that initializes a let, const or class binding. Access throws."],
+["Tree-shaking","Removing unused exports from a bundle using static import/export analysis."],
+["Hydration","Attaching JavaScript behavior to server-rendered HTML."],
+["Backpressure","A consumer signalling a producer to slow down so memory does not grow without bound."],
+["Origin","Scheme + host + port. The unit of the same-origin policy."],
+["Preflight","An OPTIONS request the browser sends before a non-simple cross-origin request."],
+["Structured clone","The browser algorithm for deep-copying values for postMessage, structuredClone and IndexedDB."],
+["TDZ, ASI, IIFE","Temporal dead zone; automatic semicolon insertion; immediately invoked function expression."],
+["ADR","Architecture Decision Record: a short document capturing a decision, its context, options and consequences."],
+["CRDT","Conflict-free replicated data type: data that merges in any order and still converges."],
+["Idempotent","An operation that can be repeated safely with the same final effect."],
+["Hydration mismatch","Server and client render different HTML for the same component, causing errors or flicker."],
+["PKCE","Proof Key for Code Exchange: a one-time secret that protects the OAuth authorization-code flow for public clients."],
+["Idempotency key","A client-supplied id that makes a retried request safe to repeat."],
+["Typed array","A fixed-type view over an ArrayBuffer (Uint8Array, Float32Array...) for binary data."],
+["AST","Abstract syntax tree: the structured representation of source code that compilers and linters analyze."],
+["INP","Interaction to Next Paint. The Core Web Vital for responsiveness. Good is 200 ms or less."]
+];
+window.LADDER=[
+["Fresher","Days 1-5, 10-12","Types, coercion, scope, functions, this, arrays/objects, promises, DOM basics. Can predict output of small snippets and explain var/let/const. Interview prep: Days 31-32."],
+["Mid-level","Days 6-9, 13-19","Closures, prototypes, classes, event loop, async patterns, events, storage, fetch. Can write polyfills (bind, debounce, Promise.all) and debug async order. Interview prep: Days 31-35."],
+["Senior","Days 20-25","Security, V8 behavior, memory leaks, profiling, bundling, modules. Can diagnose a slow or leaking page and justify fixes with evidence. Interview prep: Days 33-38."],
+["Lead","Days 26-28","Node internals, testing strategy, tooling, design patterns, state. Can set standards, review code and plan migrations. Interview prep: Days 38-39."],
+["Architect","Days 29-30","Rendering strategies, micro-frontends, monorepos, API contracts, observability, budgets. Can choose, defend and de-risk system-level trade-offs. Interview prep: Days 36-40."]
+];
+
+</script><script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function TOTAL(){return window.COURSE.reduce(function(a,w){return a+w.days.length},0)}
+var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
+var RE=/(\/\/.*$)|(\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)|\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|super|this|typeof|instanceof|in|of|async|await|try|catch|finally|throw|import|export|from|default|yield|static|null|undefined|true|false|void|delete)\b|\b(\d[\d_]*(?:\.\d+)?n?)\b/gm;
+function hl(code){return esc(code).replace(RE,function(m,a,b,s,k,n){return (a||b)?'<span class="c">'+m+'</span>':s?'<span class="s">'+m+'</span>':k?'<span class="k">'+m+'</span>':'<span class="n">'+m+'</span>'})}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+/* diagram helpers exposed to week files */
+window.flow=function(items,o){o=o||{};return '<div class="flow'+(o.v?' v':'')+'">'+items.map(function(x,i){var c='',t=x,sm='';if(Array.isArray(x)){t=x[0];sm=x[1]||'';c=x[2]||''}return (i&&!o.plain?'<span class="ar">→</span>':'')+'<div class="fb '+c+'">'+t+(sm?'<small>'+sm+'</small>':'')+'</div>'}).join('')+'</div>'};
+window.lanes=function(cols){return '<div class="lane">'+cols.map(function(c){return '<div><h6>'+c[0]+'</h6>'+c[1].map(function(i){return '<div class="it">'+i+'</div>'}).join('')+'</div>'}).join('')+'</div>'};
+/* inspect for Run output */
+function ins(v,d,seen){d=d||0;seen=seen||[];
+ if(typeof v==='string')return d?JSON.stringify(v):v;if(typeof v==='bigint')return v+'n';
+ if(typeof v==='symbol')return v.toString();if(typeof v==='function')return '[Function'+(v.name?': '+v.name:'')+']';
+ if(Object.is(v,-0))return '-0';if(v===null||typeof v!=='object')return String(v);
+ if(seen.indexOf(v)>-1)return '[Circular]';if(d>3)return Array.isArray(v)?'[…]':'{…}';seen=seen.concat([v]);
+ if(Array.isArray(v)){var s=[],h=0,e=function(){if(h){s.push('<'+h+' empty item'+(h>1?'s':'')+'>');h=0}};for(var i=0;i<v.length;i++){if(!(i in v)){h++;continue}e();s.push(ins(v[i],d+1,seen))}e();return '['+s.join(', ')+']'}
+ if(v instanceof Map)return 'Map('+v.size+') {'+Array.from(v).map(function(p){return ins(p[0],d+1,seen)+' => '+ins(p[1],d+1,seen)}).join(', ')+'}';
+ if(v instanceof Set)return 'Set('+v.size+') {'+Array.from(v).map(function(x){return ins(x,d+1,seen)}).join(', ')+'}';
+ if(v instanceof Error)return v.name+': '+v.message;if(v instanceof Date)return isNaN(v)?'Invalid Date':v.toISOString();
+ if(v instanceof Promise)return 'Promise {…}';
+ var ks=Reflect.ownKeys(v).filter(function(k){return Object.getOwnPropertyDescriptor(v,k).enumerable});
+ var pr=Object.getPrototypeOf(v),cn=pr===null?'[Object: null prototype] ':(v.constructor&&v.constructor!==Object&&v.constructor.name?v.constructor.name+' ':'');
+ return cn+'{'+(ks.length?' '+ks.map(function(k){return (typeof k==='symbol'?'['+k.toString()+']':k)+': '+ins(v[k],d+1,seen)}).join(', ')+' ':'')+'}'}
+function run(code,out){var L=[];out.hidden=false;var push=function(p,a){L.push(p+Array.prototype.map.call(a,function(x){return ins(x)}).join(' '));out.textContent=L.join('\n')};
+ var con={log:function(){push('',arguments)},info:function(){push('',arguments)},warn:function(){push('⚠ ',arguments)},error:function(){push('✖ ',arguments)},table:function(x){push('',[x])}};
+ out.textContent='';try{var r=new Function('console',code)(con);if(r&&r.then)r.catch(function(e){push('✖ ',[e])})}catch(e){push('✖ ',[e])}
+ setTimeout(function(){if(!L.length)out.textContent='(no output)'},400)}
+function list(a,c){return a&&a.length?'<ul class="pts '+c+'">'+a.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>':''}
+function topic(t){var h='<article class="topic" id="'+t.id+'"><header><h3>'+t.title+'</h3><div class="lvls">Useful for:'+(t.lv||['fresher','mid','senior']).map(function(l){return '<b>'+l+'</b>'}).join('')+'</div></header>';
+ h+='<div class="tabs ui" role="tablist"><button class="t-eli" role="tab" aria-selected="false">Explain like I’m 5</button><button class="t-tech" role="tab" aria-selected="true">Technical explanation</button></div>';
+ h+='<div class="pane p-eli" role="tabpanel" hidden>'+t.eli5+'</div>';
+ h+='<div class="pane p-tech" role="tabpanel">'+(t.why?'<h5>Why it exists</h5>'+t.why+'<h5>How it works</h5>':'')+t.tech+'</div>';
+ if(t.diagram)h+='<div class="blk"><h4>Diagram</h4><div class="diagram">'+t.diagram.html+'</div>'+(t.diagram.steps?'<ol class="dsteps">'+t.diagram.steps.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol>':'')+'</div>';
+ if(t.ex&&t.ex.length)h+='<div class="blk"><h4>Examples</h4>'+t.ex.map(function(e){return '<div class="ex"><div class="et">'+e.t+'</div><pre><code>'+hl(e.code)+'</code></pre>'+(e.run===false?'':'<div class="bar"><button class="run">▶ Run</button><span style="color:var(--muted)">runs in your browser</span></div><div class="out" hidden></div>')+(e.note?'<div>'+e.note+'</div>':'')+'</div>'}).join('')+'</div>';
+ if(t.browser)h+='<div class="blk"><h4>In the browser (and how Node differs)</h4>'+t.browser+'</div>';
+ if(t.gotchas)h+='<div class="blk"><h4>Hidden concepts and edge cases</h4>'+list(t.gotchas,'gotcha')+'</div>';
+ if(t.best)h+='<div class="blk"><h4>Best practices</h4>'+list(t.best,'best')+'</div>';
+ if(t.iq)h+='<div class="blk"><h4>Interview questions</h4>'+t.iq.map(function(q){return '<details class="iq"><summary><span class="badge b-'+q[0]+'">'+q[0]+'</span>'+q[1]+'</summary><div class="ans">'+q[2]+'</div></details>'}).join('')+'</div>';
+ if(t.practice)h+='<div class="blk"><h4>Practice</h4>'+list(t.practice,'')+'</div>';
+ if(t.teach)h+='<div class="teach"><b class="h">Teach it in 2 minutes</b>'+t.teach+'</div>';
+ return h+'</article>'}
+function render(W){var C=window.COURSE,wi=W.w-1,h='<div class="wrap"><div class="weekhead"><div class="kicker">Week '+W.w+' of '+C.length+'</div><h1>'+C[wi].title+'</h1><p>'+C[wi].sub+'</p></div>';
+ W.days.forEach(function(d){h+='<section class="day" id="day-'+d.n+'"><div class="dayhead"><div class="dn">Day '+d.n+' of '+TOTAL()+'</div><h2>'+d.title+'</h2><p class="goal">'+d.goal+'</p></div>';
+  d.topics.forEach(function(t){h+=topic(t)});
+  if(d.quiz)h+='<div class="quiz"><h3>Tricky output quiz</h3><p class="ui" style="color:var(--muted);margin:0">Predict the output first. Then open the answer, then run it.</p>'+d.quiz.map(function(q,i){return '<div class="ex"><div class="et">Question '+(i+1)+'</div><pre><code>'+hl(q.code)+'</code></pre><div class="bar"><button class="run">▶ Run</button></div><div class="out" hidden></div><details class="iq"><summary>Show answer and why</summary><div class="ans"><p><b>'+q.ans+'</b></p><p>'+q.why+'</p></div></details></div>'}).join('')+'</div>';
+  h+='<div class="daydone ui"><button class="btn" data-done="'+d.n+'"></button><span style="color:var(--muted);font-size:14px">Mark the day complete when you can teach it.</span></div></section>'});
+ if(W.revision)h+='<section class="rev" id="revision-w'+W.w+'"><h2>Week '+W.w+' revision sheet</h2>'+list(W.revision,'')+'</section>';
+ var p=C[wi-1],n=C[wi+1];h+='<div class="pager">'+(p?'<a href="'+p.file+'">← Week '+p.w+': '+p.title+'</a>':'<a href="index.html">← Course index</a>')+(n?'<a href="'+n.file+'">Week '+n.w+': '+n.title+' →</a>':'<a href="index.html">Back to index</a>')+'</div></div>';
+ $('main').innerHTML=h}
+function sidebar(cur){var C=window.COURSE,h='<a class="brand" href="index.html">JavaScript: zero to architect</a><div class="tools"><input id="search" type="search" placeholder="Search topics…" aria-label="Search topics"><button class="btn" id="theme" title="Toggle light/dark" aria-label="Toggle theme">Theme</button></div><div class="prog"><i id="pbar"></i></div><div class="proglabel" id="plabel"></div>';
+ C.forEach(function(w){h+='<details class="wk" '+(w.w===cur?'open':'')+'><summary>Week '+w.w+': '+w.title+'</summary>';
+  w.days.forEach(function(d){h+='<details class="dy" data-day="'+d.n+'" '+(w.w===cur?'':'')+'><summary>Day '+d.n+': '+d.t+'<span class="tick" hidden>✓</span></summary><ul>'+d.tp.map(function(t){return '<li data-k="'+(t[1]+' '+d.t+' '+(t[2]||'')).toLowerCase()+'"><a href="'+(w.w===cur?'':w.file)+'#'+t[0]+'" data-id="'+t[0]+'">'+t[1]+'</a></li>'}).join('')+'</ul></details>'});h+='</details>'});
+ $('#sidebar').innerHTML=h;
+ $('#search').addEventListener('input',function(e){var q=e.target.value.trim().toLowerCase();$$('#sidebar li').forEach(function(li){li.classList.toggle('hide',!!q&&li.dataset.k.indexOf(q)<0)});$$('#sidebar details.dy').forEach(function(d){var any=$$('li:not(.hide)',d).length>0;d.classList.toggle('hide',!any);if(q)d.open=any});$$('#sidebar details.wk').forEach(function(d){var any=$$('details.dy:not(.hide)',d).length>0;d.classList.toggle('hide',!any);if(q)d.open=any})})}
+function progress(){var done=store('jsc-done')||[];$$('[data-done]').forEach(function(b){var n=+b.dataset.done,on=done.indexOf(n)>-1;b.textContent=on?'✓ Day '+n+' complete (click to undo)':'Mark Day '+n+' complete'});$$('#sidebar details.dy').forEach(function(d){$('.tick',d).hidden=done.indexOf(+d.dataset.day)<0});$('#pbar').style.width=(done.length/TOTAL()*100)+'%';$('#plabel').textContent=done.length+' of '+TOTAL()+' days complete'}
+function init(){var cur=window.WEEK?window.WEEK.w:0;
+ var th=store('jsc-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=th;
+ sidebar(cur);if(window.WEEK)render(window.WEEK);progress();
+ var d=document;d.addEventListener('click',function(e){var t=e.target;
+  if(t.id==='theme'){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store('jsc-theme',n)}
+  if(t.id==='menu')d.body.classList.toggle('nav');
+  if(t.closest&&t.closest('#sidebar a'))d.body.classList.remove('nav');
+  if(t.id==='top')scrollTo({top:0});
+  if(t.dataset&&t.dataset.done){var n=+t.dataset.done,a=store('jsc-done')||[],i=a.indexOf(n);if(i>-1)a.splice(i,1);else a.push(n);store('jsc-done',a);progress()}
+  if(t.classList.contains('run')){var ex=t.closest('.ex');run(ex.querySelector('code').textContent,ex.querySelector('.out'))}
+  if(t.getAttribute&&t.getAttribute('role')==='tab'){var tp=t.closest('.topic'),eli=t.classList.contains('t-eli');$$('.tabs button',tp).forEach(function(b){b.setAttribute('aria-selected',b===t)});$('.p-eli',tp).hidden=!eli;$('.p-tech',tp).hidden=eli}});
+ var tg=$('#top');addEventListener('scroll',function(){tg.style.display=scrollY>600?'block':'none'});
+ if(window.WEEK){store('jsc-last',location.pathname.split('/').pop());var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){$$('#sidebar a.on').forEach(function(a){a.classList.remove('on')});var a=$('#sidebar a[data-id="'+en.target.id+'"]');if(a){a.classList.add('on');var dy=a.closest('details.dy');if(dy&&!dy.open&&!$('#search').value)dy.open=true}}})},{rootMargin:'-10% 0px -80% 0px'});$$('.topic').forEach(function(t){io.observe(t)});
+  if(location.hash){var el=document.getElementById(location.hash.slice(1));if(el)setTimeout(function(){el.scrollIntoView()},50)}}}
+document.addEventListener('DOMContentLoaded',init)})();
+
+</script>
+<script>
+window.WEEK={w:10,revision:[
+"<b>Routing:</b> <code>history.pushState/replaceState</code> change the URL without reload; <code>popstate</code> fires on back/forward (not on pushState). History routing needs a server fallback to <code>index.html</code>; hash routing doesn't. Intercept only same-origin, unmodified left-clicks; update the title and move focus on route change.",
+"<b>URLs:</b> <code>URL</code> and <code>URLSearchParams</code> parse and build; <code>encodeURIComponent</code> encodes components, <code>encodeURI</code> whole URLs; keep UI state (filters, page) in the query string; validate redirect targets (same-origin only) to prevent open redirects.",
+"<b>Forms:</b> use native validation attributes and the Constraint Validation API (<code>validity</code>, <code>setCustomValidity</code>, <code>checkValidity</code>); <code>FormData</code> skips unchecked boxes; client validation is UX, the server must re-validate; connect errors with <code>aria-describedby</code>/<code>aria-invalid</code>.",
+"<b>Files:</b> <code>File</code> extends <code>Blob</code>; slice for chunked/resumable uploads; free object URLs; MIME type and extension can lie, so the server verifies; XHR gives upload progress, fetch streams are limited.",
+"<b>Accessibility:</b> POUR (perceivable, operable, understandable, robust); semantic HTML first; contrast 4.5:1 (3:1 large text); visible focus; manage focus on dynamic changes; <code>aria-live</code> for announcements; test with keyboard and a screen reader.",
+"<b>Web Components:</b> custom elements (lifecycle + attributes/properties), Shadow DOM (style encapsulation, slots, <code>::part</code>, composed events), templates; no framework required, accessibility and SSR need care.",
+"<b>Canvas</b> = pixels (fast, no DOM per shape), <b>SVG</b> = DOM shapes (accessible, scalable). Animate with <code>requestAnimationFrame</code> and a fixed timestep; scale for <code>devicePixelRatio</code>.",
+"<b>Device APIs:</b> feature-detect, ask for permission in context after a user gesture, handle denial gracefully; <code>BroadcastChannel</code> and Web Locks coordinate tabs.",
+"<b>Auth:</b> sessions (server state, cookie) vs JWT (signed claims; verify algorithm, signature, exp, aud); OAuth 2 authorization code + <b>PKCE</b> for SPAs; hash passwords with salt and a slow function (Argon2id/scrypt/bcrypt/PBKDF2).",
+"<b>Hardening:</b> security headers (CSP, HSTS, nosniff, Referrer-Policy, Permissions-Policy, COOP), Subresource Integrity for third-party scripts, lockfiles and audits for the supply chain."
+],days:[
+{n:46,title:"Routing and URLs",goal:"Understand how single-page apps navigate, keep state in the URL, and handle URLs safely.",topics:[
+{id:"d46-history-routing",title:"Client-side routing and the History API",lv:["mid","senior"],
+eli5:`<p>A single-page app is like a <b>book with a magic bookmark strip</b>. Turning to a new "page" doesn't fetch a new book; the app swaps what's on the page and updates the address bar so that the back button, bookmarks and shared links still work. The <b>History API</b> is how you write on the bookmark strip yourself.</p>`,
+why:`<p>Without routing, a single-page app has one URL and no back button. The History API lets JavaScript change the URL and keep session history without a full page load, which is what every SPA router (React Router, Vue Router, Angular Router) is built on.</p>`,
+tech:`<ul class="pts"><li><b><code>history.pushState(state, "", url)</code></b> adds an entry and changes the URL (same origin only) without loading anything. <b><code>replaceState</code></b> edits the current entry. Neither fires an event.</li><li><b><code>popstate</code></b> fires on the window when the user navigates back/forward (and on <code>history.back()/go()</code>), giving you the saved <code>event.state</code>; you re-render for the new URL.</li><li><b>Two routing modes:</b> <b>history mode</b> (clean URLs <code>/users/42</code>) needs the server to return <code>index.html</code> for unknown paths (and real 404s for API/asset misses); <b>hash mode</b> (<code>/#/users/42</code>) needs no server config and works on static hosts.</li><li><b>Link interception:</b> on click, ignore if <code>defaultPrevented</code>, non-left button, modifier keys (Ctrl/Cmd/Shift/Alt), <code>target="_blank"</code>, <code>download</code>, cross-origin; otherwise <code>preventDefault()</code> and <code>navigate(href)</code>.</li><li><b>On every route change:</b> update <code>document.title</code>, move focus to the new main heading (or announce in a live region), restore or reset scroll (<code>history.scrollRestoration</code>), and cancel in-flight requests.</li><li><b>Router features:</b> path params (<code>/users/:id</code>), query params, nested routes, guards (auth redirect), lazy-loaded route chunks (Day 24), 404 route.</li><li><b>Navigation API</b> (<code>navigation.navigate</code>, the <code>navigate</code> event) is a newer, cleaner model in Chromium; check current support before depending on it.</li></ul>`,
+diagram:{html:flow([["click link"],["intercept","preventDefault + pushState(url)","w"],["render route","match path → component","g"],["user presses Back","popstate event","w"],["render previous route","from location.pathname","g"]]),steps:["The router listens for clicks on same-origin links and stops the browser's full navigation.","<code>pushState</code> changes the address bar and history stack instantly.","The router matches the path to a route and renders it.","Back/forward fire <code>popstate</code>; the router reads the URL and renders the matching route again."]},
+ex:[{t:"A small router with params, query, history stack and guards (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const compile = (pattern) => {
+  const keys = [];
+  const re = new RegExp("^" + pattern.replace(/:([A-Za-z_]+)/g, (_, k) => { keys.push(k); return "([^/]+)"; }) + "/?$");
+  return (path) => { const m = re.exec(path); return m ? Object.fromEntries(keys.map((k, i) => [k, decodeURIComponent(m[i + 1])])) : null; };
+};
+function createRouter(routes){
+  const compiled = routes.map((r) => ({ ...r, match: compile(r.path) }));
+  let stack = [], i = -1, current = null;
+  const guards = [], listeners = new Set();
+  const resolve = (path) => {
+    const [p, qs = ""] = path.split("?");
+    for (const r of compiled) { const params = r.match(p); if (params) return { name: r.name, params, query: Object.fromEntries(new URLSearchParams(qs)), path }; }
+    return { name: "not-found", params: {}, query: {}, path };
+  };
+  const show = (path) => { current = resolve(path); listeners.forEach((f) => f(current)); };
+  function navigate(path, { replace = false } = {}){
+    const next = resolve(path);
+    for (const g of guards) { const r = g(next, current); if (r === false) return false; if (typeof r === "string") return navigate(r, { replace }); }
+    if (replace && i >= 0) stack[i] = path; else { stack = stack.slice(0, i + 1); stack.push(path); i++; }
+    show(path); return true;
+  }
+  return {
+    navigate, beforeEach: (g) => guards.push(g), subscribe: (f) => (listeners.add(f), () => listeners.delete(f)),
+    back(){ if (i > 0) { i--; show(stack[i]); } }, forward(){ if (i < stack.length - 1) { i++; show(stack[i]); } },
+    get current(){ return current; }, get stack(){ return [...stack]; }
+  };
+}
+const state = { loggedIn: false };
+const r = createRouter([{ path: "/", name: "home" }, { path: "/users/:id", name: "user" }, { path: "/search", name: "search" }, { path: "/admin", name: "admin" }, { path: "/login", name: "login" }]);
+r.beforeEach((to) => (to.name === "admin" && !state.loggedIn ? "/login" : true));
+const seen = []; r.subscribe((c) => seen.push(c.name));
+r.navigate("/", { replace: true });
+r.navigate("/users/42?tab=posts");
+check("path params and query are parsed", r.current.name === "user" && r.current.params.id === "42" && r.current.query.tab === "posts");
+r.navigate("/search?q=js%20router");
+check("query strings are decoded", r.current.query.q === "js router");
+r.back();
+check("back returns to the previous route", r.current.name === "user");
+r.navigate("/users/7");
+check("navigating after back drops the forward entries", r.stack.join() === "/,/users/42?tab=posts,/users/7");
+r.forward();
+check("forward does nothing when there is no forward entry", r.current.params.id === "7");
+r.navigate("/users/8", { replace: true });
+check("replace edits the current entry instead of adding one", r.stack.length === 3 && r.stack[2] === "/users/8");
+r.navigate("/nope/at/all");
+check("unknown paths resolve to not-found", r.current.name === "not-found");
+r.navigate("/admin");
+check("guard redirects unauthenticated users to /login", r.current.name === "login");
+state.loggedIn = true; r.navigate("/admin");
+check("guard allows authenticated users", r.current.name === "admin");
+check("a route with an encoded param decodes it", compile("/tags/:t")("/tags/c%2B%2B").t === "c++");
+check("subscribers are notified on every change", seen.length >= 8 && seen[0] === "home");`},
+{t:"The real browser API (reference)",code:`// Navigate without a page load
+function navigate(url){
+  history.pushState({ scrollY: 0 }, "", url);
+  render(location.pathname + location.search);
+  document.title = titleFor(location.pathname);
+  document.querySelector("h1")?.focus();               // a11y: move focus to the new page heading (tabindex="-1")
+}
+// Back / forward
+window.addEventListener("popstate", () => render(location.pathname + location.search));
+
+// Intercept links (event delegation, Day 17)
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a[href]");
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  if (a.target === "_blank" || a.hasAttribute("download")) return;
+  const url = new URL(a.href);
+  if (url.origin !== location.origin) return;           // let the browser handle external links
+  e.preventDefault();
+  navigate(url.pathname + url.search + url.hash);
+});
+// Server: for any non-file, non-API path, respond with index.html (history mode)`,run:false}],
+gotchas:[`<code>pushState</code> doesn't fire <code>popstate</code>; call your render function yourself.`,`Deep links break (404 on refresh) if the server doesn't fall back to <code>index.html</code> for history mode.`,`Intercepting every click (including modifier keys, <code>target="_blank"</code>, downloads, external links) breaks expected browser behavior.`,`<code>pushState</code> only allows same-origin URLs; cross-origin throws a SecurityError.`,`Screen-reader users get no announcement of a route change unless you manage focus or use a live region.`,`Scroll position and focus aren't reset automatically on route changes in an SPA.`,`Storing large objects in <code>history.state</code> bloats session history; keep state small and serializable.`],
+best:[`Use a proven router for production; know these mechanics for interviews and debugging.`,`Update the title, focus and scroll on navigation; cancel stale requests (AbortController).`,`Prefer real <code>&lt;a href&gt;</code> elements over click handlers on divs.`],
+iq:[["mid","How does client-side routing work?","Intercept link clicks, call history.pushState to change the URL, render the matching view, and listen for popstate to handle back/forward; the server must serve index.html for deep links in history mode."],["mid","pushState vs hash routing?","pushState gives clean URLs but needs server fallback configuration; hash routing works anywhere because the server never sees the fragment."],["senior","What accessibility work does an SPA need on navigation?","Update document.title, move focus to the new content (usually the heading) or announce via a live region, preserve a logical focus order, and keep links as real anchors."],["senior","How would you implement route guards?","Run guard functions before committing the navigation; return false to cancel, a path to redirect, or true to continue; keep guards fast and cancel on newer navigations."]],
+practice:[`Add nested routes and a lazy-loaded route (dynamic <code>import()</code>) to the router above.`,`Write a server snippet (Node) that serves static files and falls back to <code>index.html</code> only for non-asset paths.`],
+teach:`<p>"A single-page app swaps the content and writes the new address on the bookmark strip with pushState so back, bookmarks and shared links still work. popstate fires on back/forward, the server must serve index.html for deep links, and you must manage the title and focus yourself."</p>`},
+
+{id:"d46-url-patterns",title:"URLs, query state and safe redirects",lv:["fresher","mid","senior"],
+eli5:`<p>A URL is a <b>postal address</b> with parts: country (scheme), city (host), street (path), flat number (query) and a note on the door (fragment). The <code>URL</code> tool reads and writes those parts correctly, so you never have to chop strings by hand. And if a website says "after login, send me to <i>this</i> address", you must check that address is still in <b>your own town</b>, or crooks will send people to a fake site.</p>`,
+why:`<p>Hand-parsing URLs causes bugs (double encoding, missing separators) and security holes (open redirects). Keeping UI state like filters and pagination in the URL makes pages shareable, bookmarkable and restorable.</p>`,
+tech:`<ul class="pts"><li><b>Parts:</b> <code>protocol</code>, <code>host</code> (hostname + port), <code>origin</code>, <code>pathname</code>, <code>search</code>, <code>hash</code>. <code>new URL(relative, base)</code> resolves relative URLs (<code>"../c"</code>); <code>URL.canParse()</code> validates.</li><li><b><code>URLSearchParams</code></b>: <code>get</code>, <code>getAll</code>, <code>set</code>, <code>append</code>, <code>delete</code>, iteration; <code>+</code> decodes to a space in query strings; repeated keys (<code>a=1&amp;a=2</code>) need <code>getAll</code>.</li><li><b>Encoding:</b> <code>encodeURIComponent</code> for a single value (encodes <code>&amp; = / ? #</code>); <code>encodeURI</code> for a full URL (leaves those). Never build query strings by concatenation.</li><li><b>URL as state:</b> put filters, sort, page, selected tab in the query string; read on load, write with <code>replaceState</code> while typing and <code>pushState</code> for discrete steps.</li><li><b>URLPattern</b> (<code>new URLPattern({ pathname: "/users/:id" })</code>) matches URLs declaratively (check support; routers use it increasingly).</li><li><b>Open redirects:</b> a <code>?next=</code> parameter that is followed blindly lets attackers craft links on your domain that bounce victims to phishing sites. Allow only same-origin relative paths, reject <code>//host</code>, schemes and backslash tricks, or use an allowlist/ID instead of a URL.</li></ul>`,
+diagram:{html:flow([["login?next=//evil.com"],["new URL(next, origin)","parse + resolve","w"],["same origin?","no → fall back to /","r"],["yes → redirect to path","g"]]),steps:["Never redirect to a raw user-supplied string.","Resolve it against your own origin so relative and tricky forms are normalized.","If the resolved origin differs from yours, ignore the target and use a safe default.","Prefer opaque identifiers (a named destination) over full URLs when possible."]},
+ex:[{t:"URL parsing, encoding, query state and a safe redirect (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const u = new URL("https://user@example.com:8080/a/b?x=1&x=2&y=%20z+w#frag");
+check("parts", u.protocol === "https:" && u.hostname === "example.com" && u.port === "8080" && u.origin === "https://example.com:8080" && u.pathname === "/a/b" && u.hash === "#frag");
+check("repeated keys and + decoding", u.searchParams.getAll("x").join() === "1,2" && u.searchParams.get("y") === " z w");
+check("relative resolution", new URL("../c?q=1#h", "https://a.com/b/d/e").href === "https://a.com/b/c?q=1#h");
+check("encodeURIComponent vs encodeURI", encodeURIComponent("a b&c=d/e") === "a%20b%26c%3Dd%2Fe" && encodeURI("a b&c=d/e") === "a%20b&c=d/e");
+const q = new URLSearchParams(); q.set("name", "Ana & Bob"); q.append("tag", "js"); q.append("tag", "web");
+check("URLSearchParams encodes safely", q.toString() === "name=Ana+%26+Bob&tag=js&tag=web");
+const setQuery = (href, patch) => { const x = new URL(href); for (const [k, v] of Object.entries(patch)) { if (v == null || v === "") x.searchParams.delete(k); else x.searchParams.set(k, v); } return x.pathname + x.search + x.hash; };
+check("URL as UI state: set, update and remove params", setQuery("https://x.com/list?page=2&q=a", { page: 1, q: "" }) === "/list?page=1" && setQuery("https://x.com/list?page=2", { sort: "asc" }) === "/list?page=2&sort=asc");
+const safeNext = (next, base = "https://app.example.com") => {
+  try {
+    const target = new URL(next, base);
+    const ok = target.origin === new URL(base).origin && !next.startsWith("//") && !next.includes("\\\\");
+    return ok ? target.pathname + target.search + target.hash : "/";
+  } catch { return "/"; }
+};
+check("safe same-origin paths are allowed", safeNext("/dashboard?tab=1") === "/dashboard?tab=1" && safeNext("https://app.example.com/ok") === "/ok");
+check("protocol-relative URLs are rejected", safeNext("//evil.com/phish") === "/");
+check("other origins are rejected", safeNext("https://evil.com/x") === "/");
+check("backslash tricks are rejected", safeNext("/\\\\evil.com") === "/");
+check("javascript: URLs are rejected", safeNext("javascript:alert(1)") === "/");
+if (typeof URLPattern === "function") {
+  const m = new URLPattern({ pathname: "/users/:id" }).exec("https://x.com/users/7");
+  check("URLPattern matches declaratively", m.pathname.groups.id === "7");
+} else console.log("skip  URLPattern is not available in this browser");`}],
+gotchas:[`<code>encodeURI</code> doesn't encode <code>&amp;</code>, <code>=</code>, <code>?</code>, <code>#</code>, so it is wrong for individual values.`,`<code>searchParams.get</code> returns only the first of repeated keys; use <code>getAll</code>.`,`<code>location.hash</code> isn't sent to the server; don't rely on it for server-side logic.`,`Checking a redirect with <code>startsWith("/")</code> alone accepts <code>//evil.com</code>.`,`<code>URL</code> throws on invalid input (use try/catch or <code>URL.canParse</code>).`,`Trailing-slash and case differences create duplicate URLs for SEO and caching; canonicalize.`],
+best:[`Always use <code>URL</code>/<code>URLSearchParams</code> to build and parse; never string-concatenate query strings.`,`Keep shareable state in the URL; validate every redirect target on the server and the client.`,`Canonicalize URLs (lowercase host, consistent trailing slash) and add <code>rel="canonical"</code> where needed.`],
+iq:[["fresher","What is the difference between encodeURI and encodeURIComponent?","encodeURIComponent encodes everything that has meaning in a URL (& = ? / #) and is for single values; encodeURI leaves those so it can be used on a whole URL."],["mid","How do you read and update query parameters?","Use new URL(location.href).searchParams: get/getAll/set/append/delete, then history.replaceState or pushState with the new search string."],["senior","What is an open redirect and how do you prevent it?","A redirect to an attacker-controlled URL via a user-supplied parameter. Only allow same-origin relative paths (resolve with new URL against your origin, reject //host, backslashes and other schemes) or use an allowlist/IDs."]],
+practice:[`Build a filter UI whose state lives entirely in the URL and survives refresh and back/forward.`,`Write tests for <code>safeNext</code> with 15 tricky inputs (encoded slashes, tabs, unicode dots).`],
+teach:`<p>"A URL is an address with parts; the URL tool reads and writes them correctly. Keep filters and pages in the query string so links are shareable, and never redirect to an address you haven't checked is still on your own site."</p>`}
+],quiz:[
+{code:`console.log(new URL('../c?x=1#h', 'https://a.com/b/d/e').href);
+const u = new URL('https://x.com?a=1&a=2&b=%20x+y');
+console.log(u.searchParams.getAll('a'), u.searchParams.get('b'), encodeURIComponent('a b&c'), encodeURI('a b&c'));`,ans:`https://a.com/b/c?x=1#h, then ["1", "2"] " x y" a%20b%26c a%20b&c`,why:`".." removes the last directory of the base path. getAll returns every repeated key, "+" decodes to a space in queries, and encodeURI leaves "&" alone while encodeURIComponent encodes it.`},
+{code:`const safe = (next, base = 'https://app.com') => { try { const t = new URL(next, base); return t.origin === base && !next.startsWith('//') ? t.pathname : '/'; } catch { return '/'; } };
+console.log(safe('/ok'), safe('//evil.com'), safe('https://evil.com'));`,ans:`/ok / /`,why:`Resolving against your own origin and comparing origins blocks absolute foreign URLs; the explicit //-check blocks protocol-relative ones (which new URL would otherwise resolve to the foreign host).`}]},
+
+{n:47,title:"Forms and files",goal:"Build forms with native validation correctly and handle files, uploads, drag and drop and the clipboard.",topics:[
+{id:"d47-forms-validation",title:"Forms and the Constraint Validation API",lv:["fresher","mid","senior"],
+eli5:`<p>A form is a <b>paper form at a counter</b>. The browser is a helpful clerk who checks it before you hand it in: "you forgot your email", "age must be 18 or more". The <b>Constraint Validation API</b> lets your code ask the clerk what's wrong and write custom notes. But the real counter (the server) must check again, because anyone can hand over a forged form.</p>`,
+why:`<p>Forms are the main way users send data. Native validation gives free, accessible checks; understanding <code>FormData</code>, validity states and submit handling avoids reinventing (and breaking) browser behavior.</p>`,
+tech:`<ul class="pts"><li><b>Native constraints:</b> <code>required</code>, <code>type</code> (<code>email</code>, <code>url</code>, <code>number</code>, <code>date</code>), <code>min/max</code>, <code>minlength/maxlength</code>, <code>pattern</code>, <code>step</code>. Prefer the right <code>type</code>, <code>inputmode</code> and <code>autocomplete</code> tokens (<code>email</code>, <code>one-time-code</code>, <code>new-password</code>).</li><li><b>API:</b> <code>input.validity</code> (<code>valueMissing, typeMismatch, patternMismatch, rangeUnderflow/Overflow, tooShort/tooLong, stepMismatch, badInput, customError, valid</code>), <code>checkValidity()</code>, <code>reportValidity()</code>, <code>setCustomValidity(msg)</code> (empty string clears), <code>validationMessage</code>, form attribute <code>novalidate</code> to take over the UI.</li><li><b><code>FormData</code>:</b> built from a form; <b>unchecked checkboxes/radios, disabled controls and unnamed fields are skipped</b>; repeated names produce multiple entries (<code>getAll</code>); file inputs add <code>File</code> objects. <code>Object.fromEntries(fd)</code> loses repeated keys.</li><li><b>Submit handling:</b> listen to <code>submit</code> (not button click) so Enter-key and <code>requestSubmit()</code> work; <code>event.preventDefault()</code>; use <code>event.submitter</code> to know which button; prevent double submit (disable after validation, idempotency keys).</li><li><b>Events:</b> <code>input</code> fires on every change, <code>change</code> on commit/blur; validate on blur and after first submit attempt, not on every keystroke for untouched fields.</li><li><b>Accessible errors:</b> real <code>&lt;label for&gt;</code>, error text linked with <code>aria-describedby</code>, <code>aria-invalid="true"</code>, a summary with focus on the first error, and an <code>aria-live</code>/<code>role="alert"</code> region. Don't rely on color or placeholders alone.</li><li><b>Security:</b> client validation is a convenience; the server must validate and sanitize everything, and protect against CSRF (Day 20).</li></ul>`,
+diagram:{html:flow([["user submits"],["browser validates","native constraints","w"],["invalid? show errors + focus first","g"],["valid → submit event","preventDefault, FormData","w"],["fetch POST","server re-validates!","r"]]),steps:["The browser checks constraints before firing the submit event (unless <code>novalidate</code>).","On failure it shows messages and focuses the first invalid control.","On success your submit handler reads <code>FormData</code> and sends it.","The server must validate again; the client check can be bypassed."]},
+ex:[{t:"Constraint validation and FormData on a detached form (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const doc = document.implementation.createHTMLDocument("");
+const form = doc.createElement("form");
+form.innerHTML = '<input name="email" type="email" required><input name="age" type="number" min="18" max="99"><input name="code" pattern="[A-Z]{3}[0-9]{2}"><input name="note"><input type="checkbox" name="tos" value="yes"><input type="checkbox" name="news" value="on" checked><select name="color"><option value="r">red</option><option value="g" selected>green</option></select>';
+const f = (n) => form.elements[n];
+check("required empty field: valueMissing", f("email").validity.valueMissing && !f("email").checkValidity());
+f("email").value = "abc";
+check("wrong format: typeMismatch", f("email").validity.typeMismatch && !f("email").validity.valueMissing);
+f("email").value = "a@b.co";
+check("valid email", f("email").checkValidity());
+f("age").value = "17"; check("below min: rangeUnderflow", f("age").validity.rangeUnderflow);
+f("age").value = "120"; check("above max: rangeOverflow", f("age").validity.rangeOverflow);
+f("age").value = "30"; check("in range", f("age").checkValidity());
+f("code").value = "abc12"; check("pattern mismatch", f("code").validity.patternMismatch);
+f("code").value = "ABC12"; check("pattern ok", f("code").checkValidity());
+f("code").setCustomValidity("Code already used");
+check("custom (server) error blocks validity and carries a message", f("code").validity.customError && !f("code").checkValidity() && f("code").validationMessage === "Code already used" && !form.checkValidity());
+f("code").setCustomValidity("");
+check("an empty message clears the custom error", f("code").checkValidity() && form.checkValidity());
+const fd = new FormData(form);
+check("FormData skips unchecked boxes and keeps order", [...fd.keys()].join() === "email,age,code,note,news,color");
+check("empty text inputs are included as empty strings; select gives its value", fd.get("note") === "" && fd.get("color") === "g" && fd.get("news") === "on");
+const multi = doc.createElement("form");
+multi.innerHTML = '<input type="checkbox" name="tag" value="a" checked><input type="checkbox" name="tag" value="b" checked>';
+const mfd = new FormData(multi);
+check("repeated names: Object.fromEntries loses values, getAll keeps them", Object.fromEntries(mfd).tag === "b" && mfd.getAll("tag").join() === "a,b");
+const toObject = (formData) => { const o = {}; for (const [k, v] of formData) { if (k in o) o[k] = [].concat(o[k], v); else o[k] = v; } return o; };
+check("a safe FormData-to-object helper", JSON.stringify(toObject(mfd)) === '{"tag":["a","b"]}');`},
+{t:"Accessible error pattern and submit handler (reference)",code:`<form id="signup" novalidate>
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" required autocomplete="email"
+         aria-describedby="email-err" aria-invalid="false">
+  <p id="email-err" class="error" role="alert"></p>
+  <button>Create account</button>
+</form>
+<script>
+const form = document.getElementById("signup");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const invalid = [...form.elements].filter((el) => el.willValidate && !el.checkValidity());
+  for (const el of form.elements) {
+    if (!el.willValidate) continue;
+    const msg = document.getElementById(el.id + "-err");
+    el.setAttribute("aria-invalid", String(!el.checkValidity()));
+    if (msg) msg.textContent = el.checkValidity() ? "" : el.validationMessage;
+  }
+  if (invalid.length) { invalid[0].focus(); return; }          // focus the first error
+  const data = Object.fromEntries(new FormData(form));
+  const res = await fetch("/api/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+  if (res.status === 422) { /* map server errors to setCustomValidity + re-render messages */ }
+});
+<\/script>`,run:false}],
+gotchas:[`Unchecked checkboxes, disabled fields and unnamed inputs are not in <code>FormData</code>.`,`<code>type="number"</code> accepts <code>e</code> and returns an empty value for invalid text; use <code>inputmode="numeric"</code> with a pattern for codes, ZIPs and credit-card style fields.`,`<code>setCustomValidity</code> stays until you clear it with an empty string; forgetting this makes a field permanently invalid.`,`Listening to the submit button's click misses Enter-key submission and <code>requestSubmit()</code>.`,`<code>maxlength</code>/<code>tooLong</code> only trigger for user edits, not programmatic changes.`,`Disabling the submit button without a loading state or double-submit protection confuses users and doesn't stop replayed requests.`,`Browser-specific validation bubbles are poorly styled and not announced consistently; custom UI must replicate the accessibility.`],
+best:[`Start with native attributes and correct input types; add custom messages and styling only where needed.`,`Validate on the server always; return field-level errors with a stable shape (code + message + field).`,`Use <code>autocomplete</code> attributes and visible labels; keep forms short and error messages specific.`],
+iq:[["fresher","How do you validate a form in plain JavaScript/HTML?","Use native constraint attributes (required, type, pattern, min/max) and the Constraint Validation API (checkValidity, validity, setCustomValidity); always re-validate on the server."],["mid","What does FormData include and exclude?","Named, enabled controls with values; unchecked checkboxes/radios, disabled fields and unnamed fields are excluded; repeated names produce multiple entries."],["senior","How do you make form errors accessible?","Label every control, link error text with aria-describedby, set aria-invalid, announce via role=alert or a live region, move focus to the first error or a summary, and don't depend on color alone."],["senior","How would you handle a server-side validation error for a field?","Map the response to the field, call setCustomValidity (or render the error and aria-invalid), focus the field, and clear the custom validity when the user edits it."]],
+practice:[`Build a signup form with live (on blur) validation, accessible errors and a server-error mapping function.`,`Write <code>toObject(formData)</code> that supports nested names like <code>address[city]</code>.`],
+teach:`<p>"The browser is a clerk that checks the form before it's handed in, and you can ask it what's wrong or add your own notes. FormData skips unchecked boxes. The server must check again, and error messages need labels and focus for everyone to use them."</p>`},
+
+{id:"d47-files-clipboard-dnd",title:"Files, uploads, drag and drop, clipboard",lv:["mid","senior"],
+eli5:`<p>A <b>file</b> in the browser is a sealed parcel: you can see its label (name, size, type) and open it only if you ask. To send a big parcel over a shaky road, you <b>cut it into pieces</b>, number them, and send them one by one so a break doesn't force a restart. <b>Drag and drop</b> is carrying a parcel to a doormat; the <b>clipboard</b> is the shared pocket between apps.</p>`,
+why:`<p>Uploads, image previews, drag-and-drop and copy/paste are common product features with sharp edges: memory, security, progress, resumability and permissions.</p>`,
+tech:`<ul class="pts"><li><b>Selecting:</b> <code>&lt;input type="file" accept="image/*" multiple&gt;</code>; <code>input.files</code> is a <code>FileList</code> of <code>File</code> objects (<code>name, size, type, lastModified</code>). <code>File</code> extends <code>Blob</code>.</li><li><b>Reading:</b> <code>await file.text()</code>, <code>arrayBuffer()</code>, <code>stream()</code> (prefer these over legacy <code>FileReader</code>); previews with <code>URL.createObjectURL(file)</code> (call <code>revokeObjectURL</code> when done) or <code>createImageBitmap</code>.</li><li><b>Uploading:</b> <code>fetch(url, { method: "POST", body: formData })</code> (don't set <code>Content-Type</code> manually; the browser adds the multipart boundary). <b>Progress</b>: <code>XMLHttpRequest.upload.onprogress</code> (fetch has no upload progress except experimental streaming request bodies). Use <code>AbortController</code> to cancel.</li><li><b>Large files:</b> <b>chunked/resumable uploads</b>: <code>file.slice(start, end)</code> chunks with offset + checksum, the server tracks received ranges and the client resumes from the last confirmed offset (tus protocol, S3 multipart, pre-signed URLs).</li><li><b>Validation:</b> check size and type on the client for UX, but the <b>MIME type and extension come from the user's system and can be spoofed</b>: the server must validate content (magic bytes), limit size, scan, rename and store outside the web root.</li><li><b>Drag and drop:</b> on the drop zone call <code>preventDefault()</code> in <code>dragenter</code> and <code>dragover</code> (or the drop won't fire), then read <code>event.dataTransfer.files</code> in <code>drop</code>; make it keyboard-accessible with a real file input fallback.</li><li><b>Clipboard API:</b> async <code>navigator.clipboard.writeText/readText</code> and <code>write/read</code> with <code>ClipboardItem</code>; requires a <b>secure context</b>, a <b>user gesture</b> and often a permission for reading; the <code>paste</code> event gives <code>clipboardData</code> without a prompt.</li></ul>`,
+diagram:{html:flow([["file (11 bytes)"],["slice into chunks","4 + 4 + 3","w"],["upload chunk 1, 2, 3","each with offset + checksum","g"],["connection drops after chunk 2","r"],["resume from offset 8","only chunk 3 again","g"]]),steps:["The file is cut into fixed-size pieces with <code>slice</code>.","Each piece is sent with its offset and a checksum so the server can verify and reassemble.","If the network fails, the client asks the server for the last confirmed offset.","Only the missing pieces are re-sent, so large uploads survive unreliable connections."]},
+ex:[{t:"File and Blob, chunking, checksum and validation (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+const sha256 = async (blob) => hex(await crypto.subtle.digest("SHA-256", await blob.arrayBuffer()));
+const chunks = (blob, size) => Array.from({ length: Math.ceil(blob.size / size) }, (_, i) => blob.slice(i * size, (i + 1) * size));
+const validateFile = (file, { types, maxBytes }) => {
+  const errors = [];
+  if (!types.includes(file.type)) errors.push("type not allowed");
+  if (file.size > maxBytes) errors.push("file too large");
+  if (file.size === 0) errors.push("file is empty");
+  return errors;
+};
+(async () => {
+  const file = new File(["hello world"], "greeting.txt", { type: "text/plain" });
+  check("File extends Blob and exposes metadata", file instanceof Blob && file.name === "greeting.txt" && file.size === 11 && file.type === "text/plain");
+  check("text() reads the content", (await file.text()) === "hello world");
+  const parts = chunks(file, 4);
+  check("chunk sizes for an 11-byte file with size 4", parts.map((p) => p.size).join() === "4,4,3");
+  check("chunks reassemble to the identical file (checksums match)", (await sha256(new Blob(parts))) === (await sha256(file)));
+  check("SHA-256 test vector for 'hello'", (await sha256(new Blob(["hello"]))) === "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824");
+  let resumeFrom = 8;                                                     // server confirmed 8 bytes
+  const remaining = file.slice(resumeFrom);
+  check("resuming uploads only the unsent remainder", remaining.size === 3 && (await remaining.text()) === "rld");
+  const url = URL.createObjectURL(file);
+  check("object URLs point at the Blob and must be revoked", url.startsWith("blob:")); URL.revokeObjectURL(url);
+  const reader = file.stream().getReader(); let bytes = 0;
+  for (;;) { const { done, value } = await reader.read(); if (done) break; bytes += value.length; }
+  check("stream() reads the file incrementally", bytes === 11);
+  const rules = { types: ["image/png", "image/jpeg"], maxBytes: 5 };
+  check("validation catches type and size", validateFile(file, rules).join() === "type not allowed,file too large");
+  check("a valid file passes", validateFile(new File(["abc"], "a.png", { type: "image/png" }), rules).length === 0);
+  check("an empty file is flagged", validateFile(new File([], "e.png", { type: "image/png" }), rules).includes("file is empty"));
+  const spoofed = new File(["<script>alert(1)<\\/script>"], "evil.png", { type: "image/png" });
+  check("the declared type can lie: the server must inspect the bytes", spoofed.type === "image/png" && (await spoofed.text()).startsWith("<script>"));
+})();`},
+{t:"Drag and drop, XHR progress and clipboard (reference)",code:`// Drop zone: preventDefault on dragenter AND dragover, or drop never fires
+const zone = document.querySelector("#drop");
+["dragenter", "dragover"].forEach((t) => zone.addEventListener(t, (e) => { e.preventDefault(); zone.classList.add("hot"); }));
+zone.addEventListener("dragleave", () => zone.classList.remove("hot"));
+zone.addEventListener("drop", (e) => {
+  e.preventDefault(); zone.classList.remove("hot");
+  upload([...e.dataTransfer.files]);                        // also provide <input type="file"> for keyboard users
+});
+
+// Upload with progress (fetch has no upload progress; XHR does)
+function upload(files){
+  const fd = new FormData(); files.forEach((f) => fd.append("files", f));
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "/api/upload");
+  xhr.upload.onprogress = (e) => e.lengthComputable && (bar.value = e.loaded / e.total);
+  xhr.onload = () => console.log("done", xhr.status);
+  xhr.send(fd);                                             // do NOT set Content-Type; the browser adds the boundary
+}
+
+// Clipboard (secure context + user gesture)
+copyBtn.addEventListener("click", async () => { await navigator.clipboard.writeText(shareUrl); toast("Copied"); });
+document.addEventListener("paste", (e) => { const file = e.clipboardData.files[0]; if (file) preview(file); });`,run:false}],
+gotchas:[`Setting <code>Content-Type: multipart/form-data</code> yourself breaks the upload (missing boundary).`,`Forgetting <code>preventDefault()</code> on <code>dragover</code> makes the drop event never fire.`,`Reading a huge file with <code>arrayBuffer()</code> or <code>FileReader</code> loads it all into memory; stream or slice it.`,`Trusting <code>file.type</code> or the extension for security.`,`Leaking object URLs (no <code>revokeObjectURL</code>).`,`Clipboard reads fail without a secure context, user gesture or permission, and behave differently across browsers.`,`Uploading from mobile networks needs retries and resumability; a single long POST often fails.`],
+best:[`Validate on both sides; store uploads outside the web root with generated names; scan and limit sizes.`,`Use pre-signed URLs/multipart uploads for large files so bytes bypass your app server.`,`Provide a keyboard-accessible file input alongside drag and drop, and announce progress/results.`],
+iq:[["mid","How do you upload a file with fetch?","Put the File in a FormData and POST it without setting Content-Type (the browser adds the multipart boundary); use an AbortController to cancel; use XHR if you need upload progress."],["senior","How would you implement resumable uploads?","Slice the file into chunks with offsets and checksums, send them sequentially or in parallel, have the server track confirmed ranges, and on failure resume from the last confirmed offset (tus, S3 multipart)."],["senior","Why can't you trust file.type?","It's derived from the file extension on the user's machine and can be spoofed; the server must verify content signatures, limits and scan, and serve downloads with safe headers."]],
+practice:[`Build an image upload with preview, size/type validation, drag and drop and a progress bar.`,`Implement chunked upload with retry per chunk and resume against a mock server function.`],
+teach:`<p>"A file is a sealed parcel with a label you shouldn't trust. Cut big parcels into numbered pieces so a broken connection only resends the missing part, free the temporary preview addresses, and let the server check the real contents."</p>`}
+],quiz:[
+{code:`const doc = document.implementation.createHTMLDocument('');
+const form = doc.createElement('form');
+form.innerHTML = '<input name="a" value="1"><input type="checkbox" name="c" value="on"><input type="checkbox" name="d" checked>';
+console.log([...new FormData(form)]);`,ans:`[["a", "1"], ["d", "on"]]`,why:`FormData includes named, enabled controls with values; the unchecked checkbox "c" is skipped.`},
+{code:`const doc = document.implementation.createHTMLDocument('');
+const i = doc.createElement('input'); i.type = 'number'; i.min = '1'; i.value = '0';
+console.log(i.validity.rangeUnderflow, i.checkValidity());
+i.setCustomValidity('nope'); i.value = '5';
+console.log(i.checkValidity(), i.validationMessage);`,ans:`true false, then false nope`,why:`0 is below min, so it is invalid. After setCustomValidity the field stays invalid (with that message) even when the value becomes acceptable, until you clear it with an empty string.`}]},
+
+{n:48,title:"Accessibility and Web Components",goal:"Build for all users and encapsulate reusable UI with the platform's own component model.",topics:[
+{id:"d48-a11y",title:"Accessibility beyond widgets: WCAG, focus, contrast",lv:["fresher","mid","senior","lead"],
+eli5:`<p>Accessibility means <b>everyone can use the building</b>: people who can't see (screen readers read the page aloud), can't use a mouse (keyboard only), see low contrast poorly, or need more time. It's like building a ramp, clear signs and wide doors from the start instead of adding them later. Using the right HTML elements gives you most of this for free.</p>`,
+why:`<p>About one in six people live with a disability, accessibility is a legal requirement in many places, and good accessibility improves usability and SEO for everyone. Senior frontend interviews expect more than "add alt text".</p>`,
+tech:`<h5>WCAG principles (POUR)</h5><ul class="pts"><li><b>Perceivable:</b> text alternatives (<code>alt</code>), captions, sufficient contrast, content that doesn't rely on color alone, resizable text.</li><li><b>Operable:</b> everything works with a keyboard, no keyboard traps, visible focus, enough time, no flashing, large enough targets, skip links.</li><li><b>Understandable:</b> clear language, predictable behavior, helpful error messages and labels.</li><li><b>Robust:</b> valid, semantic HTML that works with assistive technology.</li></ul>
+<h5>Practical rules</h5><ul class="pts"><li><b>Semantic HTML first</b> (<code>button</code>, <code>a</code>, <code>nav</code>, <code>main</code>, headings in order, <code>label</code>, <code>ul/ol</code>, <code>table</code> with headers). <b>ARIA only when native elements can't do it</b>; "no ARIA is better than bad ARIA".</li><li><b>Accessible name:</b> every control needs one (text content, <code>label</code>, <code>aria-label</code>, <code>aria-labelledby</code>). Icons buttons need names.</li><li><b>Focus management:</b> logical tab order (don't use positive <code>tabindex</code>), visible <code>:focus-visible</code> styles, move focus into dialogs and back to the trigger, to the heading on SPA route changes; <code>inert</code> to disable background content.</li><li><b>Live regions:</b> <code>aria-live="polite"</code> (or <code>role="status"</code>) for non-urgent updates, <code>role="alert"</code> for errors; the region must exist before you change its text.</li><li><b>Contrast:</b> text 4.5:1 (AA), large text (≥ 24px or 18.66px bold) 3:1, UI components and focus indicators 3:1.</li><li><b>Motion and preferences:</b> respect <code>prefers-reduced-motion</code>, <code>prefers-color-scheme</code>, zoom to 200–400%, <code>lang</code> attribute, touch target ≥ 24×24 CSS px (WCAG 2.2) and ideally 44×44.</li><li><b>Testing:</b> keyboard-only pass, screen reader checks (VoiceOver, NVDA, TalkBack), axe/Lighthouse/Playwright accessibility checks in CI (catch ~30–40% of issues; manual testing is required), and real user feedback.</li></ul>`,
+diagram:{html:flow([["Semantic HTML","free roles, names, keyboard"],["Labels + names","every control","w"],["Keyboard + focus","visible, logical, managed","w"],["Contrast + motion","4.5:1, reduced motion","g"],["Test","keyboard, screen reader, axe","g"]]),steps:["Choose the right elements; most accessibility problems start with <code>div</code> buttons.","Make sure assistive technology can name and describe every control.","Support keyboard use and manage focus when the UI changes dynamically.","Meet contrast and preference requirements.","Verify with automated tools and manual testing."]},
+ex:[{t:"Contrast calculator and a markup audit on a detached DOM (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+const lum = (hex) => { hex = hex.replace("#", ""); if (hex.length === 3) hex = [...hex].map((x) => x + x).join(""); const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
+const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+check("black on white is 21:1", ratio("#000", "#fff").toFixed(2) === "21.00");
+check("#767676 on white just passes AA for normal text (4.54)", ratio("#767676", "#fff").toFixed(2) === "4.54" && ratio("#767676", "#fff") >= 4.5);
+check("#777777 on white just fails AA (4.48)", ratio("#777777", "#fff").toFixed(2) === "4.48" && ratio("#777", "#fff") < 4.5);
+check("#949494 passes the 3:1 large-text/UI threshold but not 4.5:1", ratio("#949494", "#fff") >= 3 && ratio("#949494", "#fff") < 4.5);
+const audit = (root) => {
+  const issues = [];
+  root.querySelectorAll("img").forEach((i) => { if (!i.hasAttribute("alt")) issues.push("img missing alt"); });
+  root.querySelectorAll("button,a[href]").forEach((e) => { const name = (e.textContent || "").trim() || e.getAttribute("aria-label") || e.getAttribute("title"); if (!name) issues.push(e.tagName.toLowerCase() + " has no accessible name"); });
+  root.querySelectorAll("input:not([type=hidden]),select,textarea").forEach((i) => {
+    const labelled = i.getAttribute("aria-label") || i.getAttribute("aria-labelledby") || (i.id && root.querySelector('label[for="' + i.id + '"]')) || i.closest("label");
+    if (!labelled) issues.push("form control without label");
+  });
+  const levels = [...root.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => Number(h.tagName[1]));
+  for (let i = 1; i < levels.length; i++) if (levels[i] - levels[i - 1] > 1) issues.push("heading level skipped");
+  return issues;
+};
+const doc = document.implementation.createHTMLDocument("");
+const bad = doc.createElement("div");
+bad.innerHTML = '<h1>Title</h1><h3>Skipped</h3><img src="x.png"><button></button><a href="/x"></a><input id="q">';
+const found = audit(bad);
+check("the audit finds missing alt, names, label and skipped heading", found.includes("img missing alt") && found.includes("button has no accessible name") && found.includes("a has no accessible name") && found.includes("form control without label") && found.includes("heading level skipped"));
+const good = doc.createElement("div");
+good.innerHTML = '<h1>Title</h1><h2>Section</h2><img src="x.png" alt=""><button aria-label="Close">×</button><a href="/x">Read more</a><label for="q">Search</label><input id="q">';
+check("well-formed markup passes (decorative image uses alt=\\"\\")", audit(good).length === 0);`},
+{t:"CSS and focus essentials (reference)",code:`/* Visible focus for keyboard users, not for mouse clicks */
+:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
+
+/* Respect motion preferences */
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* Visually hidden text for screen readers (not display:none) */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+// JS: announce a status message politely
+const live = document.getElementById("status");      // <div id="status" role="status" aria-live="polite"></div>
+live.textContent = "";                               // clear first so repeated messages are announced
+requestAnimationFrame(() => { live.textContent = "3 results found"; });`,run:false}],
+gotchas:[`<code>div</code>/<code>span</code> with click handlers aren't focusable or announced as buttons; use <code>button</code>.`,`<code>display:none</code> and <code>visibility:hidden</code> remove content from assistive tech too; use a visually-hidden class for text meant only for screen readers.`,`Removing the focus outline (<code>outline: none</code>) without a replacement makes keyboard use impossible.`,`Placeholder text is not a label; it disappears and has low contrast.`,`Positive <code>tabindex</code> values create confusing tab orders.`,`Automated tools catch only a portion of problems; passing axe doesn't mean accessible.`,`<code>aria-hidden="true"</code> on focusable elements creates "ghost" focus stops.`],
+best:[`Start from semantic HTML and test with the keyboard before adding ARIA.`,`Add automated checks (axe, eslint-plugin-jsx-a11y style rules, Playwright) plus manual screen-reader passes on key flows.`,`Include accessibility acceptance criteria in tickets and design reviews.`],
+iq:[["fresher","How do you make a custom button accessible?","Use a real button element; if you must use a div, add role=button, tabindex=0, keyboard handlers for Enter and Space, an accessible name and visible focus styles."],["mid","What are the contrast requirements?","WCAG AA: 4.5:1 for normal text, 3:1 for large text and UI components/focus indicators; AAA is 7:1 / 4.5:1."],["senior","How do you handle focus in a single-page app?","On route changes move focus to the new heading or a skip target and update the title; in dialogs trap focus, make the background inert and restore focus to the trigger on close; announce async updates through live regions."],["lead","How do you build accessibility into a team process?","Design-system components with accessibility built in, linting and automated tests in CI, manual audits for critical flows, definition-of-done criteria, training, and tracking issues like any other defects."]],
+practice:[`Audit a real page with the keyboard only and with a screen reader; list 10 issues and fix 3.`,`Add a skip link, a live region and a focus-on-route-change behavior to the router from Day 46.`],
+teach:`<p>"Accessibility is a ramp and clear signs from the start: use the right HTML elements, give every control a name, make everything work with a keyboard with visible focus, keep text contrast high, announce changes, and test with real assistive tools."</p>`},
+
+{id:"d48-web-components",title:"Web Components and Shadow DOM",lv:["mid","senior","architect"],
+eli5:`<p>A web component is a <b>LEGO brick you invent yourself</b>: you give it a new tag name like <code>&lt;x-counter&gt;</code> and any page can use it. <b>Shadow DOM</b> is a <b>sealed box</b> around the brick: its insides (and styles) can't be messed up by the page, and the page's styles can't leak in. <b>Slots</b> are little holes where the page can put its own content.</p>`,
+why:`<p>Frameworks come and go; custom elements are a browser standard that works with any framework (or none). They're useful for design systems, widgets embedded in other sites and micro-frontends (Day 29).</p>`,
+tech:`<ul class="pts"><li><b>Custom elements:</b> <code>customElements.define("x-counter", class extends HTMLElement {...})</code>; names must contain a hyphen. <b>Lifecycle:</b> <code>constructor</code> (don't read attributes or touch children), <code>connectedCallback</code> (added to DOM: render, add listeners), <code>disconnectedCallback</code> (cleanup), <code>attributeChangedCallback(name, old, new)</code> (for <code>static observedAttributes</code>), <code>adoptedCallback</code>.</li><li><b>Attributes vs properties:</b> attributes are strings in markup; properties are typed JS values. Good components <b>reflect</b> important state to attributes and accept both.</li><li><b>Shadow DOM:</b> <code>this.attachShadow({ mode: "open" })</code> creates an encapsulated subtree: styles don't cross the boundary, <code>querySelector</code> from outside doesn't see inside, IDs are scoped. <b>Closed</b> mode hides <code>shadowRoot</code> (rarely worth it).</li><li><b>Slots:</b> <code>&lt;slot name="title"&gt;</code> projects light-DOM children into the shadow tree; style with <code>::slotted()</code>. <b>Styling hooks:</b> CSS custom properties (inherit through), <code>::part(name)</code> for exposed parts, <code>:host</code>/<code>:host(.class)</code> inside.</li><li><b>Events:</b> events dispatched inside the shadow tree are <b>retargeted</b> at the host; to cross the boundary, use <code>bubbles: true, composed: true</code>.</li><li><b>Templates:</b> <code>&lt;template&gt;</code> content is inert until cloned. <b>Declarative Shadow DOM</b> (<code>&lt;template shadowrootmode="open"&gt;</code>) allows server rendering.</li><li><b>Form-associated custom elements</b> (<code>ElementInternals</code>) participate in forms and validation. <b>Customized built-ins</b> (<code>is="..."</code>) aren't supported in Safari; prefer autonomous elements.</li><li><b>Trade-offs:</b> great isolation and portability; accessibility (names, focus, ARIA across shadow boundaries), SSR/hydration, form participation and theming need deliberate design. Libraries like Lit reduce boilerplate.</li></ul>`,
+diagram:{html:lanes([["Light DOM (page)",["&lt;x-counter count='2'&gt;","  Clicks","&lt;/x-counter&gt;"]],["Shadow DOM (inside)",["&lt;button part='btn'&gt;","  &lt;slot&gt;&lt;/slot&gt;: &lt;span&gt;2&lt;/span&gt;","&lt;/button&gt;","own scoped styles"]]]),steps:["The page writes simple markup with your tag name.","The element attaches a shadow root and renders its internals there, isolated from page styles.","Page content passes through <code>&lt;slot&gt;</code> into the shadow tree.","Composed events and CSS custom properties are the supported ways to communicate across the boundary."]},
+ex:[{t:"A custom element with Shadow DOM, slots, reflection and events (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+if (!customElements.get("x-counter")) {
+  customElements.define("x-counter", class extends HTMLElement {
+    static observedAttributes = ["count"];
+    #n = 0;
+    constructor(){
+      super();
+      const sr = this.attachShadow({ mode: "open" });
+      sr.innerHTML = '<button part="btn"><slot>Clicks</slot>: <span class="n">0</span></button>';
+      sr.querySelector("button").addEventListener("click", () => {
+        this.count = this.count + 1;
+        this.dispatchEvent(new CustomEvent("change", { detail: this.count, bubbles: true, composed: true }));
+      });
+    }
+    get count(){ return this.#n; }
+    set count(v){ this.#n = Number(v) || 0; if (this.getAttribute("count") !== String(this.#n)) this.setAttribute("count", this.#n); this.#render(); }
+    attributeChangedCallback(name, _old, v){ if (name === "count" && Number(v) !== this.#n) { this.#n = Number(v) || 0; this.#render(); } }
+    connectedCallback(){ this.#render(); }
+    #render(){ const s = this.shadowRoot.querySelector(".n"); if (s) s.textContent = this.#n; }
+  });
+}
+const el = document.createElement("x-counter");
+check("the element is upgraded and has an encapsulated shadow tree", el.shadowRoot !== null && el.shadowRoot.querySelector("button") !== null);
+check("encapsulation: outside queries cannot see shadow internals", el.querySelector("button") === null);
+el.count = 2;
+check("the property renders and reflects to the attribute", el.shadowRoot.querySelector(".n").textContent === "2" && el.getAttribute("count") === "2");
+el.setAttribute("count", "5");
+check("an attribute change updates the property", el.count === 5 && el.shadowRoot.querySelector(".n").textContent === "5");
+let detail = null; el.addEventListener("change", (e) => (detail = e.detail));
+el.shadowRoot.querySelector("button").click();
+check("a click inside updates state and fires a composed event outside", el.count === 6 && detail === 6);
+el.append("Taps");
+check("light-DOM content is projected through the slot", el.shadowRoot.querySelector("slot").assignedNodes().length === 1 && el.shadowRoot.querySelector("slot").assignedNodes()[0].textContent === "Taps");
+const host = document.implementation.createHTMLDocument("").createElement("div");
+const sr = host.attachShadow({ mode: "open" }); sr.innerHTML = "<p>inside</p>"; host.innerHTML = "<b>light</b>";
+check("light and shadow trees are separate", host.children.length === 1 && host.querySelectorAll("p").length === 0 && sr.querySelectorAll("p").length === 1 && host.shadowRoot === sr);
+if (!customElements.get("x-life")) {
+  customElements.define("x-life", class extends HTMLElement {
+    static observedAttributes = ["a"];
+    connectedCallback(){ globalThis.__life?.push("connected"); }
+    disconnectedCallback(){ globalThis.__life?.push("disconnected"); }
+    attributeChangedCallback(n, o, v){ globalThis.__life?.push("attr " + n + "=" + v); }
+  });
+}
+globalThis.__life = [];
+const tmp = document.createElement("div"); tmp.hidden = true; document.body.append(tmp);
+const life = document.createElement("x-life"); life.setAttribute("a", "1"); tmp.append(life); life.remove(); tmp.remove();
+check("lifecycle order: attribute, connected, disconnected", globalThis.__life.join() === "attr a=1,connected,disconnected");
+delete globalThis.__life;`}],
+gotchas:[`Don't read attributes or add children in the <code>constructor</code>; do it in <code>connectedCallback</code> (the element may be created by the parser before attributes exist).`,`<code>connectedCallback</code> can run multiple times (moving the element); make setup idempotent and clean up in <code>disconnectedCallback</code>.`,`Events don't cross shadow boundaries unless <code>composed: true</code>; event targets are retargeted to the host.`,`Global CSS doesn't style shadow internals; expose theming via CSS custom properties and <code>::part</code>.`,`ARIA relationships (<code>aria-labelledby</code>, <code>for</code>) can't reference IDs across shadow boundaries; use slots, <code>ElementInternals</code> or keep related elements in the same tree.`,`Customized built-in elements (<code>is=</code>) are not supported in Safari.`,`A custom element name can be defined only once per page; re-defining throws.`],
+best:[`Use autonomous custom elements; reflect key state to attributes; document events, slots, parts and CSS variables as the public API.`,`Consider Lit or similar for templating and reactivity; test with real browsers (Playwright).`,`Design accessibility explicitly: roles, names, keyboard handling, focus delegation.`],
+iq:[["mid","What are Web Components?","A set of browser standards: custom elements, Shadow DOM and templates/slots, for creating reusable, encapsulated elements usable in any framework."],["senior","How does Shadow DOM encapsulation work, and how do you theme a component?","It isolates DOM and styles in a separate tree; outside CSS can't reach in. Expose theming through CSS custom properties (inherit across the boundary) and ::part, and slots for content."],["architect","When would you choose Web Components over a framework component library?","For design systems used across frameworks and teams, embeddable widgets, and micro-frontends needing isolation; stay with the framework when you need tight SSR/hydration, ecosystem tooling and simpler state integration."]],
+practice:[`Build an accessible <code>&lt;x-dialog&gt;</code> with slots, focus trapping and an <code>open</code> attribute.`,`Make a form-associated custom element that participates in <code>FormData</code> and validation.`],
+teach:`<p>"A web component is a LEGO brick you invent with your own tag. Shadow DOM seals its insides from page styles, slots let the page drop content in, and composed events let it talk back out."</p>`}
+],quiz:[
+{code:`const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+const lum = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
+const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+console.log(ratio('#000000', '#ffffff').toFixed(1), ratio('#767676', '#ffffff') >= 4.5, ratio('#777777', '#ffffff') >= 4.5);`,ans:`21.0 true false`,why:`Black on white is the maximum 21:1. #767676 is the lightest gray that still reaches 4.5:1 on white; #777777 falls just below it.`},
+{code:`const doc = document.implementation.createHTMLDocument('');
+const host = doc.createElement('div'); const sr = host.attachShadow({ mode: 'open' });
+sr.innerHTML = '<p>in</p>'; host.innerHTML = '<b>light</b>';
+console.log(host.children.length, host.querySelectorAll('p').length, sr.querySelectorAll('p').length, host.shadowRoot === sr);`,ans:`1 0 1 true`,why:`The light DOM child <b> is a normal child of the host. The <p> lives in the shadow tree, invisible to queries from the host's light tree.`}]},
+
+{n:49,title:"Graphics and device APIs",goal:"Draw and animate in the browser and use platform capabilities responsibly with progressive enhancement.",topics:[
+{id:"d49-graphics-animation",title:"Canvas, SVG and animation",lv:["mid","senior"],
+eli5:`<p><b>Canvas</b> is a <b>painting</b>: once you've painted a circle, it's just colored pixels; to move it you repaint everything. <b>SVG</b> is a <b>stack of cut-out shapes</b> you can pick up and move individually, and they stay sharp at any size. <b>Animation</b> is flipping many slightly different pictures fast enough to look like motion; you want to flip them in time with the screen.</p>`,
+why:`<p>Charts, games, editors, image processing and rich UI effects need graphics APIs. Choosing between DOM, SVG, Canvas and WebGL, and animating without jank, are common frontend design questions.</p>`,
+tech:`<table><tr><th>Technology</th><th>Model</th><th>Best for</th><th>Watch out</th></tr><tr><td>DOM/CSS</td><td>elements + styles</td><td>UI, simple animation</td><td>thousands of nodes get slow</td></tr><tr><td>SVG</td><td>retained vector shapes in the DOM</td><td>icons, charts, diagrams, accessibility, crisp scaling</td><td>performance drops with many thousands of elements</td></tr><tr><td>Canvas 2D</td><td>immediate-mode pixels</td><td>games, big scatter plots, image processing</td><td>no built-in accessibility or hit testing; manual redraw</td></tr><tr><td>WebGL/WebGPU</td><td>GPU pipelines and shaders</td><td>3D, huge data visualizations, effects</td><td>complexity; use Three.js/regl/libraries</td></tr></table>
+<ul class="pts"><li><b>Canvas 2D:</b> <code>getContext("2d")</code>, paths (<code>beginPath, moveTo, lineTo, arc, fill, stroke</code>), transforms (<code>save/restore, translate, rotate, scale</code>), <code>drawImage</code>, <code>getImageData/putImageData</code> for pixels, <code>isPointInPath</code> for hit testing. <b>HiDPI:</b> scale the backing store by <code>devicePixelRatio</code> and the context by the same factor. <b>OffscreenCanvas</b> renders in a worker.</li><li><b>SVG:</b> create elements with the SVG namespace (<code>createElementNS</code>); <code>document.createElement("circle")</code> gives a useless HTML element. Style with CSS, animate with CSS/WAAPI.</li><li><b>Animation:</b> prefer <b>CSS transitions/animations</b> and the <b>Web Animations API</b> (<code>el.animate(keyframes, options)</code>) for compositor-friendly <code>transform</code>/<code>opacity</code>; use <code>requestAnimationFrame</code> for custom rendering.</li><li><b>Game loops:</b> use the timestamp rAF gives you (not a fixed 16 ms), clamp large deltas (tab was hidden), and run physics with a <b>fixed timestep</b> accumulator for determinism, rendering with an interpolation alpha.</li><li><b>Easing:</b> map progress t∈[0,1] with functions like ease-in-out cubic; <b>interpolate</b> with <code>lerp(a, b, t) = a + (b - a) * t</code>.</li><li><b>Performance:</b> batch draw calls, avoid per-frame allocations, layer static content on a second canvas, skip offscreen work, respect <code>prefers-reduced-motion</code>.</li></ul>`,
+diagram:{html:flow([["rAF(timestamp)"],["dt = now - last","clamp to 250 ms","w"],["accumulate dt","w"],["while acc ≥ 10 ms: update(10)","fixed step physics","g"],["render(alpha = acc/10)","interpolate","g"]]),steps:["The browser calls your callback before each paint with a high-resolution time.","Clamp huge gaps so a backgrounded tab doesn't trigger thousands of steps.","Physics advances in equal slices, keeping simulations stable and reproducible.","Rendering draws the state interpolated by the leftover fraction for smooth motion."]},
+ex:[{t:"Canvas pixels, SVG namespaces, easing and a fixed-timestep loop (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const canvas = document.createElement("canvas"); canvas.width = 4; canvas.height = 4;
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
+ctx.fillStyle = "#ff0000"; ctx.fillRect(0, 0, 2, 2);
+check("a painted pixel has the fill color", [...ctx.getImageData(0, 0, 1, 1).data].join() === "255,0,0,255");
+check("an unpainted pixel is transparent black", [...ctx.getImageData(3, 3, 1, 1).data].join() === "0,0,0,0");
+ctx.beginPath(); ctx.rect(0, 0, 10, 10);
+check("hit testing with isPointInPath", ctx.isPointInPath(5, 5) && !ctx.isPointInPath(20, 20));
+const img = ctx.getImageData(0, 0, 1, 1); img.data[0] = 0; img.data[2] = 255; ctx.putImageData(img, 0, 0);
+check("pixels can be edited directly (ImageData)", [...ctx.getImageData(0, 0, 1, 1).data].join() === "0,0,255,255");
+const scaleCanvas = (c, w, h, dpr) => { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); c.style.width = w + "px"; c.style.height = h + "px"; const x = c.getContext("2d"); x.scale(dpr, dpr); return x; };
+const c2 = document.createElement("canvas"); scaleCanvas(c2, 100, 50, 2);
+check("HiDPI: backing store is dpr times the CSS size", c2.width === 200 && c2.height === 100 && c2.style.width === "100px");
+const SVG = "http://www.w3.org/2000/svg";
+const doc = document.implementation.createHTMLDocument("");
+const svg = doc.createElementNS(SVG, "svg"), circle = doc.createElementNS(SVG, "circle"); circle.setAttribute("r", "5"); svg.append(circle);
+check("SVG elements need the SVG namespace", svg instanceof SVGElement && circle.namespaceURI === SVG && !(doc.createElement("circle") instanceof SVGElement));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+check("lerp and easing hit the endpoints and the midpoint", lerp(10, 20, 0.5) === 15 && easeInOutCubic(0) === 0 && easeInOutCubic(1) === 1 && easeInOutCubic(0.5) === 0.5 && easeInOutCubic(0.25) < 0.25);
+const createLoop = (step, fixed = 10) => { let acc = 0, steps = 0; return { frame(dt){ acc += Math.min(dt, 250); while (acc >= fixed) { step(fixed); acc -= fixed; steps++; } return acc / fixed; }, get steps(){ return steps; } }; };
+let simTime = 0; const loop = createLoop((dt) => (simTime += dt));
+[16, 17, 16, 50].forEach((dt) => loop.frame(dt));
+check("fixed timestep: 99 ms of frames run exactly 9 physics steps", loop.steps === 9 && simTime === 90);
+const l2 = createLoop(() => {}); l2.frame(10000);
+check("long pauses are clamped (no spiral of death)", l2.steps === 25);`},
+{t:"Web Animations API and a rAF loop (reference)",code:`// Compositor-friendly animation without CSS files
+const anim = box.animate(
+  [{ transform: "translateX(0)", opacity: 1 }, { transform: "translateX(200px)", opacity: 0.4 }],
+  { duration: 600, easing: "ease-in-out", fill: "forwards" }
+);
+anim.finished.then(() => console.log("done"));        // also: anim.pause(), reverse(), playbackRate
+
+// Respect user preferences
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduce) anim.finish();
+
+// Custom canvas loop
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(now - last, 250); last = now;
+  update(dt); render();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+document.addEventListener("visibilitychange", () => { last = performance.now(); });   // avoid a huge dt after returning to the tab`,run:false}],
+gotchas:[`<code>document.createElement("circle")</code> creates an HTML element; SVG needs <code>createElementNS</code>.`,`Canvas content is invisible to screen readers: provide a text alternative or an accessible parallel structure.`,`Not scaling for <code>devicePixelRatio</code> makes canvas content blurry on HiDPI screens.`,`Using <code>setInterval</code> for animation causes jank and wasted work in hidden tabs; use rAF.`,`Animating layout properties (<code>top/left/width</code>) forces layout each frame; animate <code>transform</code>/<code>opacity</code>.`,`Not clamping <code>dt</code> after the tab was hidden causes huge jumps.`,`Allocating objects every frame triggers GC pauses (Day 22).`],
+best:[`Pick the simplest technology that meets the requirement: DOM/CSS first, SVG for vector/accessible graphics, Canvas for many objects/pixels, WebGL for 3D/GPU.`,`Use CSS/WAAPI for UI motion; rAF + fixed timestep for simulations; honor reduced-motion.`,`Use libraries (D3, Three.js, PixiJS) for complex scenes.`],
+iq:[["mid","Canvas vs SVG: how do you choose?","SVG for a modest number of accessible, scalable, styleable shapes with built-in hit testing; Canvas for thousands of objects, games or pixel manipulation, accepting manual redraw and accessibility work."],["senior","How do you build a smooth game/animation loop?","requestAnimationFrame with real timestamps, clamped delta time, fixed-timestep physics with an accumulator, interpolated rendering, no per-frame allocations, and pause handling for hidden tabs."],["senior","Why is transform better than left/top for animation?","Transform/opacity can be handled by the compositor without layout or paint once promoted to a layer; left/top trigger layout every frame."]],
+practice:[`Draw a bar chart on canvas that is crisp on HiDPI and has an accessible data table alternative.`,`Build a bouncing-ball simulation with a fixed timestep and render interpolation.`],
+teach:`<p>"Canvas is a painting (fast, but you repaint), SVG is movable cut-outs (accessible, sharp), and animation should follow the screen's refresh with real time, not guesses. Animate transform and opacity."</p>`},
+
+{id:"d49-device-apis",title:"Device and platform APIs and progressive enhancement",lv:["mid","senior","architect"],
+eli5:`<p>Browsers can do things like find your location, send notifications, share things and talk between tabs. But these are like <b>asking someone for a favor</b>: ask politely at the right moment ("to show nearby stores, may I use your location?"), accept "no" gracefully, and have a plan B. <b>Progressive enhancement</b> means the page works for everyone and gets better where the favor is granted.</p>`,
+why:`<p>Platform APIs vary by browser, device and permission. Robust apps feature-detect, request permission in context, handle denial, and degrade gracefully; privacy missteps lose user trust and can be policy violations.</p>`,
+tech:`<ul class="pts"><li><b>Feature detection</b> (never user-agent sniffing): <code>"geolocation" in navigator</code>, <code>typeof BroadcastChannel === "function"</code>, <code>CSS.supports()</code>. Provide fallbacks.</li><li><b>Secure contexts:</b> HTTPS (and localhost) is required for service workers, clipboard, geolocation, crypto.subtle, notifications and more.</li><li><b>Permissions:</b> ask <b>after a user gesture and in context</b>; check state with <code>navigator.permissions.query</code>; handle <code>denied</code> (don't re-prompt repeatedly) and <code>prompt</code>; explain why before the browser prompt.</li><li><b>Geolocation:</b> <code>getCurrentPosition</code>/<code>watchPosition</code> with timeout and accuracy options; errors: permission denied, unavailable, timeout; stop watching to save battery.</li><li><b>Notifications and Push:</b> <code>Notification.requestPermission()</code> + a service worker with the Push API (VAPID keys, server sends via the push service); iOS requires an installed web app. Don't prompt on page load.</li><li><b>Cross-tab coordination:</b> <code>BroadcastChannel</code> (messages between same-origin tabs/workers), <code>storage</code> events, <code>SharedWorker</code>, <b>Web Locks</b> (<code>navigator.locks.request(name, fn)</code>) to serialize work (single leader tab, avoid duplicate sync).</li><li><b>Environment:</b> <code>matchMedia</code> (<code>prefers-color-scheme</code>, <code>prefers-reduced-motion</code>, breakpoints), Page Visibility (<code>document.visibilityState</code>), Online/Offline events (unreliable: "online" doesn't mean the server is reachable), <code>navigator.connection</code> (Chromium), Screen Wake Lock, Fullscreen, Web Share (<code>navigator.share</code>), Vibration, Battery (mostly removed for privacy).</li><li><b>WebRTC:</b> peer-to-peer audio/video/data via <code>RTCPeerConnection</code>; needs a <b>signaling</b> channel you build (WebSocket) to exchange offers/answers and ICE candidates, <b>STUN</b> for NAT discovery and <b>TURN</b> relays as a fallback.</li><li><b>Privacy:</b> request the minimum, explain the benefit, don't fingerprint, honor denials, and document data use.</li></ul>`,
+diagram:{html:flow([["feature detect","exists in this browser?"],["explain why","in context, after a gesture","w"],["request permission","w"],["granted → use API","g"],["denied / unsupported → fallback","manual city entry, copy link…","r"]]),steps:["Check support first so unsupported browsers get a working fallback.","Ask only when the user is doing something that needs it, with a clear reason.","Handle each outcome: granted, denied, dismissed and error.","Never make core functionality depend on an optional capability."]},
+ex:[{t:"Feature detection, locks, broadcast channels and a graceful geolocation wrapper (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const features = {
+  geolocation: "geolocation" in navigator, notifications: "Notification" in window, clipboard: !!navigator.clipboard,
+  share: !!navigator.share, broadcast: typeof BroadcastChannel === "function", locks: !!navigator.locks,
+  serviceWorker: "serviceWorker" in navigator, webrtc: typeof RTCPeerConnection === "function"
+};
+console.log(features);
+check("feature detection yields booleans (never throws)", Object.values(features).every((v) => typeof v === "boolean"));
+check("media queries are available and boolean", matchMedia("(min-width: 1px)").matches === true && typeof matchMedia("(prefers-reduced-motion: reduce)").matches === "boolean");
+function getLocation({ geo = navigator.geolocation, timeoutMs = 5000 } = {}){
+  if (!geo) return Promise.resolve({ ok: false, reason: "unsupported" });
+  return new Promise((resolve) => geo.getCurrentPosition(
+    (p) => resolve({ ok: true, coords: p.coords }),
+    (e) => resolve({ ok: false, reason: e.code === 1 ? "denied" : e.code === 3 ? "timeout" : "unavailable" }),
+    { timeout: timeoutMs }));
+}
+(async () => {
+  check("unsupported browsers get a clean result", (await getLocation({ geo: null })).reason === "unsupported");
+  check("success path", (await getLocation({ geo: { getCurrentPosition: (ok) => ok({ coords: { latitude: 1, longitude: 2 } }) } })).coords.latitude === 1);
+  check("denied is reported distinctly from errors", (await getLocation({ geo: { getCurrentPosition: (_, bad) => bad({ code: 1 }) } })).reason === "denied");
+  check("timeouts are reported distinctly", (await getLocation({ geo: { getCurrentPosition: (_, bad) => bad({ code: 3 }) } })).reason === "timeout");
+  if (features.broadcast) {
+    const a = new BroadcastChannel("demo"), b = new BroadcastChannel("demo");
+    const got = await new Promise((resolve) => { b.onmessage = (e) => resolve(e.data); a.postMessage({ hello: "tab" }); });
+    check("BroadcastChannel delivers to other instances (like other tabs)", got.hello === "tab");
+    a.close(); b.close();
+  } else console.log("skip  BroadcastChannel unavailable");
+  if (features.locks) {
+    const order = [];
+    await Promise.all([
+      navigator.locks.request("res", async () => { order.push("a-start"); await sleep(10); order.push("a-end"); }),
+      navigator.locks.request("res", async () => { order.push("b-start"); order.push("b-end"); })
+    ]);
+    check("Web Locks serialize work on the same resource name", order.join() === "a-start,a-end,b-start,b-end");
+  } else console.log("skip  Web Locks unavailable");
+})();`},
+{t:"Permission-friendly notifications and visibility (reference)",code:`// Ask in context, after a click, and handle every outcome
+async function enableReminders(){
+  if (!("Notification" in window)) return showFallback("Email reminders instead");
+  if (Notification.permission === "denied") return showHelp("Notifications are blocked. Enable them in site settings.");
+  const result = await Notification.requestPermission();         // must come from a user gesture
+  if (result !== "granted") return showFallback("No problem, we'll email you.");
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: VAPID_PUBLIC_KEY });
+  await fetch("/api/push/subscribe", { method: "POST", body: JSON.stringify(sub), headers: { "Content-Type": "application/json" } });
+}
+
+// Pause work when the tab is hidden
+document.addEventListener("visibilitychange", () => {
+  document.visibilityState === "hidden" ? pausePolling() : resumePolling();
+});
+
+// Online/offline events are hints only: "online" doesn't mean your server is reachable
+addEventListener("offline", () => banner.show("You're offline: changes will sync later"));`,run:false}],
+gotchas:[`Prompting for permissions on page load gets denied and trains users to block; ask in context.`,`A denied permission usually can't be re-requested by code; show instructions to change it in settings.`,`<code>navigator.onLine</code> true doesn't guarantee connectivity; handle fetch failures.`,`Many APIs require a secure context and a user gesture; they fail silently or throw in tests.`,`Browser support varies widely (Web Share, Push on iOS, Battery, Bluetooth, USB); always feature-detect and provide a fallback.`,`Leaving <code>watchPosition</code> or WebRTC streams running drains battery and keeps the camera light on.`,`WebRTC without TURN fails for a notable share of users behind strict NATs.`],
+best:[`Treat platform APIs as progressive enhancements; the core flow must work without them.`,`Explain the benefit before the permission prompt; remember denials and don't nag.`,`Clean up (clearWatch, stop tracks, close channels) when done.`],
+iq:[["mid","How do you use a browser API safely across browsers?","Feature-detect (not user-agent), require secure contexts where needed, handle permission denial and errors, provide a fallback or degrade the feature, and keep the core flow independent."],["senior","How would you coordinate multiple tabs?","BroadcastChannel for messaging, Web Locks to elect a leader or serialize work, storage events as a fallback, and a shared worker or service worker for shared connections."],["architect","How do you design permission UX for notifications?","Ask only after a clear value moment and user gesture, show a pre-permission explanation, handle granted/denied/dismissed, offer alternatives (email, in-app), provide settings to change preferences, and monitor opt-in rates."]],
+practice:[`Add a "use my location" button with all outcomes handled and a manual fallback.`,`Make two tabs elect a leader with Web Locks and share one WebSocket via BroadcastChannel.`],
+teach:`<p>"Device APIs are favors: check they exist, ask politely at the right moment, accept 'no', and keep a plan B so the app works for everybody."</p>`}
+],quiz:[
+{code:`const c = document.createElement('canvas'); c.width = 2; c.height = 2;
+const x = c.getContext('2d'); x.fillStyle = 'rgb(10,20,30)'; x.fillRect(0, 0, 1, 1);
+console.log([...x.getImageData(0, 0, 1, 1).data], [...x.getImageData(1, 1, 1, 1).data]);`,ans:`[10, 20, 30, 255] [0, 0, 0, 0]`,why:`A painted pixel holds the color with full alpha (255); an unpainted pixel is transparent black.`},
+{code:`const a = new BroadcastChannel('q'), b = new BroadcastChannel('q');
+b.onmessage = (e) => { console.log('got', e.data); a.close(); b.close(); };
+a.postMessage('hi'); console.log('sent');`,ans:`sent, then got hi`,why:`postMessage is asynchronous, so "sent" prints first. A channel doesn't receive its own messages, but other instances on the same name (such as other tabs) do.`}]},
+
+{n:50,title:"Authentication and security II",goal:"Understand modern authentication flows and the hardening measures that protect real applications.",topics:[
+{id:"d50-auth",title:"Authentication: sessions, JWT, OAuth/PKCE, passwords",lv:["senior","lead","architect"],
+eli5:`<p><b>Authentication</b> is proving who you are (showing an ID); <b>authorization</b> is what you're allowed to do (the guest list). A <b>session</b> is a coat-check ticket: the club keeps your coat and you hold a numbered ticket. A <b>JWT</b> is a <b>sealed, signed letter</b> that says who you are; anyone can read it but nobody can change it without breaking the seal. <b>OAuth with PKCE</b> is logging in with an existing account (like "Sign in with Google") using a one-time secret handshake so nobody can steal the key mid-way. Passwords must be stored <b>scrambled with a slow blender</b>, never as the original.</p>`,
+why:`<p>Authentication mistakes are a top cause of breaches. Interviews probe sessions vs tokens, JWT pitfalls, OAuth flows and password storage because the right answer depends on understanding the threat model, not memorizing a recipe.</p>`,
+tech:`<table><tr><th></th><th>Server session (cookie)</th><th>JWT (signed token)</th></tr><tr><td>State</td><td>server stores session; cookie holds an opaque id</td><td>claims travel in the token; server can be stateless</td></tr><tr><td>Revocation</td><td>easy (delete the session)</td><td>hard before expiry (needs denylist/short lifetimes)</td></tr><tr><td>Storage</td><td>HttpOnly Secure SameSite cookie</td><td>cookie or memory; localStorage is readable by XSS</td></tr><tr><td>Best for</td><td>classic web apps, first-party sites</td><td>service-to-service, short-lived access tokens, distributed verification</td></tr></table>
+<ul class="pts"><li><b>JWT anatomy:</b> <code>base64url(header).base64url(payload).signature</code>. The payload is <b>not encrypted</b>. <b>Verify:</b> pin the allowed algorithm (reject <code>alg: none</code> and algorithm confusion such as accepting an HS256 token signed with an RSA public key), check the signature, <code>exp</code>, <code>nbf</code>, <code>iss</code>, <code>aud</code>; keep lifetimes short (minutes) and rotate refresh tokens.</li><li><b>OAuth 2.0 / OIDC:</b> use the <b>authorization code flow with PKCE</b> for SPAs and mobile (the implicit flow is deprecated). The client creates a random <code>code_verifier</code>, sends <code>code_challenge = base64url(SHA-256(verifier))</code>, receives a code on redirect, and exchanges it with the verifier, so an intercepted code is useless. OIDC adds an ID token (who the user is); OAuth alone is about delegated access (scopes). Validate <code>state</code> (CSRF) and <code>nonce</code>.</li><li><b>Where to keep tokens in a SPA:</b> a Backend-for-Frontend holding tokens server-side behind an HttpOnly session cookie is the safest; otherwise short-lived access tokens in memory plus a refresh token in an HttpOnly cookie.</li><li><b>Passwords:</b> never store plaintext or fast hashes. Use a unique <b>salt</b> and a deliberately slow, memory-hard function: <b>Argon2id</b> (preferred), scrypt, bcrypt, or PBKDF2 (with ≥ 600,000 iterations for SHA-256). Compare in <b>constant time</b>. Prefer <b>passkeys/WebAuthn</b> and MFA (TOTP, security keys).</li><li><b>Also:</b> rate limiting and lockout, secure password reset (single-use, expiring tokens), session rotation after login (prevent fixation), logout invalidation, RBAC/ABAC on the <b>server</b> for every request.</li></ul>`,
+diagram:{html:flow([["SPA creates verifier + challenge"],["redirect to login","code_challenge + state","w"],["user signs in at the identity provider","g"],["redirect back with code","w"],["POST code + verifier","provider checks SHA-256(verifier) = challenge","g"],["access (+ID) token","short-lived","g"]]),steps:["The random verifier never leaves the client until the final exchange; only its hash (challenge) goes through the browser redirect.","The provider authenticates the user and returns a one-time code bound to the challenge.","An attacker who steals the code can't redeem it without the verifier.","Tokens are short-lived; refresh tokens rotate."]},
+ex:[{t:"PKCE, JWT verification and password hashing with Web Crypto (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const enc = new TextEncoder(), dec = new TextDecoder();
+const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).split("+").join("-").split("/").join("_").split("=").join("");
+const fromB64u = (s) => { s = s.split("-").join("+").split("_").join("/"); while (s.length % 4) s += "="; return Uint8Array.from(atob(s), (c) => c.charCodeAt(0)); };
+const hmacKey = (secret, usages) => crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, usages);
+const sign = async (payload, secret) => {
+  const h = b64u(enc.encode(JSON.stringify({ alg: "HS256", typ: "JWT" }))), p = b64u(enc.encode(JSON.stringify(payload)));
+  return h + "." + p + "." + b64u(await crypto.subtle.sign("HMAC", await hmacKey(secret, ["sign"]), enc.encode(h + "." + p)));
+};
+const verify = async (token, secret, { now = () => Math.floor(Date.now() / 1000), aud } = {}) => {
+  const [h, p, s = ""] = token.split(".");
+  const header = JSON.parse(dec.decode(fromB64u(h)));
+  if (header.alg !== "HS256") throw new Error("alg not allowed");          // pin the algorithm: blocks alg=none
+  if (!s) throw new Error("malformed");
+  const ok = await crypto.subtle.verify("HMAC", await hmacKey(secret, ["verify"]), fromB64u(s), enc.encode(h + "." + p));
+  if (!ok) throw new Error("bad signature");
+  const claims = JSON.parse(dec.decode(fromB64u(p)));
+  if (claims.exp !== undefined && now() >= claims.exp) throw new Error("expired");
+  if (aud && claims.aud !== aud) throw new Error("wrong audience");
+  return claims;
+};
+const rejects = async (f) => { try { await f(); return null; } catch (e) { return e.message; } };
+const hashPw = async (pw, salt = crypto.getRandomValues(new Uint8Array(16)), iter = 1000) => {
+  const key = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+  return { salt: b64u(salt), iter, hash: b64u(await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt, iterations: iter }, key, 256)) };
+};
+const checkPw = async (pw, rec) => {
+  const a = fromB64u((await hashPw(pw, fromB64u(rec.salt), rec.iter)).hash), b = fromB64u(rec.hash);
+  let diff = a.length ^ b.length; for (let i = 0; i < Math.max(a.length, b.length); i++) diff |= (a[i] ?? 0) ^ (b[i] ?? 0);   // constant-time compare
+  return diff === 0;
+};
+(async () => {
+  const verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";                                 // RFC 7636 example
+  check("PKCE S256 challenge matches the RFC 7636 test vector", b64u(await crypto.subtle.digest("SHA-256", enc.encode(verifier))) === "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM");
+  const token = await sign({ sub: "u1", role: "user", exp: 2000, aud: "app" }, "secret");
+  const [h, p, s] = token.split(".");
+  check("a valid token verifies and returns claims", (await verify(token, "secret", { now: () => 1000, aud: "app" })).sub === "u1");
+  const evil = b64u(enc.encode(JSON.stringify({ sub: "u1", role: "admin", exp: 2000, aud: "app" })));
+  check("a tampered payload fails the signature check", (await rejects(() => verify(h + "." + evil + "." + s, "secret", { now: () => 1000 }))) === "bad signature");
+  const noneToken = b64u(enc.encode(JSON.stringify({ alg: "none", typ: "JWT" }))) + "." + p + ".";
+  check("alg=none tokens are rejected", (await rejects(() => verify(noneToken, "secret", { now: () => 1000 }))) === "alg not allowed");
+  check("expired tokens are rejected", (await rejects(() => verify(token, "secret", { now: () => 3000 }))) === "expired");
+  check("the wrong secret is rejected", (await rejects(() => verify(token, "other", { now: () => 1000 }))) === "bad signature");
+  check("the wrong audience is rejected", (await rejects(() => verify(token, "secret", { now: () => 1000, aud: "other-app" }))) === "wrong audience");
+  check("the payload is only encoded, not encrypted", JSON.parse(dec.decode(fromB64u(p))).role === "user");
+  const rec = await hashPw("correct horse");
+  check("correct password verifies, wrong password does not", (await checkPw("correct horse", rec)) && !(await checkPw("wrong", rec)));
+  const rec2 = await hashPw("correct horse");
+  check("a random salt makes identical passwords hash differently", rec.salt !== rec2.salt && rec.hash !== rec2.hash && rec.iter === 1000);
+})();`}],
+gotchas:[`JWT payloads are readable by anyone; never put secrets or sensitive PII in them.`,`Accepting the algorithm from the token header allows <code>alg: none</code> and key-confusion attacks; pin it server-side.`,`Long-lived JWTs can't be revoked; use short lifetimes plus refresh rotation or a server-side session.`,`Tokens in <code>localStorage</code> are stolen by any XSS; prefer HttpOnly cookies or a BFF.`,`Using a fast hash (SHA-256, MD5) for passwords makes cracking cheap; use Argon2id/scrypt/bcrypt/PBKDF2 with high cost.`,`OAuth without <code>state</code>/PKCE is vulnerable to CSRF and code interception; never use the implicit flow for new apps.`,`Don't confuse authentication (who you are) with authorization (what you may do); authorize on the server for every action.`],
+best:[`Prefer well-reviewed libraries and managed identity providers over rolling your own; know the mechanics to evaluate them.`,`Use short-lived access tokens, rotated refresh tokens, HttpOnly Secure SameSite cookies and MFA/passkeys.`,`Rate-limit login and reset endpoints; log security events; rotate secrets and keys.`],
+iq:[["senior","Sessions vs JWT: how do you choose?","Server sessions are simple and revocable for first-party web apps; JWTs suit distributed or service-to-service verification with short lifetimes. JWTs are hard to revoke and shouldn't be stored where XSS can read them."],["senior","How does PKCE protect the authorization code flow?","The client sends a hashed challenge up front and proves possession of the original verifier when redeeming the code, so an intercepted code is useless to an attacker."],["architect","How do you securely store passwords?","Unique salt per user and a slow memory-hard hash (Argon2id preferred; scrypt, bcrypt or PBKDF2 with a high iteration count), constant-time comparison, rate limiting, breach checks and MFA/passkeys."],["architect","Design auth for a SPA with a separate API.","Authorization code + PKCE with an identity provider (or a BFF that holds tokens server-side), short-lived access tokens, rotating refresh tokens in HttpOnly cookies, strict CORS, CSRF protection, scoped authorization on the API, token revocation and monitoring."]],
+practice:[`Add refresh-token rotation (single-use refresh tokens with reuse detection) to a mock auth service.`,`Implement TOTP (RFC 6238) with HMAC-SHA1 and verify against the RFC test vectors.`],
+teach:`<p>"Authentication is the ID check, authorization is the guest list. A session is a coat-check ticket; a JWT is a signed letter anyone can read but nobody can alter. OAuth with PKCE is a one-time handshake, and passwords are stored scrambled with salt in a deliberately slow function."</p>`},
+
+{id:"d50-web-security-extra",title:"Security headers, SRI and supply chain",lv:["senior","lead","architect"],
+eli5:`<p>After locking the door (authentication), put up more protections: <b>instructions to the browser</b> ("only run scripts from my own shop", "always use the secure door"), a <b>tamper-seal</b> on any package you borrow from others (<b>Subresource Integrity</b>), and a <b>checklist for everything you import</b> because one bad ingredient (a compromised library) can poison the whole meal.</p>`,
+why:`<p>Most real attacks exploit configuration gaps and dependencies, not clever cryptography. Security headers are cheap, powerful defenses, and the npm supply chain is a major risk for every JavaScript project.</p>`,
+tech:`<table><tr><th>Header</th><th>Purpose</th></tr><tr><td><code>Content-Security-Policy</code></td><td>restrict script/style/connect sources; nonces/hashes + <code>strict-dynamic</code>; <code>frame-ancestors</code>; Trusted Types (Day 20)</td></tr><tr><td><code>Strict-Transport-Security</code></td><td>force HTTPS (<code>max-age</code> ≥ 6 months, <code>includeSubDomains</code>, consider preload)</td></tr><tr><td><code>X-Content-Type-Options: nosniff</code></td><td>stop MIME sniffing</td></tr><tr><td><code>Referrer-Policy</code></td><td>limit URL leakage (<code>strict-origin-when-cross-origin</code>)</td></tr><tr><td><code>Permissions-Policy</code></td><td>disable powerful features you don't use (camera, geolocation...)</td></tr><tr><td><code>Cross-Origin-Opener-Policy / Embedder-Policy / Resource-Policy</code></td><td>process isolation, enabling <code>SharedArrayBuffer</code>, blocking cross-origin leaks</td></tr><tr><td><code>Set-Cookie</code> flags</td><td><code>HttpOnly; Secure; SameSite</code> (Day 20)</td></tr></table>
+<ul class="pts"><li><b>Subresource Integrity (SRI):</b> <code>&lt;script src="https://cdn/x.js" integrity="sha384-..." crossorigin="anonymous"&gt;</code>; the browser refuses a file whose hash doesn't match, protecting against CDN compromise. Compute with <code>openssl dgst -sha384 -binary | base64</code>.</li><li><b>Supply chain:</b> commit lockfiles and use <code>npm ci</code>; review new dependencies (maintainers, downloads, install scripts); <code>npm audit</code>/Dependabot/Renovate; consider <code>--ignore-scripts</code> in CI; npm <b>provenance</b>; pin versions for critical packages; watch for typosquatting and dependency confusion (scope your private packages); minimize dependencies; generate an SBOM.</li><li><b>Secrets:</b> never ship secrets in client bundles (environment variables prefixed for the client, like <code>VITE_</code> or <code>NEXT_PUBLIC_</code>, are public); use a secrets manager; rotate on exposure; scan commits.</li><li><b>Other classics:</b> clickjacking (<code>frame-ancestors</code>), open redirects (Day 46), SSRF on servers (validate outbound URLs), rate limiting, input validation plus output encoding, prototype pollution (Day 7), verbose error leaks, subdomain takeover, CORS misconfiguration (Day 19).</li></ul>`,
+diagram:{html:flow([["your app"],["Security headers","CSP, HSTS, nosniff…","w"],["Third-party scripts","SRI hash pinned","w"],["npm dependencies","lockfile + audit + provenance","g"],["Secrets","never in the client bundle","r"]]),steps:["Headers tell the browser to enforce safe behavior even if your code has a bug.","SRI makes third-party files tamper-evident.","Lockfiles, audits and review limit the blast radius of a compromised dependency.","Keep secrets on the server; anything in a bundle is public."]},
+ex:[{t:"Header auditor and SRI generator (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const REQUIRED = {
+  "content-security-policy": "CSP limits where scripts load from",
+  "strict-transport-security": "HSTS forces HTTPS",
+  "x-content-type-options": "nosniff stops MIME sniffing",
+  "referrer-policy": "limits referrer leakage",
+  "permissions-policy": "restricts powerful features",
+  "cross-origin-opener-policy": "isolates the browsing context group"
+};
+const auditHeaders = (headers) => {
+  const h = Object.fromEntries(Object.entries(headers).map(([k, v]) => [k.toLowerCase(), String(v)]));
+  const issues = Object.keys(REQUIRED).filter((k) => !(k in h)).map((k) => "missing " + k + ": " + REQUIRED[k]);
+  if (h["content-security-policy"] && /unsafe-inline|unsafe-eval|[*]/.test(h["content-security-policy"])) issues.push("CSP allows unsafe-inline/unsafe-eval or wildcard sources");
+  if (h["strict-transport-security"]) {
+    const m = /max-age=([0-9]+)/.exec(h["strict-transport-security"]);
+    if (!m) issues.push("HSTS missing max-age"); else if (Number(m[1]) < 15552000) issues.push("HSTS max-age under 180 days");
+  }
+  return issues;
+};
+const good = { "Content-Security-Policy": "default-src 'self'; script-src 'nonce-abc' 'strict-dynamic'; object-src 'none'", "Strict-Transport-Security": "max-age=31536000; includeSubDomains", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin", "Permissions-Policy": "geolocation=()", "Cross-Origin-Opener-Policy": "same-origin" };
+check("a bare response misses all six headers", auditHeaders({}).length === 6);
+check("a hardened response has no findings", auditHeaders(good).length === 0);
+check("an unsafe CSP is flagged", auditHeaders({ ...good, "Content-Security-Policy": "script-src 'self' 'unsafe-inline'" }).some((i) => i.includes("unsafe")));
+check("a wildcard CSP source is flagged", auditHeaders({ ...good, "Content-Security-Policy": "script-src *" }).some((i) => i.includes("wildcard")));
+check("a short HSTS lifetime is flagged", auditHeaders({ ...good, "Strict-Transport-Security": "max-age=300" }).some((i) => i.includes("180 days")));
+const sri = async (text) => "sha384-" + btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.digest("SHA-384", new TextEncoder().encode(text)))));
+(async () => {
+  const a = await sri("console.log('lib v1')"), b = await sri("console.log('lib v1 + malware')");
+  check("SRI string has the sha384- prefix and a 64-character digest", a.startsWith("sha384-") && a.length === 7 + 64);
+  check("the hash is stable for the same content", a === (await sri("console.log('lib v1')")));
+  check("any change to the file changes the hash, so the browser would block it", a !== b);
+})();`}],
+gotchas:[`A CSP with <code>'unsafe-inline'</code> or wildcards gives little protection; start in report-only mode and tighten.`,`HSTS with <code>includeSubDomains</code>/preload is hard to undo; test first with a short max-age.`,`SRI requires CORS (<code>crossorigin</code>) and breaks if the CDN serves different bytes (for example automatic minification variants).`,`Environment variables with public prefixes are shipped to browsers; secrets there are leaked.`,`<code>npm install</code> runs install scripts of all dependencies; a compromised package can run code on developer and CI machines.`,`Caret ranges pull in new versions automatically; a lockfile and review process are the real defense.`],
+best:[`Deploy a baseline header set via your server/CDN config and test it in CI; use securityheaders-style audits.`,`Pin third-party scripts with SRI or self-host them; minimize third-party code.`,`Treat dependency updates as code changes: review, test, and use automated alerts.`],
+iq:[["senior","Which security headers would you add to a new site?","CSP (nonce-based), HSTS, X-Content-Type-Options nosniff, Referrer-Policy, Permissions-Policy, COOP/CORP as needed, plus HttpOnly/Secure/SameSite cookies and frame-ancestors for clickjacking."],["senior","What is Subresource Integrity?","A hash attribute on script/link tags that makes the browser reject a third-party file that doesn't match the expected digest, protecting against CDN tampering."],["architect","How do you reduce npm supply-chain risk?","Lockfiles and npm ci, minimal dependencies, review of new/changed packages and install scripts, automated audits and update bots, provenance, scoped private registries, CI without unnecessary secrets, and an SBOM."]],
+practice:[`Run a security-headers audit against a site you control and fix the top 3 findings.`,`Add SRI to a CDN script and verify the browser blocks a modified copy.`],
+teach:`<p>"Tell the browser the rules (security headers), put tamper-seals on borrowed scripts (SRI), and treat every npm package as code you're letting into your house: pin it, review it, audit it, and never ship secrets in the client."</p>`}
+],quiz:[
+{code:`const b64u = (s) => btoa(s).split('+').join('-').split('/').join('_').split('=').join('');
+console.log(b64u('???>>>'), b64u('a'));`,ans:`Pz8_Pj4- YQ`,why:`Base64url swaps + and / for - and _ and drops the = padding, which makes tokens safe in URLs. "???>>>" encodes to Pz8/Pj4+ in standard base64.`},
+{code:`const parts = 'eyJhbGciOiJub25lIn0.eyJzdWIiOiIxIn0.'.split('.');
+const header = JSON.parse(atob(parts[0]));
+console.log(header.alg, parts[2] === '', ['HS256'].includes(header.alg));`,ans:`none true false`,why:`The token claims alg "none" and has an empty signature. A verifier that pins the allowed algorithm (HS256 here) must reject it instead of trusting the header.`}]}
+]};
+</script>
+</body></html>

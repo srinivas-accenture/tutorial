@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JavaScript: Zero to Architect (30 days + interview bootcamp)</title>
+<title>JavaScript: Zero to Architect (core + interview bootcamp + depth)</title>
 <style>
 :root{--bg:#eef2f6;--card:#fff;--ink:#1b2a41;--muted:#5b6b7f;--line:#d5dde6;--accent:#0e7c86;--accent-soft:#dff1f2;--warm:#b45309;--warm-soft:#fdf0dc;--code:#0f1b2b;--code-ink:#e6edf5;--sbw:312px;--ok:#2f855a;--bad:#c53030}
 [data-theme=dark]{--bg:#0e151d;--card:#16212d;--ink:#e6edf5;--muted:#93a4b8;--line:#263445;--accent:#4fd1c5;--accent-soft:#12303a;--warm:#f6ad55;--warm-soft:#33260f;--code:#0a1119;--code-ink:#dbe6f2}
@@ -131,7 +131,7 @@ th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-ali
 <main><div class="wrap">
 <div class="hero">
 <h1>JavaScript, from your first variable to system architecture.</h1>
-<p>Forty days: a 30-day core course plus a 10-day interview bootcamp, in eight weekly pages and eighty-nine topics. Every topic has an <b>Explain like I’m 5</b> tab and a <b>Technical</b> tab, a diagram, runnable examples, edge cases, interview questions with model answers, and a two-minute “teach it” script.</p>
+<p>Fifty-five days: a 30-day core course, a 10-day interview bootcamp and 15 days of platform, backend and engineering depth, in eleven weekly pages and 119 topics. Every topic has an <b>Explain like I’m 5</b> tab and a <b>Technical</b> tab, a diagram, runnable examples, edge cases, interview questions with model answers, and a two-minute “teach it” script.</p>
 <a class="cta" id="start" href="week1.html#d1-intro">Start at Day 1</a><a class="cta alt" id="cont" href="#" hidden>Continue where you left off</a><a class="cta alt" href="#ladder">Career ladder</a><a class="cta alt" href="#glossary">Glossary</a>
 </div>
 <h2>How to use this course</h2>
@@ -142,9 +142,10 @@ th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-ali
 <li><b>Tick the day complete</b> only when you can teach it using the “Teach it in 2 minutes” box. Progress is saved in this browser.</li>
 <li><b>Version note:</b> language status is as of November 2026 (ES2026 published; Temporal and <code>using</code> expected in ES2027; decorators still a proposal). Browser support figures change, so check MDN before relying on a specific version number.</li>
 <li><b>Weeks 7–8 are the interview bootcamp:</b> coding rounds (polyfills, async, algorithms, UI) and architecture rounds (system design, real-time, performance, behavioral). Every solution there is runnable and ships with self-checks that print pass/FAIL.</li>
+<li><b>Weeks 9–11 fill the remaining gaps</b> (OOP and SOLID, functional programming, algorithms, binary data and Intl, debugging, routing, forms, accessibility, Web Components, authentication, Node APIs, databases, caching, Git/CI, deployment, WebAssembly, ASTs). React and TypeScript are intentionally not covered.</li>
 <li>A <b>revision sheet</b> closes every week. Use <b>Print</b> (Ctrl/Cmd+P) to get a clean copy with both explanation styles expanded.</li>
 </ul>
-<h2>The 40-day plan</h2>
+<h2>The 55-day plan</h2>
 <div class="wkgrid" id="grid"></div>
 <h2 id="ladder">Career ladder: what to master for each level</h2>
 <table id="ladtbl"><thead><tr><th>Level</th><th>Days</th><th>You should be able to…</th></tr></thead><tbody></tbody></table>
@@ -201,7 +202,25 @@ window.COURSE=[
 {n:37,t:"Real-time and offline systems",tp:[["d37-realtime","Real-time and collaborative systems","websocket sse crdt ot"],["d37-offline","Offline-first apps and PWAs","service worker cache outbox"]]},
 {n:38,t:"Performance cases and reliability",tp:[["d38-perf-playbook","Performance playbook: why is the page slow?","triage lcp inp cls"],["d38-reliability","Reliability, security and safe rollout","feature flag canary circuit breaker"]]},
 {n:39,t:"Leadership and decisions",tp:[["d39-behavioral","Behavioral and leadership interviews","star stories conflict"],["d39-decisions","Architecture decisions and trade-off debates","adr matrix monorepo"]]},
-{n:40,t:"Final gauntlet",tp:[["d40-rapid-fire","Rapid-fire round: one-line answers","quick review"],["d40-final","Mock plan, rubric and day-before checklist","self assessment schedule"]]}]}
+{n:40,t:"Final gauntlet",tp:[["d40-rapid-fire","Rapid-fire round: one-line answers","quick review"],["d40-final","Mock plan, rubric and day-before checklist","self assessment schedule"]]}]},
+{w:9,file:"week9.html",title:"Gap-filler I: language depth",sub:"OOP and SOLID, functional programming, recursion, heaps, tries, graphs, binary data, Intl, debugging",days:[
+{n:41,t:"Object-oriented programming",tp:[["d41-oop-pillars","OOP in JavaScript: the four pillars, composition and mixins","encapsulation inheritance polymorphism abstraction"],["d41-solid","SOLID in JavaScript and class-design exercises","parking lot dependency injection"]]},
+{n:42,t:"Functional programming and recursion",tp:[["d42-fp","Functional programming in JavaScript","pure immutable compose maybe result"],["d42-recursion","Recursion, stack depth and trampolines","tail call memoization"]]},
+{n:43,t:"Algorithms II",tp:[["d43-heap-trie","Heaps, priority queues and tries","min heap autocomplete median"],["d43-graphs","Graphs: BFS, DFS, topological sort, union-find, Dijkstra","shortest path islands"]]},
+{n:44,t:"Binary data and internationalization",tp:[["d44-binary","Binary data: typed arrays, DataView, Blob and base64","arraybuffer endianness bitmask"],["d44-intl","Internationalization with Intl","locale plural currency timezone"]]},
+{n:45,t:"Debugging",tp:[["d45-debug-tools","Debugging tools: DevTools, console and Node inspector","breakpoint logpoint source map"],["d45-debug-method","A debugging method: reproduce, minimize, bisect","delta debugging"]]}]},
+{w:10,file:"week10.html",title:"Gap-filler II: browser platform",sub:"Routing, URLs, forms, files, accessibility, Web Components, graphics, device APIs, authentication, security",days:[
+{n:46,t:"Routing and URLs",tp:[["d46-history-routing","Client-side routing and the History API","pushState popstate spa"],["d46-url-patterns","URLs, query state and safe redirects","urlsearchparams open redirect"]]},
+{n:47,t:"Forms and files",tp:[["d47-forms-validation","Forms and the Constraint Validation API","formdata validity"],["d47-files-clipboard-dnd","Files, uploads, drag and drop, clipboard","blob file chunk upload"]]},
+{n:48,t:"Accessibility and Web Components",tp:[["d48-a11y","Accessibility beyond widgets: WCAG, focus, contrast","screen reader aria live"],["d48-web-components","Web Components and Shadow DOM","custom elements slots"]]},
+{n:49,t:"Graphics and device APIs",tp:[["d49-graphics-animation","Canvas, SVG and animation","canvas raf easing"],["d49-device-apis","Device and platform APIs and progressive enhancement","geolocation broadcastchannel locks"]]},
+{n:50,t:"Authentication and security II",tp:[["d50-auth","Authentication: sessions, JWT, OAuth/PKCE, passwords","jwt oauth pkce pbkdf2"],["d50-web-security-extra","Security headers, SRI and supply chain","sri headers dependencies"]]}]},
+{w:11,file:"week11.html",title:"Gap-filler III: backend, delivery and tools",sub:"Node APIs, streams, databases, caching, Git and CI, containers, WebAssembly, ASTs, final capstone",days:[
+{n:51,t:"Node APIs and streams",tp:[["d51-node-http","Building an HTTP API in Node","router middleware rest"],["d51-node-streams-files","Streams, files and CLIs in Node","pipeline buffer gzip"]]},
+{n:52,t:"Databases and caching",tp:[["d52-databases","Databases for JavaScript developers","sql index transaction n+1 injection"],["d52-caching","Caching layers and invalidation","cache-control etag stampede redis"]]},
+{n:53,t:"Git, CI and deployment",tp:[["d53-git-ci","Git workflows and CI pipelines","rebase conventional commits semver"],["d53-containers-deploy","Containers, 12-factor and deployment","docker serverless graceful shutdown"]]},
+{n:54,t:"Advanced runtime and tools",tp:[["d54-wasm-concurrency","WebAssembly, SharedArrayBuffer and Atomics","wasm memory atomics"],["d54-compilers-ast","How tools work: tokenizer, parser, AST","babel eslint pratt"]]},
+{n:55,t:"Capstone II",tp:[["d55-integration","End-to-end blueprint: a feature through every layer","architecture checklist"],["d55-final-review","Final review: rapid-fire and updated study plan","self assessment"]]}]}
 ];
 window.GLOSSARY=[
 ["Call stack","The structure that tracks which function is running and where to return. One stack per thread."],
@@ -226,6 +245,11 @@ window.GLOSSARY=[
 ["ADR","Architecture Decision Record: a short document capturing a decision, its context, options and consequences."],
 ["CRDT","Conflict-free replicated data type: data that merges in any order and still converges."],
 ["Idempotent","An operation that can be repeated safely with the same final effect."],
+["Hydration mismatch","Server and client render different HTML for the same component, causing errors or flicker."],
+["PKCE","Proof Key for Code Exchange: a one-time secret that protects the OAuth authorization-code flow for public clients."],
+["Idempotency key","A client-supplied id that makes a retried request safe to repeat."],
+["Typed array","A fixed-type view over an ArrayBuffer (Uint8Array, Float32Array...) for binary data."],
+["AST","Abstract syntax tree: the structured representation of source code that compilers and linters analyze."],
 ["INP","Interaction to Next Paint. The Core Web Vital for responsiveness. Good is 200 ms or less."]
 ];
 window.LADDER=[
