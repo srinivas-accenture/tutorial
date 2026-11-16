@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 7: Interview bootcamp I | JavaScript Zero to Architect</title><style>
+:root{--bg:#eef2f6;--card:#fff;--ink:#1b2a41;--muted:#5b6b7f;--line:#d5dde6;--accent:#0e7c86;--accent-soft:#dff1f2;--warm:#b45309;--warm-soft:#fdf0dc;--code:#0f1b2b;--code-ink:#e6edf5;--sbw:312px;--ok:#2f855a;--bad:#c53030}
+[data-theme=dark]{--bg:#0e151d;--card:#16212d;--ink:#e6edf5;--muted:#93a4b8;--line:#263445;--accent:#4fd1c5;--accent-soft:#12303a;--warm:#f6ad55;--warm-soft:#33260f;--code:#0a1119;--code-ink:#dbe6f2}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 Charter,"Iowan Old Style",Georgia,serif}
+a{color:var(--accent)}code,pre,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ui{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sbw);background:var(--card);border-right:1px solid var(--line);overflow-y:auto;padding:16px 14px 40px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.4;z-index:20;transition:transform .2s}
+#sidebar .brand{display:block;font-weight:700;font-size:16px;color:var(--ink);text-decoration:none;margin-bottom:10px}
+#sidebar .tools{display:flex;gap:8px;margin-bottom:10px}
+#search{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:7px 10px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:4px 0 4px}.prog i{display:block;height:100%;background:var(--accent);width:0}
+.proglabel{color:var(--muted);font-size:12px;margin-bottom:12px}
+#sidebar details{border-top:1px solid var(--line);padding:6px 0}
+#sidebar summary{cursor:pointer;font-weight:700;padding:4px 2px;list-style:none}
+#sidebar summary::-webkit-details-marker{display:none}
+#sidebar summary:before{content:"▸";display:inline-block;width:14px;color:var(--muted)}
+#sidebar details[open]>summary:before{content:"▾"}
+#sidebar .wk>summary{font-size:13px;color:var(--accent)}
+#sidebar .dy{margin-left:10px;border-top:0;padding:2px 0}
+#sidebar .dy>summary{font-weight:600}
+#sidebar ul{list-style:none;margin:2px 0 6px 16px;padding:0}
+#sidebar li a{display:block;padding:3px 6px;border-radius:5px;color:var(--ink);text-decoration:none;border-left:2px solid transparent}
+#sidebar li a:hover{background:var(--bg)}#sidebar li a.on{background:var(--accent-soft);border-left-color:var(--accent);font-weight:600}
+#sidebar .tick{color:var(--ok);margin-left:4px}
+#sidebar .hide{display:none}
+main{margin-left:var(--sbw);padding:28px 36px 90px;max-width:calc(var(--sbw) + 940px)}
+.wrap{max-width:820px}
+#menu{display:none;position:fixed;top:10px;left:10px;z-index:30}
+.weekhead{margin:0 0 28px}.weekhead .kicker{font:600 14px system-ui,sans-serif;color:var(--accent)}
+.weekhead h1{font-size:clamp(30px,4.2vw,46px);line-height:1.12;margin:4px 0 10px;letter-spacing:-.01em}
+.weekhead p{color:var(--muted);margin:0}
+.day{margin-top:56px}
+.dayhead{border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:22px}
+.dayhead .dn{font:700 14px system-ui,sans-serif;color:var(--accent)}
+.dayhead h2{font-size:clamp(26px,3.2vw,36px);margin:2px 0 6px;line-height:1.15}
+.dayhead .goal{margin:0;color:var(--muted)}
+.topic{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:0 0 28px;overflow:hidden}
+.topic>header{padding:18px 22px 6px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;justify-content:space-between}
+.topic h3{margin:0;font-size:26px;line-height:1.2}
+.lvls{font:600 12px system-ui,sans-serif;color:var(--muted)}
+.lvls b{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:99px;margin-left:4px;font-weight:600}
+.tabs{display:flex;margin:12px 22px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-family:system-ui,sans-serif}
+.tabs button{flex:1;padding:10px 12px;border:0;background:var(--bg);color:var(--muted);font:600 15px system-ui,sans-serif;cursor:pointer;border-right:1px solid var(--line)}
+.tabs button:last-child{border-right:0}
+.tabs button[aria-selected=true].t-eli{background:var(--warm-soft);color:var(--warm);box-shadow:inset 0 -3px 0 var(--warm)}
+.tabs button[aria-selected=true].t-tech{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent)}
+.pane{margin:0 22px;padding:16px 18px;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px}
+.pane.p-eli{background:var(--warm-soft)}.pane.p-tech{background:var(--accent-soft)}
+.pane[hidden]{display:none}.pane p:first-child{margin-top:0}.pane>*:last-child{margin-bottom:0}
+.pane h5,.blk h4{font:700 15px system-ui,sans-serif;margin:16px 0 4px}
+.blk{padding:6px 22px 4px}.blk h4{font-size:16px;margin:18px 0 8px;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:4px}
+.blk:last-child{padding-bottom:18px}
+code{background:rgba(127,127,127,.16);padding:1px 5px;border-radius:4px;font-size:.88em}
+pre{margin:10px 0;background:var(--code);color:var(--code-ink);padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.55}
+pre code{background:none;padding:0;font-size:inherit}
+.k{color:#7cc4ff}.s{color:#9fe3a0}.c{color:#7d8da1;font-style:italic}.n{color:#f7b267}
+.ex{margin:14px 0}.ex .et{font:600 14px system-ui,sans-serif;margin-bottom:2px}
+.ex .bar{display:flex;gap:8px;align-items:center;margin:-4px 0 6px;font:13px system-ui,sans-serif}
+.run{background:var(--accent);color:#fff;border:0;border-radius:5px;padding:5px 12px;font:600 13px system-ui,sans-serif;cursor:pointer}
+[data-theme=dark] .run{color:#06222a}
+.out{white-space:pre-wrap;background:#06101a;color:#b9f3c0;border-left:4px solid var(--ok);padding:10px 14px;border-radius:6px;font:13px/1.5 ui-monospace,Menlo,monospace;margin:4px 0 8px}
+.out:empty,.out[hidden]{display:none}
+ul.pts{margin:6px 0;padding-left:22px}ul.pts li{margin:4px 0}
+.gotcha li::marker{color:var(--bad)}.best li::marker{color:var(--ok)}
+.diagram{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;font-family:system-ui,sans-serif;font-size:14px}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;justify-content:center}
+.flow.v{flex-direction:column;align-items:center}
+.fb{background:var(--card);border:2px solid var(--accent);border-radius:8px;padding:8px 12px;text-align:center;line-height:1.3;min-width:96px}
+.fb small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.fb.w{border-color:var(--warm)}.fb.g{border-color:var(--ok)}.fb.r{border-color:var(--bad)}
+.ar{align-self:center;color:var(--muted);font-weight:700}
+.flow.v .ar{transform:rotate(90deg);line-height:1}
+.lane{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.lane>div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px}
+.lane h6{margin:0 0 6px;font-size:13px;color:var(--accent)}
+.lane .it{background:var(--accent-soft);border-radius:4px;padding:3px 7px;margin:3px 0;font-size:13px}
+.dsteps{counter-reset:s;list-style:none;padding:0;margin:12px 0 0}
+.dsteps li{counter-increment:s;position:relative;padding:4px 0 4px 34px;margin:2px 0}
+.dsteps li:before{content:counter(s);position:absolute;left:0;top:4px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font:700 13px/24px system-ui,sans-serif;text-align:center}
+[data-theme=dark] .dsteps li:before{color:#06222a}
+details.iq{border:1px solid var(--line);border-radius:8px;margin:8px 0;background:var(--bg)}
+details.iq summary{cursor:pointer;padding:9px 12px;font-weight:600}
+details.iq .ans{padding:2px 14px 12px;border-top:1px solid var(--line)}
+.badge{display:inline-block;font:700 11px system-ui,sans-serif;padding:2px 7px;border-radius:99px;margin-right:6px;vertical-align:1px;color:#fff}
+.b-fresher{background:#2f855a}.b-mid{background:#2b6cb0}.b-senior{background:#6b46c1}.b-lead{background:#b7791f}.b-architect{background:#c53030}
+.teach{margin:6px 22px 22px;padding:14px 16px;border:2px dashed var(--accent);border-radius:8px;background:var(--card)}
+.teach b.h{font:700 14px system-ui,sans-serif;color:var(--accent);display:block;margin-bottom:4px}
+.quiz{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 22px 14px;margin:0 0 20px}
+.quiz h3{margin:14px 0 4px;font-size:22px}
+.daydone{margin:14px 0 0;display:flex;gap:10px;align-items:center;font-family:system-ui,sans-serif}
+.rev{background:var(--card);border:2px solid var(--ink);border-radius:10px;padding:8px 24px 16px;margin-top:56px}
+.rev h2{margin:12px 0 4px}
+.pager{display:flex;justify-content:space-between;margin-top:40px;font-family:system-ui,sans-serif}
+.pager a{padding:10px 16px;border:1px solid var(--line);border-radius:8px;background:var(--card);text-decoration:none;font-weight:600}
+#top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:0;font-size:20px;cursor:pointer;display:none;z-index:15}
+[data-theme=dark] #top{color:#06222a}
+table{border-collapse:collapse;width:100%;font:14px/1.5 system-ui,sans-serif;margin:10px 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}th{background:var(--bg)}
+/* index */
+.hero{padding:34px 0 10px}.hero h1{font-size:clamp(36px,6vw,64px);line-height:1.05;margin:0 0 14px;letter-spacing:-.02em}
+.hero p{font-size:19px;max-width:640px;color:var(--muted)}
+.cta{display:inline-block;margin:6px 10px 6px 0;padding:11px 20px;border-radius:8px;font:700 15px system-ui,sans-serif;text-decoration:none;background:var(--accent);color:#fff}
+[data-theme=dark] .cta{color:#06222a}.cta.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.wkgrid{display:grid;gap:18px;margin:22px 0}
+.wkcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 20px}
+.wkcard h3{margin:0 0 2px}.wkcard .sub{color:var(--muted);font:14px system-ui,sans-serif;margin-bottom:8px}
+.wkcard .dd{margin:8px 0;font-family:system-ui,sans-serif;font-size:15px}
+.wkcard .dd b a{color:var(--ink);text-decoration:none}.wkcard .dd span a{font-size:13px;margin-right:10px}
+@media(max-width:900px){#sidebar{transform:translateX(-105%)}body.nav #sidebar{transform:none;box-shadow:0 0 40px rgba(0,0,0,.4)}main{margin-left:0;padding:60px 16px 80px}#menu{display:block}.tabs{margin-left:12px;margin-right:12px}.pane,.teach{margin-left:12px;margin-right:12px}.blk{padding-left:12px;padding-right:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#sidebar{transition:none}}
+@media print{#sidebar,#menu,#top,.run,.tabs,.daydone,.pager{display:none!important}main{margin:0;padding:0}.pane[hidden]{display:block!important}.topic{break-inside:avoid-page}details>*{display:block!important}.out{display:none}body{background:#fff;color:#000;font-size:12px}}
+/* layout fixes: sidebar overflow, menu button overlap */
+#sidebar{overflow-x:hidden}
+#search{min-width:0;width:0}
+#sidebar .tools .btn{flex:none}
+#menu{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+@media(max-width:900px){html{scroll-padding-top:68px}#sidebar{padding-top:60px}}
+
+</style></head>
+<body><button id="menu" class="btn ui" aria-label="Open menu">☰ Menu</button><nav id="sidebar" aria-label="Course navigation"></nav><main></main><button id="top" aria-label="Back to top">↑</button>
+<script>
+window.COURSE=[
+{w:1,file:"week1.html",title:"Foundations",sub:"From zero: how JS runs, values, coercion, functions, scope, this, strings, arrays, objects",days:[
+{n:1,t:"Getting started: values and variables",tp:[["d1-intro","What JavaScript is and how it runs","history engine console script strict"],["d1-vars","Variables: var, let, const","declare hoist block"],["d1-types","Data types and typeof","primitive object null undefined bigint symbol"]]},
+{n:2,t:"Numbers, coercion and control flow",tp:[["d2-numbers","Numbers, operators and floating point","float bigint nan infinity math"],["d2-coercion","Type coercion and equality","== === truthy falsy toprimitive"],["d2-control","Control flow and loops","if switch for while break label"]]},
+{n:3,t:"Functions, scope and hoisting",tp:[["d3-functions","Functions in depth","arrow default rest arguments iife"],["d3-scope","Scope and the scope chain","lexical block global"],["d3-hoisting","Hoisting and the temporal dead zone","tdz var let"]]},
+{n:4,t:"this, strings and regular expressions",tp:[["d4-this","The this keyword","bind call apply arrow"],["d4-strings","Strings, Unicode and template literals","utf-16 emoji intl segmenter"],["d4-regex","Regular expressions","regexp escape named groups"]]},
+{n:5,t:"Arrays, objects, collections and dates",tp:[["d5-arrays","Arrays and their methods","map filter reduce sort holes toSorted"],["d5-objects","Objects, property order and copying","spread freeze groupBy"],["d5-collections","Map, Set, WeakMap and WeakSet","set methods union"],["d5-dates","Dates and Temporal","date timezone temporal"]]}]},
+{w:2,file:"week2.html",title:"Core language depth",sub:"Closures, prototypes, classes, iterators, generators, Proxy, immutability",days:[
+{n:6,t:"Closures",tp:[["d6-closures","Closures","lexical environment loop"],["d6-closure-uses","Closure patterns: once, memoize, modules","private state"]]},
+{n:7,t:"Prototypes",tp:[["d7-prototypes","The prototype chain","__proto__ inheritance"],["d7-new","new, constructors and Object.create","constructor"]]},
+{n:8,t:"Classes",tp:[["d8-classes","Classes","extends super"],["d8-private","Private fields, static blocks and accessors","# getter setter decorators"]]},
+{n:9,t:"Iterators and generators",tp:[["d9-iterators","Iterators and iterables","symbol.iterator for of"],["d9-generators","Generators","yield"],["d9-helpers","Iterator helpers (ES2025/26)","lazy take drop"]]},
+{n:10,t:"Destructuring, Proxy and immutability",tp:[["d10-destructuring","Destructuring, spread and rest","default"],["d10-symbol","Symbols, Proxy and Reflect","metaprogramming"],["d10-immutable","Immutability, structuredClone and using","freeze dispose"]]}]},
+{w:3,file:"week3.html",title:"Async and the runtime",sub:"Callbacks, Promises, async/await, the event loop, workers, streams, errors",days:[
+{n:11,t:"Callbacks and Promises",tp:[["d11-callbacks","Callbacks and the problem they solve","callback hell"],["d11-promises","Promises","then catch finally"]]},
+{n:12,t:"async/await and patterns",tp:[["d12-async","async and await","try catch"],["d12-combinators","Promise combinators and async patterns","all allSettled any race pool retry"]]},
+{n:13,t:"The event loop",tp:[["d13-eventloop","The event loop","call stack queue"],["d13-puzzles","Microtasks vs macrotasks: output puzzles","queueMicrotask"]]},
+{n:14,t:"Timers and workers",tp:[["d14-timers","Timers and scheduling","setTimeout raf clamping"],["d14-workers","Web Workers and concurrency","postMessage transfer"]]},
+{n:15,t:"Streams and errors",tp:[["d15-streams","Streams and AbortController","backpressure cancel"],["d15-errors","Error handling","unhandled rejection"]]}]},
+{w:4,file:"week4.html",title:"Browser internals",sub:"DOM, events, rendering pipeline, storage, fetch and CORS, security",days:[
+{n:16,t:"The DOM",tp:[["d16-dom","The DOM","tree node"],["d16-dom-ops","Working with the DOM efficiently","fragment"]]},
+{n:17,t:"Events and observers",tp:[["d17-events","Event flow and delegation","capture bubble passive"],["d17-observers","Observers and custom events","intersection mutation resize"]]},
+{n:18,t:"Rendering",tp:[["d18-pipeline","The browser rendering pipeline","parse style layout paint composite"],["d18-layout","Reflow, repaint and layout thrashing","forced reflow"]]},
+{n:19,t:"Storage and the network",tp:[["d19-storage","Browser storage","localstorage indexeddb cookies quota"],["d19-fetch","fetch, HTTP and CORS","preflight"]]},
+{n:20,t:"Security",tp:[["d20-xss","XSS, CSP and Trusted Types","innerhtml"],["d20-csrf","CSRF, cookies and auth storage","samesite"]]}]},
+{w:5,file:"week5.html",title:"Engine, performance and modules",sub:"V8, garbage collection, leaks, Web Vitals, bundling, ES modules",days:[
+{n:21,t:"Inside V8",tp:[["d21-v8","How V8 runs your code","ignition turbofan jit"],["d21-shapes","Hidden classes and inline caches","maps deopt"]]},
+{n:22,t:"Memory",tp:[["d22-gc","Garbage collection","orinoco scavenger"],["d22-leaks","Memory leaks and how to find them","heap snapshot"]]},
+{n:23,t:"Performance",tp:[["d23-vitals","Core Web Vitals and profiling","lcp inp cls"],["d23-patterns","Performance patterns: debounce, throttle, virtualization",""]]},
+{n:24,t:"Bundling and loading",tp:[["d24-bundling","Bundling and tree-shaking","vite rolldown"],["d24-loading","Script loading and code splitting","async defer"]]},
+{n:25,t:"Modules",tp:[["d25-esm","ES modules vs CommonJS","import require"],["d25-interop","Interop, dynamic import and import attributes","json modules"]]}]},
+{w:6,file:"week6.html",title:"Node, tooling and architecture",sub:"Node.js, testing, patterns, state, rendering strategies, capstone",days:[
+{n:26,t:"Node.js",tp:[["d26-node","Node.js essentials","fs path process"],["d26-nodeloop","The Node event loop","libuv nexttick setimmediate"]]},
+{n:27,t:"Testing and tooling",tp:[["d27-testing","Testing JavaScript","vitest node:test mock"],["d27-tooling","Linting, formatting and TypeScript in context","eslint flat config"]]},
+{n:28,t:"Patterns and state",tp:[["d28-patterns","Design patterns in JavaScript","observer factory singleton"],["d28-state","State management concepts","store immutable derived"]]},
+{n:29,t:"Architecture",tp:[["d29-rendering","SSR, CSR, SSG, ISR and micro-frontends","hydration"],["d29-scale","Monorepos, API design and observability","pagination otel"]]},
+{n:30,t:"Capstone",tp:[["d30-mock","Mock interview bank","fresher mid senior lead architect"],["d30-system","System design walkthrough","autocomplete"],["d30-cheat","Final cheat sheet","revision"]]}]},
+{w:7,file:"week7.html",title:"Interview bootcamp I: coding rounds",sub:"Method, output puzzles, polyfills, async implementations, data structures, algorithms, UI machine coding",days:[
+{n:31,t:"Interview method and output drills",tp:[["d31-method","The interview method: clarify, plan, code, test","big-o edge cases communication"],["d31-output","Output-prediction drills","hoisting this closure coercion event loop"]]},
+{n:32,t:"Polyfills and utilities",tp:[["d32-fn-polyfills","Function polyfills: call, bind, curry, memoize, debounce","bind curry compose throttle"],["d32-data-polyfills","Data utilities: map, reduce, groupBy, deepEqual, get/set","flatten deep equal path"]]},
+{n:33,t:"Async implementations",tp:[["d33-promise-impl","Implement a Promise and its combinators","thenable microtask all any"],["d33-async-utils","Async utilities: retry, timeout, limiter, dedupe","pool promisify"]]},
+{n:34,t:"Classic classes and algorithm patterns",tp:[["d34-utilities","EventEmitter, LRU, rate limiter and Observable","token bucket pubsub"],["d34-dsa","Algorithm patterns in JavaScript","two pointers sliding window dp bfs"]]},
+{n:35,t:"UI machine coding and DOM challenges",tp:[["d35-ui-widgets","Machine-coding rounds: widgets and accessibility","tabs aria keyboard autocomplete"],["d35-dom-challenges","DOM and virtual-DOM challenges","vdom diff delegation"]]}]},
+{w:8,file:"week8.html",title:"Interview bootcamp II: architecture and leadership",sub:"System design toolkit, real-time, offline, performance cases, reliability, behavioral, trade-offs, final mock plan",days:[
+{n:36,t:"Frontend system design toolkit",tp:[["d36-sd-toolkit","The design toolkit and back-of-envelope estimation","requirements capacity latency"],["d36-feed-chat","Design a news feed and a chat app","pagination optimistic websocket ordering"]]},
+{n:37,t:"Real-time and offline systems",tp:[["d37-realtime","Real-time and collaborative systems","websocket sse crdt ot"],["d37-offline","Offline-first apps and PWAs","service worker cache outbox"]]},
+{n:38,t:"Performance cases and reliability",tp:[["d38-perf-playbook","Performance playbook: why is the page slow?","triage lcp inp cls"],["d38-reliability","Reliability, security and safe rollout","feature flag canary circuit breaker"]]},
+{n:39,t:"Leadership and decisions",tp:[["d39-behavioral","Behavioral and leadership interviews","star stories conflict"],["d39-decisions","Architecture decisions and trade-off debates","adr matrix monorepo"]]},
+{n:40,t:"Final gauntlet",tp:[["d40-rapid-fire","Rapid-fire round: one-line answers","quick review"],["d40-final","Mock plan, rubric and day-before checklist","self assessment schedule"]]}]}
+];
+window.GLOSSARY=[
+["Call stack","The structure that tracks which function is running and where to return. One stack per thread."],
+["Closure","A function plus a live reference to the variables of the scope where it was created."],
+["Coercion","Automatic or explicit conversion of a value from one type to another."],
+["Event loop","The mechanism that takes tasks from queues and runs them one at a time on the call stack, draining microtasks between tasks."],
+["Hoisting","Declarations are registered when a scope is created, before any line of that scope runs."],
+["Hidden class (Map/shape)","V8's internal description of an object's property layout, shared by objects built the same way."],
+["Inline cache","A per-call-site cache of the shapes seen, used to make property access fast."],
+["Microtask","A small job (promise reaction, queueMicrotask) that runs as soon as the stack is empty, before the next task."],
+["Prototype","The object another object delegates to when a property is not found on itself."],
+["Reflow (layout)","Recomputing sizes and positions of elements."],
+["Repaint","Redrawing pixels without recomputing layout."],
+["Temporal dead zone","The span between entering a scope and the line that initializes a let, const or class binding. Access throws."],
+["Tree-shaking","Removing unused exports from a bundle using static import/export analysis."],
+["Hydration","Attaching JavaScript behavior to server-rendered HTML."],
+["Backpressure","A consumer signalling a producer to slow down so memory does not grow without bound."],
+["Origin","Scheme + host + port. The unit of the same-origin policy."],
+["Preflight","An OPTIONS request the browser sends before a non-simple cross-origin request."],
+["Structured clone","The browser algorithm for deep-copying values for postMessage, structuredClone and IndexedDB."],
+["TDZ, ASI, IIFE","Temporal dead zone; automatic semicolon insertion; immediately invoked function expression."],
+["ADR","Architecture Decision Record: a short document capturing a decision, its context, options and consequences."],
+["CRDT","Conflict-free replicated data type: data that merges in any order and still converges."],
+["Idempotent","An operation that can be repeated safely with the same final effect."],
+["INP","Interaction to Next Paint. The Core Web Vital for responsiveness. Good is 200 ms or less."]
+];
+window.LADDER=[
+["Fresher","Days 1-5, 10-12","Types, coercion, scope, functions, this, arrays/objects, promises, DOM basics. Can predict output of small snippets and explain var/let/const. Interview prep: Days 31-32."],
+["Mid-level","Days 6-9, 13-19","Closures, prototypes, classes, event loop, async patterns, events, storage, fetch. Can write polyfills (bind, debounce, Promise.all) and debug async order. Interview prep: Days 31-35."],
+["Senior","Days 20-25","Security, V8 behavior, memory leaks, profiling, bundling, modules. Can diagnose a slow or leaking page and justify fixes with evidence. Interview prep: Days 33-38."],
+["Lead","Days 26-28","Node internals, testing strategy, tooling, design patterns, state. Can set standards, review code and plan migrations. Interview prep: Days 38-39."],
+["Architect","Days 29-30","Rendering strategies, micro-frontends, monorepos, API contracts, observability, budgets. Can choose, defend and de-risk system-level trade-offs. Interview prep: Days 36-40."]
+];
+
+</script><script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function TOTAL(){return window.COURSE.reduce(function(a,w){return a+w.days.length},0)}
+var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
+var RE=/(\/\/.*$)|(\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)|\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|super|this|typeof|instanceof|in|of|async|await|try|catch|finally|throw|import|export|from|default|yield|static|null|undefined|true|false|void|delete)\b|\b(\d[\d_]*(?:\.\d+)?n?)\b/gm;
+function hl(code){return esc(code).replace(RE,function(m,a,b,s,k,n){return (a||b)?'<span class="c">'+m+'</span>':s?'<span class="s">'+m+'</span>':k?'<span class="k">'+m+'</span>':'<span class="n">'+m+'</span>'})}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+/* diagram helpers exposed to week files */
+window.flow=function(items,o){o=o||{};return '<div class="flow'+(o.v?' v':'')+'">'+items.map(function(x,i){var c='',t=x,sm='';if(Array.isArray(x)){t=x[0];sm=x[1]||'';c=x[2]||''}return (i&&!o.plain?'<span class="ar">→</span>':'')+'<div class="fb '+c+'">'+t+(sm?'<small>'+sm+'</small>':'')+'</div>'}).join('')+'</div>'};
+window.lanes=function(cols){return '<div class="lane">'+cols.map(function(c){return '<div><h6>'+c[0]+'</h6>'+c[1].map(function(i){return '<div class="it">'+i+'</div>'}).join('')+'</div>'}).join('')+'</div>'};
+/* inspect for Run output */
+function ins(v,d,seen){d=d||0;seen=seen||[];
+ if(typeof v==='string')return d?JSON.stringify(v):v;if(typeof v==='bigint')return v+'n';
+ if(typeof v==='symbol')return v.toString();if(typeof v==='function')return '[Function'+(v.name?': '+v.name:'')+']';
+ if(Object.is(v,-0))return '-0';if(v===null||typeof v!=='object')return String(v);
+ if(seen.indexOf(v)>-1)return '[Circular]';if(d>3)return Array.isArray(v)?'[…]':'{…}';seen=seen.concat([v]);
+ if(Array.isArray(v)){var s=[],h=0,e=function(){if(h){s.push('<'+h+' empty item'+(h>1?'s':'')+'>');h=0}};for(var i=0;i<v.length;i++){if(!(i in v)){h++;continue}e();s.push(ins(v[i],d+1,seen))}e();return '['+s.join(', ')+']'}
+ if(v instanceof Map)return 'Map('+v.size+') {'+Array.from(v).map(function(p){return ins(p[0],d+1,seen)+' => '+ins(p[1],d+1,seen)}).join(', ')+'}';
+ if(v instanceof Set)return 'Set('+v.size+') {'+Array.from(v).map(function(x){return ins(x,d+1,seen)}).join(', ')+'}';
+ if(v instanceof Error)return v.name+': '+v.message;if(v instanceof Date)return isNaN(v)?'Invalid Date':v.toISOString();
+ if(v instanceof Promise)return 'Promise {…}';
+ var ks=Reflect.ownKeys(v).filter(function(k){return Object.getOwnPropertyDescriptor(v,k).enumerable});
+ var pr=Object.getPrototypeOf(v),cn=pr===null?'[Object: null prototype] ':(v.constructor&&v.constructor!==Object&&v.constructor.name?v.constructor.name+' ':'');
+ return cn+'{'+(ks.length?' '+ks.map(function(k){return (typeof k==='symbol'?'['+k.toString()+']':k)+': '+ins(v[k],d+1,seen)}).join(', ')+' ':'')+'}'}
+function run(code,out){var L=[];out.hidden=false;var push=function(p,a){L.push(p+Array.prototype.map.call(a,function(x){return ins(x)}).join(' '));out.textContent=L.join('\n')};
+ var con={log:function(){push('',arguments)},info:function(){push('',arguments)},warn:function(){push('⚠ ',arguments)},error:function(){push('✖ ',arguments)},table:function(x){push('',[x])}};
+ out.textContent='';try{var r=new Function('console',code)(con);if(r&&r.then)r.catch(function(e){push('✖ ',[e])})}catch(e){push('✖ ',[e])}
+ setTimeout(function(){if(!L.length)out.textContent='(no output)'},400)}
+function list(a,c){return a&&a.length?'<ul class="pts '+c+'">'+a.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>':''}
+function topic(t){var h='<article class="topic" id="'+t.id+'"><header><h3>'+t.title+'</h3><div class="lvls">Useful for:'+(t.lv||['fresher','mid','senior']).map(function(l){return '<b>'+l+'</b>'}).join('')+'</div></header>';
+ h+='<div class="tabs ui" role="tablist"><button class="t-eli" role="tab" aria-selected="false">Explain like I’m 5</button><button class="t-tech" role="tab" aria-selected="true">Technical explanation</button></div>';
+ h+='<div class="pane p-eli" role="tabpanel" hidden>'+t.eli5+'</div>';
+ h+='<div class="pane p-tech" role="tabpanel">'+(t.why?'<h5>Why it exists</h5>'+t.why+'<h5>How it works</h5>':'')+t.tech+'</div>';
+ if(t.diagram)h+='<div class="blk"><h4>Diagram</h4><div class="diagram">'+t.diagram.html+'</div>'+(t.diagram.steps?'<ol class="dsteps">'+t.diagram.steps.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol>':'')+'</div>';
+ if(t.ex&&t.ex.length)h+='<div class="blk"><h4>Examples</h4>'+t.ex.map(function(e){return '<div class="ex"><div class="et">'+e.t+'</div><pre><code>'+hl(e.code)+'</code></pre>'+(e.run===false?'':'<div class="bar"><button class="run">▶ Run</button><span style="color:var(--muted)">runs in your browser</span></div><div class="out" hidden></div>')+(e.note?'<div>'+e.note+'</div>':'')+'</div>'}).join('')+'</div>';
+ if(t.browser)h+='<div class="blk"><h4>In the browser (and how Node differs)</h4>'+t.browser+'</div>';
+ if(t.gotchas)h+='<div class="blk"><h4>Hidden concepts and edge cases</h4>'+list(t.gotchas,'gotcha')+'</div>';
+ if(t.best)h+='<div class="blk"><h4>Best practices</h4>'+list(t.best,'best')+'</div>';
+ if(t.iq)h+='<div class="blk"><h4>Interview questions</h4>'+t.iq.map(function(q){return '<details class="iq"><summary><span class="badge b-'+q[0]+'">'+q[0]+'</span>'+q[1]+'</summary><div class="ans">'+q[2]+'</div></details>'}).join('')+'</div>';
+ if(t.practice)h+='<div class="blk"><h4>Practice</h4>'+list(t.practice,'')+'</div>';
+ if(t.teach)h+='<div class="teach"><b class="h">Teach it in 2 minutes</b>'+t.teach+'</div>';
+ return h+'</article>'}
+function render(W){var C=window.COURSE,wi=W.w-1,h='<div class="wrap"><div class="weekhead"><div class="kicker">Week '+W.w+' of '+C.length+'</div><h1>'+C[wi].title+'</h1><p>'+C[wi].sub+'</p></div>';
+ W.days.forEach(function(d){h+='<section class="day" id="day-'+d.n+'"><div class="dayhead"><div class="dn">Day '+d.n+' of '+TOTAL()+'</div><h2>'+d.title+'</h2><p class="goal">'+d.goal+'</p></div>';
+  d.topics.forEach(function(t){h+=topic(t)});
+  if(d.quiz)h+='<div class="quiz"><h3>Tricky output quiz</h3><p class="ui" style="color:var(--muted);margin:0">Predict the output first. Then open the answer, then run it.</p>'+d.quiz.map(function(q,i){return '<div class="ex"><div class="et">Question '+(i+1)+'</div><pre><code>'+hl(q.code)+'</code></pre><div class="bar"><button class="run">▶ Run</button></div><div class="out" hidden></div><details class="iq"><summary>Show answer and why</summary><div class="ans"><p><b>'+q.ans+'</b></p><p>'+q.why+'</p></div></details></div>'}).join('')+'</div>';
+  h+='<div class="daydone ui"><button class="btn" data-done="'+d.n+'"></button><span style="color:var(--muted);font-size:14px">Mark the day complete when you can teach it.</span></div></section>'});
+ if(W.revision)h+='<section class="rev" id="revision-w'+W.w+'"><h2>Week '+W.w+' revision sheet</h2>'+list(W.revision,'')+'</section>';
+ var p=C[wi-1],n=C[wi+1];h+='<div class="pager">'+(p?'<a href="'+p.file+'">← Week '+p.w+': '+p.title+'</a>':'<a href="index.html">← Course index</a>')+(n?'<a href="'+n.file+'">Week '+n.w+': '+n.title+' →</a>':'<a href="index.html">Back to index</a>')+'</div></div>';
+ $('main').innerHTML=h}
+function sidebar(cur){var C=window.COURSE,h='<a class="brand" href="index.html">JavaScript: zero to architect</a><div class="tools"><input id="search" type="search" placeholder="Search topics…" aria-label="Search topics"><button class="btn" id="theme" title="Toggle light/dark" aria-label="Toggle theme">Theme</button></div><div class="prog"><i id="pbar"></i></div><div class="proglabel" id="plabel"></div>';
+ C.forEach(function(w){h+='<details class="wk" '+(w.w===cur?'open':'')+'><summary>Week '+w.w+': '+w.title+'</summary>';
+  w.days.forEach(function(d){h+='<details class="dy" data-day="'+d.n+'" '+(w.w===cur?'':'')+'><summary>Day '+d.n+': '+d.t+'<span class="tick" hidden>✓</span></summary><ul>'+d.tp.map(function(t){return '<li data-k="'+(t[1]+' '+d.t+' '+(t[2]||'')).toLowerCase()+'"><a href="'+(w.w===cur?'':w.file)+'#'+t[0]+'" data-id="'+t[0]+'">'+t[1]+'</a></li>'}).join('')+'</ul></details>'});h+='</details>'});
+ $('#sidebar').innerHTML=h;
+ $('#search').addEventListener('input',function(e){var q=e.target.value.trim().toLowerCase();$$('#sidebar li').forEach(function(li){li.classList.toggle('hide',!!q&&li.dataset.k.indexOf(q)<0)});$$('#sidebar details.dy').forEach(function(d){var any=$$('li:not(.hide)',d).length>0;d.classList.toggle('hide',!any);if(q)d.open=any});$$('#sidebar details.wk').forEach(function(d){var any=$$('details.dy:not(.hide)',d).length>0;d.classList.toggle('hide',!any);if(q)d.open=any})})}
+function progress(){var done=store('jsc-done')||[];$$('[data-done]').forEach(function(b){var n=+b.dataset.done,on=done.indexOf(n)>-1;b.textContent=on?'✓ Day '+n+' complete (click to undo)':'Mark Day '+n+' complete'});$$('#sidebar details.dy').forEach(function(d){$('.tick',d).hidden=done.indexOf(+d.dataset.day)<0});$('#pbar').style.width=(done.length/TOTAL()*100)+'%';$('#plabel').textContent=done.length+' of '+TOTAL()+' days complete'}
+function init(){var cur=window.WEEK?window.WEEK.w:0;
+ var th=store('jsc-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=th;
+ sidebar(cur);if(window.WEEK)render(window.WEEK);progress();
+ var d=document;d.addEventListener('click',function(e){var t=e.target;
+  if(t.id==='theme'){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store('jsc-theme',n)}
+  if(t.id==='menu')d.body.classList.toggle('nav');
+  if(t.closest&&t.closest('#sidebar a'))d.body.classList.remove('nav');
+  if(t.id==='top')scrollTo({top:0});
+  if(t.dataset&&t.dataset.done){var n=+t.dataset.done,a=store('jsc-done')||[],i=a.indexOf(n);if(i>-1)a.splice(i,1);else a.push(n);store('jsc-done',a);progress()}
+  if(t.classList.contains('run')){var ex=t.closest('.ex');run(ex.querySelector('code').textContent,ex.querySelector('.out'))}
+  if(t.getAttribute&&t.getAttribute('role')==='tab'){var tp=t.closest('.topic'),eli=t.classList.contains('t-eli');$$('.tabs button',tp).forEach(function(b){b.setAttribute('aria-selected',b===t)});$('.p-eli',tp).hidden=!eli;$('.p-tech',tp).hidden=eli}});
+ var tg=$('#top');addEventListener('scroll',function(){tg.style.display=scrollY>600?'block':'none'});
+ if(window.WEEK){store('jsc-last',location.pathname.split('/').pop());var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){$$('#sidebar a.on').forEach(function(a){a.classList.remove('on')});var a=$('#sidebar a[data-id="'+en.target.id+'"]');if(a){a.classList.add('on');var dy=a.closest('details.dy');if(dy&&!dy.open&&!$('#search').value)dy.open=true}}})},{rootMargin:'-10% 0px -80% 0px'});$$('.topic').forEach(function(t){io.observe(t)});
+  if(location.hash){var el=document.getElementById(location.hash.slice(1));if(el)setTimeout(function(){el.scrollIntoView()},50)}}}
+document.addEventListener('DOMContentLoaded',init)})();
+
+</script>
+<script>
+window.WEEK={w:7,revision:[
+"<b>Method:</b> clarify → examples → brute force → optimize → code → test edge cases → state Big-O. Talk while you think.",
+"<b>Edge cases to always run:</b> empty, one item, duplicates, negatives, NaN/undefined/null, huge input, unicode, mutation of the input, async failure.",
+"<b>Perf traps in JS:</b> <code>includes</code>/<code>indexOf</code> in a loop is O(n²) (use Set/Map); spreading the accumulator inside <code>reduce</code> is O(n²); <code>shift()</code> in a loop is slow on big arrays.",
+"<b>Polyfills:</b> <code>bind</code> (partial args + <code>new</code> support), <code>curry</code> (by arity), <code>memoize</code> (key strategy), <code>debounce</code> (leading/trailing/cancel), <code>throttle</code>, <code>deepEqual</code> (prototype, Date, cycles), path get/set.",
+"<b>Promise implementation checklist:</b> settle once; <code>then</code> returns a new promise; handlers run in microtasks; resolve adopts thenables; non-function handlers pass through; <code>all</code> keeps order and resolves <code>[]</code> for empty input.",
+"<b>Async utilities:</b> retry with backoff, timeout via race (and clear the timer), limiter/pool for concurrency, dedupe in-flight requests, promisify with error-first callbacks.",
+"<b>Classic classes:</b> EventEmitter (copy listeners before emit), LRU (Map order), token bucket (inject the clock), Observable (unsubscribe cleanup).",
+"<b>Algorithm patterns:</b> hash map, two pointers, sliding window, binary search, stack, BFS/DFS, DP, backtracking. Name the pattern, then code.",
+"<b>UI rounds:</b> semantic HTML first, ARIA only to fill gaps, keyboard support, state in one place, event delegation, test with edge cases.",
+"<b>Virtual DOM:</b> diff old and new trees and apply the minimum DOM operations; keep node identity when types match."
+],days:[
+{n:31,title:"Interview method and output drills",goal:"Adopt a repeatable method for any coding question and get fast, accurate at predicting output.",topics:[
+{id:"d31-method",title:"The interview method: clarify, plan, code, test",lv:["fresher","mid","senior"],
+eli5:`<p>Solving a coding question with someone watching is like <b>solving a maze while a friend watches over your shoulder</b>. If you silently dash in, they can't help or tell if you're lost. If you say "I'll try left first because the exit is on the right side", they can follow your thinking, catch wrong turns early and give a hint. The method is a map for your thinking: understand the maze, pick a route, walk it, then check you really reached the exit.</p>`,
+why:`<p>Interviewers hire people they can work with. They score <b>how you think</b> (clarifying, trade-offs, testing) as much as whether the code runs. A repeatable method keeps you calm and shows those skills even when you get stuck.</p>`,
+tech:`<ol><li><b>Understand:</b> restate the problem in your words; ask about input size, types, ranges, duplicates, sorted or not, mutation allowed, what to return on bad input. Write 2–3 examples including an edge case.</li><li><b>Match:</b> which pattern is this? (hash map, two pointers, sliding window, stack, BFS/DFS, DP, sorting, binary search).</li><li><b>Plan:</b> state the brute force and its complexity first, then the optimization. Get agreement before coding.</li><li><b>Implement:</b> clear names, small helpers, no clever one-liners. Narrate what you are doing.</li><li><b>Review:</b> trace your examples by hand through the code; run the edge cases.</li><li><b>Evaluate:</b> time and space complexity, and what you'd improve with more time (tests, error handling).</li></ol>
+<h5>Big-O in practice (JavaScript)</h5><table><tr><th>Operation</th><th>Cost</th></tr><tr><td>array index, push/pop, Map/Set get/set/has (average)</td><td>O(1)</td></tr><tr><td><code>includes</code>, <code>indexOf</code>, <code>find</code>, <code>filter</code>, <code>map</code></td><td>O(n)</td></tr><tr><td><code>sort</code></td><td>O(n log n)</td></tr><tr><td><code>shift</code>/<code>unshift</code>/<code>splice</code> in the middle</td><td>O(n)</td></tr><tr><td>nested loop over the same data</td><td>O(n²)</td></tr><tr><td>string concatenation in a loop</td><td>fine in modern engines; build with arrays for huge output</td></tr></table>
+<h5>Edge-case checklist</h5><ul class="pts"><li>empty input, one element, all equal, already sorted, reverse sorted</li><li>duplicates, negatives, zero, very large numbers, <code>NaN</code>, <code>null</code>/<code>undefined</code></li><li>unicode/emoji strings, case sensitivity, whitespace</li><li>mutating the caller's input, shared references, cycles</li><li>async: rejection, timeout, cancellation, ordering of results</li></ul>`,
+diagram:{html:flow([["1 Understand","restate + examples"],["2 Match","which pattern?","w"],["3 Plan","brute force → optimize","w"],["4 Implement","narrate","g"],["5 Review","trace + edge cases","g"],["6 Evaluate","Big-O + next steps","r"]]),steps:["Never start coding before you can state the input, output and one edge case.","Mention the brute force even if you know the better solution: it proves understanding and gives a fallback.","Code in small verifiable pieces and say what each piece is for.","Walk one example through your code line by line before saying you're done.","Close by stating complexity and trade-offs unprompted."]},
+ex:[{t:"Counting operations: why O(n²) matters (runnable, deterministic)",code:`const n = 1000;
+const arr = Array.from({ length: n }, (_, i) => i);
+// Dedupe with a nested search (O(n^2))
+let comparisons = 0; const out = [];
+for (const x of arr) {
+  let found = false;
+  for (const y of out) { comparisons++; if (y === x) { found = true; break; } }
+  if (!found) out.push(x);
+}
+// Dedupe with a Set (O(n))
+let setOps = 0; const seen = new Set();
+for (const x of arr) { setOps++; seen.add(x); }
+console.log("nested search comparisons:", comparisons, "| Set operations:", setOps);
+// reduce with a spread accumulator copies the array every step
+let copied = 0;
+arr.reduce((acc, x) => { copied += acc.length; return [...acc, x]; }, []);
+let pushed = 0; const acc2 = []; arr.forEach((x) => { acc2.push(x); pushed++; });
+console.log("elements copied by reduce+spread:", copied, "| by push:", pushed);`},
+{t:"Turning a requirement into tests first (runnable)",code:`// Requirement: "return the second largest distinct number, or null if there is none"
+function secondLargest(nums){
+  const uniq = [...new Set(nums.filter(Number.isFinite))].sort((a, b) => b - a);
+  return uniq.length >= 2 ? uniq[1] : null;
+}
+const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+check("normal", secondLargest([3, 1, 4, 1, 5]) === 4);
+check("duplicates of the max", secondLargest([5, 5, 5]) === null);
+check("empty", secondLargest([]) === null);
+check("one item", secondLargest([7]) === null);
+check("negatives", secondLargest([-1, -5, -3]) === -3);
+check("ignores NaN", secondLargest([NaN, 2, 1]) === 1);`}],
+gotchas:[`Silence is the most common failure: say your plan even when unsure.`,`Jumping to code before agreeing on examples causes rewrites.`,`"Optimal" without stating the brute force looks like memorization.`,`Forgetting to ask whether the input can be mutated or contain duplicates.`,`Claiming O(1) for operations that copy (spread, slice, concat in a loop).`],
+best:[`Always give: approach → complexity → code → tests → improvements.`,`If stuck: simplify the problem, solve a smaller case, or write the brute force; say what you've tried.`,`Practice out loud with a timer; review recordings.`],
+iq:[["fresher","What do you do when you don't know the answer in an interview?","Say what you do know, restate the problem, try a smaller example or brute force, and think aloud. Ask a clarifying question or request a hint; never go silent or bluff."],["mid","How do you evaluate your own solution?","Trace examples and edge cases, state time and space complexity, mention trade-offs and how you would test and harden it."],["senior","Why is reduce with spread slow?","Each iteration creates a new array copying all previous elements, turning an O(n) loop into O(n²). Push into one accumulator instead."]],
+practice:[`Solve two easy problems using all six steps and time yourself; record what you skipped.`,`Take an old solution and write down its time/space complexity and three edge cases.`],
+teach:`<p>"Don't sprint into the maze. Say what you understand, try the simple route first, then the faster one, walk an example through your code, and tell the interviewer how long it takes as the input grows."</p>`},
+
+{id:"d31-output",title:"Output-prediction drills",lv:["fresher","mid","senior"],
+eli5:`<p>These are like <b>chess puzzles for JavaScript</b>. Each one hides one rule (a trick the language plays). The skill isn't memorizing answers; it's spotting <b>which rule</b> is hiding: "this is a hoisting puzzle", "this is a this puzzle", "this is the event loop". Then you apply that one rule.</p>`,
+why:`<p>"What does this print?" is the most common JavaScript screening question because it tests understanding of scope, coercion, <code>this</code>, prototypes and the event loop in a few lines. Fast, correct prediction signals real mastery.</p>`,
+tech:`<p><b>Method:</b> (1) label the category; (2) write down the rule; (3) walk the code line by line, keeping three lists for async questions (sync output, microtasks, tasks); (4) only then answer.</p>
+<table><tr><th>If you see…</th><th>Think…</th></tr><tr><td><code>var</code>, functions used before declaration</td><td>hoisting: var is undefined, function declarations are fully hoisted, let/const are in the TDZ</td></tr><tr><td><code>this</code> inside callbacks/methods</td><td>who is the receiver at the call site? arrows are lexical</td></tr><tr><td>loops with <code>setTimeout</code></td><td>closures capture variables: var shares one, let makes one per iteration</td></tr><tr><td><code>+</code>, <code>==</code>, <code>[]</code>, <code>{}</code>, <code>null</code></td><td>ToPrimitive/ToNumber rules; <code>+</code> concatenates if either side is a string</td></tr><tr><td><code>class</code>, <code>super</code>, <code>extends</code></td><td>prototype chain, statics, field initialization order</td></tr><tr><td>promises, <code>async</code>, timers</td><td>sync → microtasks (FIFO) → one task → microtasks…</td></tr></table>`,
+diagram:{html:flow([["read code"],["label the category","hoisting? this? coercion? loop? async?","w"],["recall the rule"],["trace line by line","keep 3 lists for async","g"],["answer + say why","g"]]),steps:["Naming the category narrows the rules you need.","Trace by hand with a scratch table; do not trust intuition for async ordering.","Say the rule out loud as part of your answer: that is what interviewers score."]},
+ex:[{t:"Drill 1: hoisting",code:`var a = 1;
+function f(){ console.log(a); var a = 2; }
+f();`},{t:"Drill 2: closures in loops",code:`for (var i = 0; i < 3; i++) setTimeout(() => console.log("var", i), 0);
+for (let j = 0; j < 3; j++) setTimeout(() => console.log("let", j), 0);`},{t:"Drill 3: lost this",code:`const obj = { label: "x", regular(){ return this.label; } };
+const f = obj.regular;
+console.log(obj.regular(), f());`},{t:"Drill 4: coercion",code:`console.log([] + {}, [] == false, null == 0, null >= 0, "2" > "12", 2 > "12", typeof NaN);`},{t:"Drill 5: classes and prototypes",code:`class A { static s = "A"; x = 1; m(){ return "A.m"; } }
+class B extends A { m(){ return super.m() + ">B.m"; } }
+const b = new B();
+console.log(b.m(), B.s, Object.keys(b), b instanceof A);`},{t:"Drill 6: event loop with async/await",code:`console.log("a");
+setTimeout(() => console.log("b"), 0);
+Promise.resolve().then(() => console.log("c")).then(() => console.log("d"));
+(async () => { console.log("e"); await null; console.log("f"); })();
+console.log("g");`},{t:"Drill 7: arrays and strings",code:`console.log([1, 2, 3].indexOf(2), [NaN].includes(NaN), [NaN].indexOf(NaN), [, 1].length);
+console.log(Object.keys("ab"), [..."ab"].reverse().join(""), [3, 1, 10].sort().join());`},{t:"Drill 8: promises ignore non-function handlers",code:`Promise.resolve(1).then(2).then((v) => console.log("value passed through:", v));
+Promise.reject(new Error("x")).catch(() => "recovered").then((v) => console.log(v));`}],
+gotchas:[`Don't answer from instinct for async ordering; trace it.`,`Strict vs sloppy mode changes <code>this</code> answers; assume sloppy for scripts, strict in modules/classes unless told otherwise.`,`State the output format exactly: <code>console.log</code> with multiple args prints space-separated.`,`If the snippet could differ by environment (Node vs browser), say so.`],
+best:[`Always explain the rule behind each line of output; keep a personal list of the rules you got wrong.`,`Write your own puzzles weekly and test them in the console.`],
+iq:[["fresher","Drill 1: what prints and why?","undefined. The local var a is hoisted to the top of f and initialized to undefined, shadowing the outer a."],["mid","Drill 6: print order?","a e g c f d b. Sync: a, e (the async function runs until its first await), g. Microtasks in queue order: c (promise reaction), f (await continuation), then d (queued after c ran). Finally the timer task: b."],["senior","Drill 4: explain each result.","[] + {} is '[object Object]' (both become strings). [] == false: false→0, []→''→0 so true. null == 0 is false (null only equals undefined). null >= 0 is true (relational uses ToNumber). '2' > '12' compares strings lexicographically (true). 2 > '12' converts to numbers (false). typeof NaN is 'number'."]],
+practice:[`Run each drill only after writing your prediction; for each miss, write the rule in one sentence.`,`Create 5 new drills mixing two categories each (for example this + closures).`],
+teach:`<p>"Every 'what does it print' question hides one rule. Name the category, say the rule, then trace line by line. For async code, keep three piles: now, urgent notes (promises), and the later queue (timers)."</p>`}
+],quiz:[
+{code:`console.log(typeof typeof 1, [] + 1, [2] * [3], '3' + 4 + 5, 3 + 4 + '5');`,ans:`string 1 6 345 75`,why:`typeof returns a string, so typeof of that is "string". [] becomes "" so [] + 1 is "1". [2]*[3] converts both to numbers: 6. '3' + 4 + 5 concatenates left to right ("345"); 3 + 4 + '5' adds first (7) then concatenates ("75").`},
+{code:`try { let x = 1; { console.log(typeof x); let x = 2; } } catch (e) { console.log(e.name); }`,ans:`ReferenceError`,why:`The inner let x shadows the outer x for the whole inner block, so typeof x inside it hits the temporal dead zone. Unlike typeof of an undeclared name, typeof on a TDZ variable throws.`}]},
+
+{n:32,title:"Polyfills and utilities",goal:"Write the classic utility functions from scratch, with the edge cases interviewers probe.",topics:[
+{id:"d32-fn-polyfills",title:"Function polyfills: call, bind, curry, memoize, debounce",lv:["mid","senior"],
+eli5:`<p>A polyfill is <b>building a tool yourself to prove you understand how it works</b>. Like being asked to make a pencil sharpener from scratch: if you can, you really know what a sharpener does. <code>bind</code> is a sticky note that says "always call me with this person". <code>debounce</code> is a doorman who waits until people stop arriving. <code>memoize</code> is a notebook that remembers answers.</p>`,
+why:`<p>Writing these exposes whether you understand <code>this</code>, closures, arguments, timers and edge cases. They appear in a large share of mid and senior frontend interviews.</p>`,
+tech:`<ul class="pts"><li><b>call/apply:</b> temporarily attach the function to the context under a unique key (a Symbol), invoke it, then clean up. <code>null</code>/<code>undefined</code> context falls back to the global object in sloppy mode; primitives are boxed.</li><li><b>bind:</b> returns a function that remembers <code>this</code> and leading args. When called with <code>new</code>, the bound <code>this</code> is ignored and the prototype chain must still work (<code>instanceof</code>).</li><li><b>curry:</b> collect arguments until you have <code>fn.length</code> of them; pass through <code>this</code>.</li><li><b>compose/pipe:</b> reduce functions right-to-left or left-to-right; an async pipe chains promises.</li><li><b>memoize:</b> cache by a key built from the arguments (a resolver option); expose the cache; beware unbounded growth and impure functions.</li><li><b>once:</b> run on the first call, return the stored result afterwards.</li><li><b>debounce:</b> restart a timer on every call; options <code>leading</code>/<code>trailing</code>; methods <code>cancel</code> and <code>flush</code>; preserve <code>this</code>/args. <b>throttle:</b> at most once per interval, with a trailing call so the last event isn't lost.</li></ul>`,
+diagram:{html:flow([["bound = myBind(fn, ctx, 1)"],["bound(2)","fn.apply(ctx, [1, 2])","w"],["new bound(2)","this = new object, ctx ignored","g"]]),steps:["The bound function stores the target, the context and the preset arguments in a closure.","A normal call applies the original with the stored context and preset args followed by the new args.","With <code>new</code>, <code>this</code> is the freshly created object (which inherits from the original's prototype), so the stored context must be ignored."]},
+ex:[{t:"call, apply, bind, curry, compose, memoize, once (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+function myCall(fn, ctx, ...args){
+  ctx = ctx == null ? globalThis : Object(ctx);
+  const key = Symbol();
+  ctx[key] = fn;
+  try { return ctx[key](...args); } finally { delete ctx[key]; }
+}
+const myApply = (fn, ctx, args = []) => myCall(fn, ctx, ...args);
+function myBind(fn, ctx, ...preset){
+  function bound(...args){ return fn.apply(this instanceof bound ? this : ctx, [...preset, ...args]); }
+  if (fn.prototype) bound.prototype = Object.create(fn.prototype);
+  return bound;
+}
+const curry = (fn, arity = fn.length) => function c(...a){ return a.length >= arity ? fn.apply(this, a) : (...b) => c.apply(this, [...a, ...b]); };
+const pipe = (...f) => (x) => f.reduce((v, fn) => fn(v), x);
+const compose = (...f) => (x) => f.reduceRight((v, fn) => fn(v), x);
+const memoize = (fn, resolver = (...a) => JSON.stringify(a)) => {
+  const cache = new Map();
+  const m = function(...a){ const k = resolver(...a); if (cache.has(k)) return cache.get(k); const v = fn.apply(this, a); cache.set(k, v); return v; };
+  m.cache = cache; return m;
+};
+const once = (fn) => { let done = false, val; return function(...a){ if (!done) { done = true; val = fn.apply(this, a); } return val; }; };
+
+function greet(g, p){ return g + " " + this.name + p; }
+check("call", myCall(greet, { name: "Ana" }, "Hi", "!") === "Hi Ana!");
+check("apply", myApply(greet, { name: "Ana" }, ["Yo", "?"]) === "Yo Ana?");
+check("bind with preset args", myBind(greet, { name: "Bo" }, "Hey")(".") === "Hey Bo.");
+function P(x){ this.x = x; }
+const BP = myBind(P, { ignored: 1 }, 5);
+const inst = new BP();
+check("bind + new ignores context and keeps instanceof", inst.x === 5 && inst instanceof P && !("ignored" in inst));
+const add3 = curry((a, b, c) => a + b + c);
+check("curry (1)(2)(3) and (1,2)(3)", add3(1)(2)(3) === 6 && add3(1, 2)(3) === 6 && add3(1)(2, 3) === 6);
+check("pipe vs compose order", pipe((x) => x + 1, (x) => x * 2)(3) === 8 && compose((x) => x + 1, (x) => x * 2)(3) === 7);
+let calls = 0; const sq = memoize((n) => { calls++; return n * n; });
+sq(4); sq(4); sq(5);
+check("memoize calls fn once per distinct arg", calls === 2 && sq.cache.size === 2);
+let ran = 0; const init = once(() => ++ran);
+init(); init();
+check("once", ran === 1 && init() === 1);`},
+{t:"debounce (leading/trailing/cancel) and throttle (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function debounce(fn, ms, { leading = false, trailing = true } = {}){
+  let t, lastArgs, lastThis, result;
+  const invoke = () => { const a = lastArgs, th = lastThis; lastArgs = lastThis = undefined; result = fn.apply(th, a); return result; };
+  function d(...args){
+    lastArgs = args; lastThis = this;
+    const callNow = leading && !t;
+    clearTimeout(t);
+    t = setTimeout(() => { t = undefined; if (trailing && lastArgs) invoke(); }, ms);
+    if (callNow) invoke();
+    return result;
+  }
+  d.cancel = () => { clearTimeout(t); t = undefined; lastArgs = lastThis = undefined; };
+  d.flush = () => { if (t) { clearTimeout(t); t = undefined; if (lastArgs) return invoke(); } return result; };
+  return d;
+}
+function throttle(fn, ms){
+  let last = 0, t, lastArgs, lastThis;
+  const run = () => { last = Date.now(); t = undefined; fn.apply(lastThis, lastArgs); };
+  return function(...a){
+    lastArgs = a; lastThis = this;
+    const rem = ms - (Date.now() - last);
+    if (rem <= 0) { clearTimeout(t); t = undefined; run(); }
+    else if (!t) t = setTimeout(run, rem);
+  };
+}
+(async () => {
+  let n = 0; const d = debounce(() => n++, 20);
+  d(); d(); d(); await sleep(50);
+  check("trailing debounce: burst runs once", n === 1);
+  let m = 0; const l = debounce(() => m++, 20, { leading: true, trailing: false });
+  l(); l(); l();
+  check("leading debounce runs immediately once", m === 1);
+  await sleep(50);
+  check("leading-only does not run again", m === 1);
+  let k = 0; const c = debounce(() => k++, 20); c(); c.cancel(); await sleep(50);
+  check("cancel prevents the call", k === 0);
+  let f = 0; const fl = debounce(() => f++, 1000); fl(); fl.flush();
+  check("flush runs pending call now", f === 1);
+  let t = 0; const th = throttle(() => t++, 20);
+  for (let i = 0; i < 5; i++) th();
+  check("throttle: leading call happens immediately", t === 1);
+  await sleep(60);
+  check("throttle: one trailing call keeps the last event", t === 2);
+  const ctxObj = { v: 7, go: debounce(function(){ return this.v; }, 5, { leading: true }) };
+  check("debounce preserves this", ctxObj.go() === 7);
+})();`}],
+gotchas:[`<code>bind</code> must support <code>new</code> and keep the prototype, or <code>instanceof</code> breaks.`,`Using <code>ctx.fn = this</code> as a plain key can overwrite real properties: use a Symbol and delete it.`,`<code>curry</code> breaks with default/rest parameters because <code>fn.length</code> ignores them; accept an explicit arity.`,`Arrow functions can't forward <code>this</code> in debounce/throttle; use a regular function for the wrapper.`,`<code>JSON.stringify</code> memo keys fail for functions, <code>undefined</code>, cycles and key order; offer a resolver.`,`Debounce without cancel causes late calls after unmount (a classic UI bug).`],
+best:[`State the edge cases you handle (this, new, args, cancel) before writing code.`,`Write 3–5 self-checks for every utility; run them.`,`In production use well-tested libraries (lodash-es, es-toolkit); polyfills are for understanding.`],
+iq:[["mid","Write bind.","Return a function that applies the original with (this instanceof bound ? this : ctx) and preset+call args; set bound.prototype from the original's prototype so new and instanceof work."],["mid","Debounce vs throttle with an example for each.","Debounce: search-as-you-type, runs after the user pauses. Throttle: scroll/resize handlers, runs at most once per interval."],["senior","How would you make memoize safe for objects and avoid leaks?","Use a resolver for keys, WeakMap keyed by the object for single-object arguments, an LRU/size cap, and don't memoize impure functions."],["senior","Why does curry fail for functions with default parameters?","fn.length counts parameters before the first default or rest parameter, so the arity is under-reported; pass arity explicitly."]],
+practice:[`Add a <code>maxWait</code> option to debounce.`,`Write <code>partial(fn, ...preset)</code> with placeholders (for example a <code>_</code> symbol).`],
+teach:`<p>"bind remembers who 'me' is and some arguments; with new, it must forget 'me'. debounce waits for quiet, throttle limits the rate. Always say which edge cases you handle: this, new, cancel."</p>`},
+
+{id:"d32-data-polyfills",title:"Data utilities: map, reduce, groupBy, deepEqual, get/set",lv:["mid","senior"],
+eli5:`<p>These are the <b>everyday tools in a data toolbox</b>: sorting toys into piles (groupBy), counting only different toys (uniq), checking if two toy boxes hold exactly the same toys, even boxes inside boxes (deepEqual), and finding a toy using an address like "shelf.box.toy" (get).</p>`,
+why:`<p>Real programs transform data constantly. Interviewers ask for these to see if you handle sparse arrays, initial values, nesting, prototypes and equality correctly.</p>`,
+tech:`<ul class="pts"><li><b>Array polyfills</b> must skip holes (<code>i in arr</code>), pass <code>(value, index, array)</code> to the callback, honor <code>thisArg</code>, and for <code>reduce</code> handle a missing initial value (use the first existing element; throw <code>TypeError</code> on an empty array).</li><li><b>flat(depth):</b> recursion with a depth counter; <code>Infinity</code> for full flatten.</li><li><b>groupBy/chunk/uniqBy:</b> single pass using a Map/Set for O(n).</li><li><b>get/set by path:</b> normalize <code>a[0].b</code> to keys; stop on <code>null</code>; create arrays vs objects when setting missing parents.</li><li><b>deepEqual:</b> same reference or <code>Object.is</code>; both objects with the same prototype; compare Dates by time; compare own keys (including symbols); recurse. Mention cycles (track visited pairs) and Map/Set as extensions.</li><li><b>flatten object keys</b> (<code>{a:{b:1}}</code> → <code>{"a.b":1}</code>) and the inverse are frequent follow-ups.</li></ul>`,
+diagram:{html:flow([["deepEqual(a, b)"],["same ref / Object.is?","yes → true","g"],["both objects, same prototype?","no → false","r"],["same own keys?","no → false","r"],["every key: deepEqual(a[k], b[k])","w"]]),steps:["Cheap checks first: identical values return immediately.","Different kinds or different prototypes can never be equal.","Different key counts are a quick reject.","Only then recurse into each key."]},
+ex:[{t:"Array and object utilities with self-checks",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const myMap = (arr, fn, thisArg) => { const out = new Array(arr.length); for (let i = 0; i < arr.length; i++) if (i in arr) out[i] = fn.call(thisArg, arr[i], i, arr); return out; };
+const myFilter = (arr, fn) => { const out = []; for (let i = 0; i < arr.length; i++) if (i in arr && fn(arr[i], i, arr)) out.push(arr[i]); return out; };
+const myReduce = (arr, fn, ...init) => {
+  let i = 0, acc;
+  if (init.length) acc = init[0];
+  else { while (i < arr.length && !(i in arr)) i++; if (i >= arr.length) throw new TypeError("Reduce of empty array with no initial value"); acc = arr[i++]; }
+  for (; i < arr.length; i++) if (i in arr) acc = fn(acc, arr[i], i, arr);
+  return acc;
+};
+const flat = (arr, d = 1) => arr.reduce((a, x) => Array.isArray(x) && d > 0 ? a.concat(flat(x, d - 1)) : a.concat([x]), []);
+const groupBy = (arr, fn) => arr.reduce((o, x) => { const k = fn(x); (o[k] ??= []).push(x); return o; }, Object.create(null));
+const chunk = (a, n) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i * n, i * n + n));
+const uniqBy = (a, fn) => { const s = new Set(); return a.filter((x) => { const k = fn(x); if (s.has(k)) return false; s.add(k); return true; }); };
+const get = (o, path, def) => { const keys = String(path).replace(/\\[(\\w+)\\]/g, ".$1").split(".").filter(Boolean); let v = o; for (const k of keys) { if (v == null) return def; v = v[k]; } return v === undefined ? def : v; };
+const set = (o, path, val) => { const keys = String(path).replace(/\\[(\\w+)\\]/g, ".$1").split(".").filter(Boolean); let cur = o; keys.forEach((k, i) => { if (i === keys.length - 1) cur[k] = val; else cur = cur[k] ??= /^\\d+$/.test(keys[i + 1]) ? [] : {}; }); return o; };
+const flattenObj = (o, prefix = "", out = {}) => { for (const [k, v] of Object.entries(o)) { const key = prefix ? prefix + "." + k : k; if (v && typeof v === "object" && !Array.isArray(v)) flattenObj(v, key, out); else out[key] = v; } return out; };
+
+check("map skips holes", JSON.stringify(myMap([1, , 3], (x) => x * 2)) === "[2,null,6]" && !(1 in myMap([1, , 3], (x) => x)));
+check("filter passes index", myFilter([5, 6, 7], (x, i) => i !== 1).join() === "5,7");
+check("reduce with and without init", myReduce([1, 2, 3], (a, b) => a + b) === 6 && myReduce([1, 2], (a, b) => a + b, 10) === 13);
+let threw = false; try { myReduce([], (a, b) => a + b); } catch (e) { threw = e instanceof TypeError; }
+check("reduce on empty without init throws TypeError", threw);
+check("flat depth", JSON.stringify(flat([1, [2, [3, [4]]]], 2)) === "[1,2,3,[4]]" && flat([1, [2, [3]]], Infinity).join() === "1,2,3");
+check("groupBy", JSON.stringify(groupBy([1, 2, 3, 4], (n) => (n % 2 ? "odd" : "even"))) === '{"odd":[1,3],"even":[2,4]}');
+check("chunk", JSON.stringify(chunk([1, 2, 3, 4, 5], 2)) === "[[1,2],[3,4],[5]]");
+check("uniqBy keeps first", uniqBy([{ id: 1, v: "a" }, { id: 1, v: "b" }, { id: 2, v: "c" }], (x) => x.id).map((x) => x.v).join() === "a,c");
+check("get with array path and default", get({ a: [{ b: 5 }] }, "a[0].b") === 5 && get({}, "a.b.c", "dflt") === "dflt");
+check("set creates arrays and objects", JSON.stringify(set({}, "a[0].b.c", 1)) === '{"a":[{"b":{"c":1}}]}');
+check("flattenObj", JSON.stringify(flattenObj({ a: { b: 1, c: { d: 2 } }, e: [1] })) === '{"a.b":1,"a.c.d":2,"e":[1]}');`},
+{t:"deepEqual and why JSON comparison is wrong",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const deepEqual = (a, b, seen = new WeakMap()) => {
+  if (Object.is(a, b)) return true;
+  if (typeof a !== "object" || typeof b !== "object" || !a || !b) return false;
+  if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b)) return false;
+  if (a instanceof Date) return a.getTime() === b.getTime();
+  if (seen.get(a) === b) return true;                 // cycle: assume equal while comparing
+  seen.set(a, b);
+  const ka = Reflect.ownKeys(a), kb = Reflect.ownKeys(b);
+  if (ka.length !== kb.length) return false;
+  return ka.every((k) => Object.hasOwn(b, k) && deepEqual(a[k], b[k], seen));
+};
+check("nested objects", deepEqual({ a: [1, { b: 2 }] }, { a: [1, { b: 2 }] }));
+check("different values", !deepEqual({ a: 1 }, { a: 2 }));
+check("NaN equals NaN here", deepEqual({ n: NaN }, { n: NaN }));
+check("Dates by time", deepEqual(new Date(5), new Date(5)) && !deepEqual(new Date(5), new Date(6)));
+check("array vs object", !deepEqual([], {}));
+check("different key counts", !deepEqual({ a: 1 }, { a: 1, b: undefined }));
+const x = { v: 1 }; x.self = x; const y = { v: 1 }; y.self = y;
+check("handles cycles", deepEqual(x, y));
+console.log(JSON.stringify({ a: undefined, b: () => 1, c: NaN, d: new Date(0) }));`}],
+gotchas:[`<code>JSON.stringify(a) === JSON.stringify(b)</code> depends on key order and drops undefined/functions/symbols, converts NaN to null, throws on cycles.`,`<code>for...in</code> includes inherited keys; use own keys.`,`<code>arr.map(parseInt)</code>-style bugs: remember callbacks receive three arguments.`,`Holes versus <code>undefined</code>: <code>i in arr</code> distinguishes them.`,`<code>Object.groupBy</code> exists now, but interviewers want to see the reduce version.`,`<code>get</code> on a path with falsy values (0, "") must return them, not the default; only <code>undefined</code> triggers the default.`],
+best:[`State your equality semantics (NaN, -0, prototypes, Dates) before coding deepEqual.`,`Prefer single-pass O(n) solutions with Map/Set.`,`For production use <code>structuredClone</code> and tested utility libraries.`],
+iq:[["mid","Implement Array.prototype.reduce.","Handle holes, pass (acc, value, index, array), and if no initial value use the first existing element and throw TypeError when none exists."],["senior","Write deepEqual. What are the tricky parts?","Prototype equality, Dates, NaN, symbols, key counts vs undefined values, cycles (visited map), and typed arrays/Map/Set as extensions."],["senior","How would you implement lodash.get?","Normalize path (string with brackets to keys), walk the object stopping at null/undefined, return the default only when the final value is undefined."]],
+practice:[`Add <code>Map</code> and <code>Set</code> support to deepEqual.`,`Implement <code>unflattenObj</code> (the inverse of flattenObj), including array indexes.`],
+teach:`<p>"Array tools must skip holes and pass three arguments. deepEqual checks same value, same kind, same prototype, same keys, then each key. JSON comparison lies about order, undefined, NaN and cycles."</p>`}
+],quiz:[
+{code:`function f(){ return this.v; }
+const a = f.bind({ v: 1 }), b = a.bind({ v: 2 });
+console.log(a(), b(), f.call({ v: 3 }), a.call({ v: 4 }));`,ans:`1 1 3 1`,why:`A bound function's this cannot be changed by later bind or call, so b() and a.call(...) still use {v: 1}. The original f is unaffected.`},
+{code:`console.log(JSON.stringify({ a: undefined, b: () => 1, c: NaN, d: new Date(0) }));`,ans:`{"c":null,"d":"1970-01-01T00:00:00.000Z"}`,why:`JSON drops undefined and function values, turns NaN into null and serializes Dates as ISO strings. This is why JSON.stringify is a poor basis for deep equality or deep cloning.`}]},
+
+{n:33,title:"Async implementations",goal:"Implement promises and the async utilities that interviewers love, and know every edge case.",topics:[
+{id:"d33-promise-impl",title:"Implement a Promise and its combinators",lv:["senior"],
+eli5:`<p>Building your own Promise is like <b>building your own buzzer machine</b>. You need: a light that starts off, can turn green (food) or red (sorry) exactly once, a list of people waiting for the buzz, and a rule that anyone who asks "tell me when it buzzes" gets a <b>new</b> buzzer of their own so the chain can continue. And the buzz must always happen "in a moment", never instantly, so everyone behaves the same.</p>`,
+why:`<p>Implementing <code>Promise</code> shows whether you truly understand states, chaining, microtask timing and error propagation. It's a staple senior question.</p>`,
+tech:`<ul class="pts"><li><b>State:</b> pending → fulfilled/rejected once; the first resolve/reject call wins (the executor's later calls are ignored).</li><li><b><code>then</code> returns a new promise.</b> Each handler runs in a <b>microtask</b> (<code>queueMicrotask</code>), even if the promise is already settled. The handler's return value resolves the new promise; a throw rejects it; a missing handler passes the value/reason through.</li><li><b>Resolution procedure:</b> resolving with a thenable (object with a <code>then</code> function) adopts its state; resolving a promise with itself is a <code>TypeError</code>; guard against thenables that call resolve twice.</li><li><b>Combinators:</b> <code>all</code> (order by index, empty → resolves []), <code>allSettled</code>, <code>race</code>, <code>any</code> (AggregateError), plus <code>catch</code>/<code>finally</code> (finally passes the original result through).</li><li>Verification trick: run the same ordering test against native <code>Promise</code> and yours and compare the logs.</li></ul>`,
+diagram:{html:flow([["new MyPromise(executor)","runs now, synchronously"],["resolve(v) / reject(e)","first call wins","w"],["state = settled","handlers queued as microtasks","g"],["then(f, g)","returns a NEW promise","g"]]),steps:["The executor runs synchronously with resolve/reject functions.","Settling stores the value and schedules every registered handler through the microtask queue.","<code>then</code> registers a handler pair plus the resolve/reject of the derived promise.","Each handler's outcome settles the derived promise, which lets chains continue."]},
+ex:[{t:"A compact Promise with combinators, verified against the native one",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+class MyPromise {
+  #state = "pending"; #value; #handlers = [];
+  constructor(executor){
+    let done = false;
+    const res = (v) => { if (done) return; done = true; this.#resolve(v); };
+    const rej = (e) => { if (done) return; done = true; this.#settle("rejected", e); };
+    try { executor(res, rej); } catch (e) { rej(e); }
+  }
+  #resolve(x){
+    if (this.#state !== "pending") return;
+    if (x === this) return this.#settle("rejected", new TypeError("Chaining cycle detected"));
+    if (x !== null && (typeof x === "object" || typeof x === "function")) {
+      let then;
+      try { then = x.then; } catch (e) { return this.#settle("rejected", e); }
+      if (typeof then === "function") {
+        let called = false;
+        try {
+          then.call(x, (y) => { if (called) return; called = true; this.#resolve(y); }, (r) => { if (called) return; called = true; this.#settle("rejected", r); });
+        } catch (e) { if (!called) { called = true; this.#settle("rejected", e); } }
+        return;
+      }
+    }
+    this.#settle("fulfilled", x);
+  }
+  #settle(state, value){
+    if (this.#state !== "pending") return;
+    this.#state = state; this.#value = value;
+    this.#handlers.forEach((h) => this.#run(h)); this.#handlers = [];
+  }
+  #run({ onF, onR, resolve, reject }){
+    queueMicrotask(() => {
+      const ok = this.#state === "fulfilled", cb = ok ? onF : onR;
+      if (typeof cb !== "function") { (ok ? resolve : reject)(this.#value); return; }
+      try { resolve(cb(this.#value)); } catch (e) { reject(e); }
+    });
+  }
+  then(onF, onR){ return new MyPromise((resolve, reject) => { const h = { onF, onR, resolve, reject }; this.#state === "pending" ? this.#handlers.push(h) : this.#run(h); }); }
+  catch(f){ return this.then(undefined, f); }
+  finally(f){ return this.then((v) => MyPromise.resolve(f()).then(() => v), (e) => MyPromise.resolve(f()).then(() => { throw e; })); }
+  static resolve(v){ return v instanceof MyPromise ? v : new MyPromise((r) => r(v)); }
+  static reject(e){ return new MyPromise((_, r) => r(e)); }
+  static all(it){ return new MyPromise((res, rej) => { const a = [...it]; if (!a.length) return res([]); const out = []; let left = a.length; a.forEach((p, i) => MyPromise.resolve(p).then((v) => { out[i] = v; if (--left === 0) res(out); }, rej)); }); }
+  static allSettled(it){ return MyPromise.all([...it].map((p) => MyPromise.resolve(p).then((value) => ({ status: "fulfilled", value }), (reason) => ({ status: "rejected", reason })))); }
+  static race(it){ return new MyPromise((res, rej) => { for (const p of it) MyPromise.resolve(p).then(res, rej); }); }
+  static any(it){ return new MyPromise((res, rej) => { const a = [...it]; if (!a.length) return rej(new AggregateError([], "All promises were rejected")); const errs = []; let left = a.length; a.forEach((p, i) => MyPromise.resolve(p).then(res, (e) => { errs[i] = e; if (--left === 0) rej(new AggregateError(errs, "All promises were rejected")); })); }); }
+}
+const sleep = (ms, v) => new Promise((r) => setTimeout(r, ms, v));
+async function trace(P){
+  const log = [];
+  P.resolve().then(() => log.push(1)).then(() => log.push(2)).then(() => log.push(3));
+  P.resolve().then(() => log.push("A")).then(() => log.push("B"));
+  await sleep(10);
+  return log.join(",");
+}
+(async () => {
+  check("same chain interleaving as native", (await trace(Promise)) === (await trace(MyPromise)));
+  let x = 0; new MyPromise((r) => r()).then(() => (x = 1));
+  check("then callbacks are async", x === 0);
+  check("adopts thenables", (await MyPromise.resolve({ then(r){ r(5); } })) === 5);
+  check("first resolve wins", (await new MyPromise((r) => { r(1); r(2); throw new Error("ignored"); })) === 1);
+  check("throw in then rejects", (await MyPromise.resolve(1).then(() => { throw new Error("boom"); }).catch((e) => e.message)) === "boom");
+  check("non-function handler passes through", (await MyPromise.resolve(7).then(2)) === 7);
+  check("finally passes the value through", (await MyPromise.resolve(3).finally(() => 99)) === 3);
+  check("all keeps order, handles non-promises", JSON.stringify(await MyPromise.all([sleep(10, "a"), "b", sleep(1, "c")])) === '["a","b","c"]');
+  check("all([]) resolves []", (await MyPromise.all([])).length === 0);
+  check("all rejects on first rejection", (await MyPromise.all([sleep(5, 1), MyPromise.reject("no")]).catch((e) => e)) === "no");
+  check("allSettled", JSON.stringify(await MyPromise.allSettled([1, MyPromise.reject("x")])) === '[{"status":"fulfilled","value":1},{"status":"rejected","reason":"x"}]');
+  check("race", (await MyPromise.race([sleep(20, "slow"), sleep(1, "fast")])) === "fast");
+  check("any picks first fulfillment", (await MyPromise.any([MyPromise.reject(1), sleep(5, "ok")])) === "ok");
+  const e = await MyPromise.any([MyPromise.reject(1), MyPromise.reject(2)]).catch((err) => err);
+  check("any rejects with AggregateError", e instanceof AggregateError && e.errors.join() === "1,2");
+  const self = new MyPromise((r) => setTimeout(() => r(self), 1));
+  check("self-resolution is a TypeError", (await self.catch((er) => er)) instanceof TypeError);
+})();`}],
+gotchas:[`Forgetting that <code>then</code> must return a <b>new</b> promise breaks chaining.`,`Running handlers synchronously when already settled makes behavior inconsistent (Zalgo). Always defer with a microtask.`,`Ignoring the thenable rules (resolve with another promise) is the most common incomplete implementation.`,`<code>Promise.all</code> must keep result order by index, not completion order.`,`Not guarding "called twice" from a misbehaving thenable.`,`The full A+ spec has many more tests (2.3.x); in an interview, state which parts you cover.`],
+best:[`Build in layers: state + then (async), then resolution procedure, then statics; write ordering tests against native Promise.`,`Mention that real code should use native promises.`],
+iq:[["senior","Implement a Promise from scratch.","State machine with value and handler queue; then returns a new promise and schedules handlers with queueMicrotask; resolve implements the thenable adoption procedure; add catch/finally and statics."],["senior","Why must handlers be async even for settled promises?","Consistency: callers can rely on the callback never running before the current synchronous code finishes, avoiding re-entrancy bugs."],["senior","Implement Promise.all.","Return a promise; resolve [] for empty input; wrap each item with Promise.resolve, store results by index, resolve when the counter reaches zero, reject on the first rejection."]],
+practice:[`Add <code>MyPromise.withResolvers</code> and <code>MyPromise.try</code>.`,`Write 5 extra ordering tests comparing MyPromise with native and fix any difference.`],
+teach:`<p>"A promise is a one-shot state machine with a waiting list. then makes a new promise, every callback goes through the microtask queue, and resolving with another promise means 'become that one'."</p>`},
+
+{id:"d33-async-utils",title:"Async utilities: retry, timeout, limiter, dedupe",lv:["mid","senior"],
+eli5:`<p>These are <b>helpers for dealing with slow, flaky helpers</b>. Retry: "ask again if they don't answer, but wait longer each time". Timeout: "give up after 10 seconds". Limiter: "only let 3 kids use the slide at once". Dedupe: "if five kids ask for the same toy, fetch it once and share".</p>`,
+why:`<p>Production frontends and Node services call flaky networks and slow APIs. Interviewers ask for these helpers because they test promises, closures, timers, queues and cleanup together.</p>`,
+tech:`<ul class="pts"><li><b>promisify:</b> wrap an error-first callback API into a promise.</li><li><b>timeout:</b> <code>Promise.race</code> with a timer; always <b>clear the timer</b> and (better) abort the underlying work with <code>AbortSignal</code>.</li><li><b>retry:</b> loop with exponential backoff (<code>base * 2^attempt</code>), optional jitter, max attempts, only for retryable errors and idempotent operations.</li><li><b>limiter/pool:</b> a queue plus an <code>active</code> counter; when a task finishes, start the next.</li><li><b>dedupe in-flight:</b> a Map from key to the pending promise; delete it in <code>finally</code>.</li><li><b>sequential vs parallel:</b> <code>for...of</code> + await vs <code>Promise.all(map)</code>; <code>reduce</code> to chain.</li></ul>`,
+diagram:{html:flow([["request A (key=1)"],["request B (key=1)"],["inflight Map: key 1 → promise","one real call","g"],["both callers get the same result"]]),steps:["The first call creates the real promise and stores it under the key.","A second call with the same key receives the stored promise instead of starting another request.","When the promise settles, the entry is removed so later calls fetch fresh data."]},
+ex:[{t:"Utilities with self-checks",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const sleep = (ms, v) => new Promise((r) => setTimeout(r, ms, v));
+const promisify = (fn) => (...a) => new Promise((res, rej) => fn(...a, (e, v) => (e ? rej(e) : res(v))));
+const withTimeout = (p, ms) => { let t; return Promise.race([p, new Promise((_, rej) => (t = setTimeout(() => rej(new Error("timeout")), ms)))]).finally(() => clearTimeout(t)); };
+async function retry(fn, { tries = 3, base = 5 } = {}){
+  let err;
+  for (let i = 0; i < tries; i++) {
+    try { return await fn(i); } catch (e) { err = e; if (i < tries - 1) await sleep(base * 2 ** i); }
+  }
+  throw err;
+}
+const limiter = (max) => {
+  let active = 0, peak = 0; const q = [];
+  const next = () => {
+    if (active >= max || !q.length) return;
+    active++; peak = Math.max(peak, active);
+    const { fn, res, rej } = q.shift();
+    fn().then(res, rej).finally(() => { active--; next(); });
+  };
+  const run = (fn) => new Promise((res, rej) => { q.push({ fn, res, rej }); next(); });
+  run.peak = () => peak;
+  return run;
+};
+const dedupe = (fn) => { const inflight = new Map(); return (key) => { if (inflight.has(key)) return inflight.get(key); const p = fn(key).finally(() => inflight.delete(key)); inflight.set(key, p); return p; }; };
+(async () => {
+  const delayedCb = (x, cb) => setTimeout(() => (x < 0 ? cb(new Error("neg")) : cb(null, x * 2)), 1);
+  const dbl = promisify(delayedCb);
+  check("promisify resolves", (await dbl(4)) === 8);
+  check("promisify rejects", (await dbl(-1).catch((e) => e.message)) === "neg");
+  check("timeout wins", (await withTimeout(sleep(50), 10).catch((e) => e.message)) === "timeout");
+  check("timeout passes the value", (await withTimeout(sleep(5, "ok"), 50)) === "ok");
+  let attempts = 0;
+  check("retry succeeds on 3rd try", (await retry(async () => { attempts++; if (attempts < 3) throw new Error("flaky"); return "ok"; })) === "ok" && attempts === 3);
+  check("retry gives up and throws last error", (await retry(async (i) => { throw new Error("fail" + i); }, { tries: 2 }).catch((e) => e.message)) === "fail1");
+  const run = limiter(2);
+  const results = await Promise.all([1, 2, 3, 4, 5].map((n) => run(async () => { await sleep(5); return n * n; })));
+  check("limiter keeps results in order", results.join() === "1,4,9,16,25");
+  check("limiter never exceeds the limit", run.peak() === 2);
+  let real = 0;
+  const fetchOnce = dedupe(async (k) => { real++; await sleep(5); return "data:" + k; });
+  const [a, b, c] = await Promise.all([fetchOnce("x"), fetchOnce("x"), fetchOnce("y")]);
+  check("dedupe shares in-flight work", a === b && real === 2 && c === "data:y");
+  await fetchOnce("x");
+  check("entry removed after settling (fresh call)", real === 3);
+})();`}],
+gotchas:[`A <code>race</code> timeout without clearing the timer keeps the process/page alive and leaks.`,`<code>Promise.race</code> does not cancel the losing work; pass an AbortSignal for real cancellation.`,`Retrying non-idempotent calls (payments) without an idempotency key duplicates side effects.`,`Backoff without jitter causes synchronized retries (thundering herd).`,`A limiter must start the next task in <code>finally</code> or a rejection stalls the queue.`,`Dedupe must delete the entry on both success and failure.`],
+best:[`Add jitter, a max delay and a retry budget; only retry on network/5xx/429 errors.`,`Combine timeouts with <code>AbortController</code> so work really stops.`,`Test with fake or tiny timers; keep helpers small and composable.`],
+iq:[["mid","Implement retry with exponential backoff.","Loop up to N attempts; on failure wait base*2^attempt (plus jitter) then retry; rethrow the last error after the final attempt."],["senior","Implement a concurrency limiter.","Keep a queue and an active count; start tasks while active < max; when a task settles, decrement and start the next; return a promise per task."],["senior","How do you prevent duplicate in-flight requests?","Store the pending promise in a Map keyed by request identity and delete it when it settles; later callers reuse it."],["architect","How do you design retries for a payment API?","Idempotency keys on the server, retries only on safe/transient errors, capped exponential backoff with jitter, a total time budget, circuit breaking and observability for attempts."]],
+practice:[`Add <code>AbortSignal</code> support to <code>withTimeout</code> and <code>retry</code>.`,`Implement <code>asyncMemoize</code> that caches resolved values with a TTL and dedupes in-flight calls.`],
+teach:`<p>"Retry asks again with growing pauses, timeout gives up (and must clean its timer), a limiter keeps only a few jobs running, and dedupe shares one in-flight request between callers."</p>`}
+],quiz:[
+{code:`Promise.resolve(1).then(2).then((v) => console.log(v));`,ans:`1`,why:`A non-function argument to then is ignored, so the value passes through to the next handler.`},
+{code:`const p = new Promise((r) => { r(1); r(2); throw new Error('x'); });
+p.then(console.log);`,ans:`1`,why:`Only the first settlement counts. The later resolve is ignored, and a throw after resolve is ignored too, so p is fulfilled with 1.`}]},
+
+{n:34,title:"Classic classes and algorithm patterns",goal:"Implement the data-structure style questions and recognize the standard algorithm patterns quickly.",topics:[
+{id:"d34-utilities",title:"EventEmitter, LRU, rate limiter and Observable",lv:["mid","senior"],
+eli5:`<p><b>EventEmitter</b> is a doorbell many people can listen to. <b>LRU cache</b> is a small desk: when it's full you throw away whatever you haven't touched for the longest time. A <b>rate limiter</b> is a bucket of tickets that refills slowly: no ticket, no entry. An <b>Observable</b> is a tap you can turn on, filter and transform, with a cleanup valve when you stop listening.</p>`,
+why:`<p>These four show up repeatedly in frontend and Node interviews. They test closures, Maps, time handling, API design and cleanup (unsubscribe).</p>`,
+tech:`<ul class="pts"><li><b>EventEmitter:</b> <code>on/off/once/emit</code>; copy the listener list before emitting; <code>once</code> wraps and removes itself; return an unsubscribe function.</li><li><b>LRU:</b> <code>Map</code> keeps insertion order. <code>get</code>: delete and re-insert to mark recent; <code>set</code>: when over capacity delete the first key (<code>map.keys().next().value</code>). O(1) for both.</li><li><b>Token bucket:</b> capacity and refill rate; on each request compute elapsed time, add tokens (capped), spend one if available. <b>Inject the clock</b> so it is testable. Alternatives: fixed window, sliding window log.</li><li><b>Observable:</b> a function that receives an observer <code>{next, error, complete}</code> and returns a cleanup. Operators (<code>map</code>, <code>filter</code>) return new Observables that subscribe to the source; <code>unsubscribe</code> must tear everything down.</li></ul>`,
+diagram:{html:flow([["get(a)"],["delete(a)","remove from old position"],["set(a, v)","re-insert at the end = most recent","g"],["over capacity?","delete first key = least recent","r"]]),steps:["A Map iterates in insertion order, so the first key is the least recently used.","Reading an item deletes and re-adds it so it moves to the most-recent end.","Inserting beyond capacity evicts the first (oldest) key."]},
+ex:[{t:"All four with self-checks",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+class Emitter {
+  #h = new Map();
+  on(t, f){ (this.#h.get(t) ?? this.#h.set(t, []).get(t)).push(f); return () => this.off(t, f); }
+  once(t, f){ const w = (...a) => { this.off(t, w); f(...a); }; return this.on(t, w); }
+  off(t, f){ this.#h.set(t, (this.#h.get(t) ?? []).filter((x) => x !== f)); }
+  emit(t, ...a){ [...(this.#h.get(t) ?? [])].forEach((f) => f(...a)); }
+}
+class LRU {
+  constructor(max){ this.max = max; this.map = new Map(); }
+  get(k){ if (!this.map.has(k)) return undefined; const v = this.map.get(k); this.map.delete(k); this.map.set(k, v); return v; }
+  set(k, v){ this.map.delete(k); this.map.set(k, v); if (this.map.size > this.max) this.map.delete(this.map.keys().next().value); return this; }
+}
+class TokenBucket {
+  constructor(cap, perSec, now = () => Date.now()){ Object.assign(this, { cap, tokens: cap, perSec, now, last: now() }); }
+  take(){ const t = this.now(); this.tokens = Math.min(this.cap, this.tokens + ((t - this.last) / 1000) * this.perSec); this.last = t; if (this.tokens >= 1) { this.tokens -= 1; return true; } return false; }
+}
+class Observable {
+  constructor(sub){ this._sub = sub; }
+  subscribe(o){
+    const obs = typeof o === "function" ? { next: o } : o; let closed = false, cleanup;
+    cleanup = this._sub({ next: (v) => { if (!closed) obs.next?.(v); }, error: (e) => { if (!closed) { closed = true; obs.error?.(e); cleanup?.(); } }, complete: () => { if (!closed) { closed = true; obs.complete?.(); cleanup?.(); } } });
+    return { unsubscribe(){ if (!closed) { closed = true; cleanup?.(); } } };
+  }
+  map(f){ return new Observable((o) => { const s = this.subscribe({ next: (v) => o.next(f(v)), error: (e) => o.error(e), complete: () => o.complete() }); return () => s.unsubscribe(); }); }
+  filter(p){ return new Observable((o) => { const s = this.subscribe({ next: (v) => p(v) && o.next(v), error: (e) => o.error(e), complete: () => o.complete() }); return () => s.unsubscribe(); }); }
+  static of(...vs){ return new Observable((o) => { vs.forEach((v) => o.next(v)); o.complete(); }); }
+}
+// Emitter
+const e = new Emitter(); const got = [];
+const off = e.on("x", (v) => got.push("on" + v)); e.once("x", (v) => got.push("once" + v));
+e.emit("x", 1); e.emit("x", 2); off(); e.emit("x", 3);
+check("emitter on/once/off", got.join() === "on1,once1,on2");
+const e2 = new Emitter(); const order = []; let unsub; unsub = e2.on("y", () => { order.push("a"); unsub(); }); e2.on("y", () => order.push("b")); e2.emit("y");
+check("unsubscribing during emit does not skip listeners", order.join() === "a,b");
+// LRU
+const c = new LRU(2); c.set("a", 1).set("b", 2); c.get("a"); c.set("c", 3);
+check("LRU evicts least recently used", c.get("b") === undefined && c.get("a") === 1 && c.get("c") === 3);
+// Token bucket with an injected clock
+let clock = 0; const tb = new TokenBucket(2, 1, () => clock);
+check("bucket allows burst up to capacity", tb.take() && tb.take() && !tb.take());
+clock = 1000; check("refills 1 token per second", tb.take() && !tb.take());
+clock = 10000; check("refill is capped at capacity", tb.take() && tb.take() && !tb.take());
+// Observable
+const seen = []; Observable.of(1, 2, 3, 4).filter((x) => x % 2 === 0).map((x) => x * 10).subscribe((v) => seen.push(v));
+check("observable operators", seen.join() === "20,40");
+let cleaned = 0, emit;
+const src = new Observable((o) => { emit = o.next; return () => cleaned++; });
+const sub = src.map((x) => x + 1).subscribe((v) => seen.push(v));
+emit(1); sub.unsubscribe(); emit(2);
+check("unsubscribe runs cleanup and stops values", cleaned === 1 && seen.join() === "20,40,2");`}],
+gotchas:[`Mutating the listener array while emitting skips handlers: copy first.`,`LRU with an object plus an array is O(n); use Map (or a doubly linked list + map).`,`Rate limiters that read the real clock are untestable; inject <code>now</code>.`,`Observables without cleanup leak timers and listeners.`,`Fixed-window limiters allow double bursts at the window edge; token bucket smooths it.`],
+best:[`Return unsubscribe functions from <code>on</code>/<code>subscribe</code>.`,`Define the contract first (capacity, eviction, errors), then code.`],
+iq:[["mid","Implement an LRU cache with O(1) get/put.","Use Map order: get deletes and re-inserts; set inserts and evicts the first key if over capacity (or a doubly linked list + hash map)."],["mid","Implement EventEmitter.","Map from event to listeners; on/off/once/emit; copy before emit; return unsubscribe."],["senior","Token bucket vs fixed window?","Token bucket allows controlled bursts and refills smoothly; fixed window is simple but allows up to 2x burst around window boundaries."],["senior","What is an Observable and how does it differ from a Promise?","A lazy, cancellable stream of zero or more values over time; a Promise is eager, single-valued and not cancellable."]],
+practice:[`Add <code>take(n)</code> and <code>debounceTime(ms)</code> operators to Observable.`,`Implement a sliding-window log rate limiter and compare behavior.`],
+teach:`<p>"Emitter: a doorbell with subscribe and unsubscribe. LRU: a Map where touching an item moves it to the back and the front gets evicted. Rate limiter: a bucket of tickets that refills. Observable: a cancellable stream with cleanup."</p>`},
+
+{id:"d34-dsa",title:"Algorithm patterns in JavaScript",lv:["fresher","mid","senior"],
+eli5:`<p>Most puzzles are <b>old puzzles in disguise</b>. "Find two numbers that add to a target" is the <b>phone book trick</b>: write each number down as you go so you can instantly check whether the partner you need is already in the book (hash map). "Longest run without repeats" is a <b>caterpillar</b> stretching its front and pulling its back (sliding window). "Is it in this sorted list?" is <b>guess-the-number</b> halving the range each time (binary search).</p>`,
+why:`<p>Even frontend interviews include a data-structures round. Knowing about ten patterns lets you recognize most problems and solve them cleanly in JavaScript.</p>`,
+tech:`<table><tr><th>Pattern</th><th>Use when</th><th>Complexity</th></tr><tr><td>Hash map / Set</td><td>lookups, counting, complements, dedupe</td><td>O(n)</td></tr><tr><td>Two pointers</td><td>sorted arrays, pairs, palindromes, partitions</td><td>O(n)</td></tr><tr><td>Sliding window</td><td>longest/shortest subarray or substring with a constraint</td><td>O(n)</td></tr><tr><td>Binary search</td><td>sorted data or monotonic answer</td><td>O(log n)</td></tr><tr><td>Stack</td><td>matching brackets, undo, monotonic problems</td><td>O(n)</td></tr><tr><td>BFS / DFS</td><td>trees, graphs, grids, shortest path (BFS), exhaustive search (DFS)</td><td>O(V+E)</td></tr><tr><td>Dynamic programming</td><td>overlapping subproblems (min coins, paths, sequences)</td><td>often O(n·m)</td></tr><tr><td>Backtracking</td><td>subsets, permutations, combinations</td><td>exponential</td></tr><tr><td>Sorting + scan</td><td>intervals, anagram grouping, top-k</td><td>O(n log n)</td></tr></table>
+<ul class="pts"><li>Use <code>Map</code> for frequency counts and complements; <code>Set</code> for membership. Use an index pointer for queues instead of <code>shift()</code> in large BFS loops.</li><li>Always state complexity and mention edge cases (empty, one element, duplicates, negatives).</li></ul>`,
+diagram:{html:flow([["Problem statement"],["Sorted? pairs?","two pointers / binary search","w"],["Subarray / substring?","sliding window","w"],["Counting / lookup?","hash map / set","g"],["Tree / graph / grid?","BFS or DFS","g"],["Choices + overlap?","DP or backtracking","r"]]),steps:["Read the constraints: sorted input hints at pointers/binary search; 'longest substring' hints at a window.","If you need fast membership or complements, reach for Map/Set.","Hierarchies and grids are traversals; decide BFS (levels, shortest path) vs DFS (explore all).","Overlapping subproblems with choices suggest DP; enumerate-all suggests backtracking."]},
+ex:[{t:"Ten classic solutions, self-checked",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const twoSum = (a, t) => { const m = new Map(); for (let i = 0; i < a.length; i++) { const need = t - a[i]; if (m.has(need)) return [m.get(need), i]; m.set(a[i], i); } return null; };
+const maxSubarray = (a) => { let best = -Infinity, cur = 0; for (const x of a) { cur = Math.max(x, cur + x); best = Math.max(best, cur); } return best; };
+const longestUnique = (s) => { const last = new Map(); let start = 0, best = 0; for (let i = 0; i < s.length; i++) { const c = s[i]; if (last.has(c) && last.get(c) >= start) start = last.get(c) + 1; last.set(c, i); best = Math.max(best, i - start + 1); } return best; };
+const validParens = (s) => { const pairs = { ")": "(", "]": "[", "}": "{" }, st = []; for (const c of s) { if ("([{".includes(c)) st.push(c); else if (st.pop() !== pairs[c]) return false; } return st.length === 0; };
+const binarySearch = (a, t) => { let lo = 0, hi = a.length - 1; while (lo <= hi) { const mid = (lo + hi) >> 1; if (a[mid] === t) return mid; a[mid] < t ? (lo = mid + 1) : (hi = mid - 1); } return -1; };
+const mergeIntervals = (iv) => { const s = [...iv].sort((x, y) => x[0] - y[0]), out = []; for (const [a, b] of s) { const last = out[out.length - 1]; if (last && a <= last[1]) last[1] = Math.max(last[1], b); else out.push([a, b]); } return out; };
+const topK = (a, k) => { const f = new Map(); for (const x of a) f.set(x, (f.get(x) || 0) + 1); return [...f].sort((x, y) => y[1] - x[1]).slice(0, k).map(([v]) => v); };
+const reverseList = (head) => { let prev = null; while (head) { [head.next, prev, head] = [prev, head, head.next]; } return prev; };
+const levelOrder = (root) => { const out = []; if (!root) return out; const q = [root]; for (let i = 0; i < q.length;) { const size = q.length - i, level = []; for (let j = 0; j < size; j++) { const n = q[i++]; level.push(n.v); n.l && q.push(n.l); n.r && q.push(n.r); } out.push(level); } return out; };
+const coinChange = (coins, amt) => { const dp = Array(amt + 1).fill(Infinity); dp[0] = 0; for (let i = 1; i <= amt; i++) for (const c of coins) if (c <= i) dp[i] = Math.min(dp[i], dp[i - c] + 1); return dp[amt] === Infinity ? -1 : dp[amt]; };
+const subsets = (a) => { const res = []; const go = (i, cur) => { if (i === a.length) { res.push(cur); return; } go(i + 1, cur); go(i + 1, [...cur, a[i]]); }; go(0, []); return res; };
+
+check("twoSum", JSON.stringify(twoSum([2, 7, 11, 15], 9)) === "[0,1]" && twoSum([1, 2], 10) === null);
+check("maxSubarray (Kadane)", maxSubarray([-2, 1, -3, 4, -1, 2, 1, -5, 4]) === 6 && maxSubarray([-3, -1, -2]) === -1);
+check("longest substring without repeats", longestUnique("abcabcbb") === 3 && longestUnique("pwwkew") === 3 && longestUnique("") === 0);
+check("valid parentheses", validParens("{[()]}") && !validParens("(]") && !validParens("((") && validParens(""));
+check("binary search", binarySearch([1, 3, 5, 7, 9], 7) === 3 && binarySearch([1, 3, 5], 4) === -1 && binarySearch([], 1) === -1);
+check("merge intervals", JSON.stringify(mergeIntervals([[1, 3], [2, 6], [8, 10], [15, 18]])) === "[[1,6],[8,10],[15,18]]");
+check("top k frequent", topK([1, 1, 1, 2, 2, 3], 2).join() === "1,2");
+const list = { v: 1, next: { v: 2, next: { v: 3, next: null } } };
+const rev = reverseList(list); check("reverse linked list", rev.v === 3 && rev.next.v === 2 && rev.next.next.v === 1 && rev.next.next.next === null);
+const tree = { v: 1, l: { v: 2, l: { v: 4 } }, r: { v: 3 } };
+check("level order (BFS)", JSON.stringify(levelOrder(tree)) === "[[1],[2,3],[4]]");
+check("coin change (DP)", coinChange([1, 2, 5], 11) === 3 && coinChange([2], 3) === -1 && coinChange([1], 0) === 0);
+check("subsets (backtracking)", subsets([1, 2, 3]).length === 8 && JSON.stringify(subsets([1, 2])) === "[[],[2],[1],[1,2]]");`}],
+gotchas:[`<code>Array.prototype.sort()</code> without a comparator sorts as strings.`,`<code>(lo + hi) >> 1</code> is fine in JS for typical sizes; for huge arrays use <code>Math.floor</code> (32-bit overflow).`,`Using <code>queue.shift()</code> in big BFS loops is O(n) per call; use an index pointer.`,`Mutating shared arrays in recursion (backtracking) without copying produces wrong results.`,`Forgetting empty-input and single-element cases.`,`<code>Object</code> keys are strings: counting numbers in a plain object merges <code>1</code> and <code>"1"</code>; use Map.`],
+best:[`Name the pattern aloud, state complexity, then code with small helper functions.`,`Test with the smallest and weirdest inputs first.`],
+iq:[["fresher","Two sum in O(n)?","Single pass with a Map from value to index: for each x check whether target - x is in the map, else store x."],["mid","Longest substring without repeating characters?","Sliding window with a Map of last seen index; move the window start past the previous occurrence; track the max length. O(n)."],["senior","BFS vs DFS: when each?","BFS finds shortest paths in unweighted graphs and processes by level; DFS is simpler for exhaustive search, path existence and tree recursion but can overflow the stack on deep inputs."],["senior","Explain DP with coin change.","dp[i] is the fewest coins to make i; transition dp[i] = min(dp[i - c] + 1) over coins; base dp[0] = 0; answer dp[amount] or -1 if unreachable. O(amount × coins)."]],
+practice:[`Solve 3 problems per pattern; for each, write the brute force first, then the optimized version.`,`Rewrite <code>levelOrder</code> to return a flat BFS order and a shortest-path version for a grid.`],
+teach:`<p>"Most puzzles are one of about ten patterns. Hash map for 'have I seen the partner?', window for 'longest stretch', halving for sorted data, stack for matching, BFS for shortest path. Name the pattern first."</p>`}
+],quiz:[
+{code:`console.log([...'hello'].reduce((m, c) => m.set(c, (m.get(c) || 0) + 1), new Map()));`,ans:`Map(4) {"h" => 1, "e" => 1, "l" => 2, "o" => 1}`,why:`A Map keeps insertion order and counts occurrences per character; this frequency-count idiom underlies anagram and top-k problems.`},
+{code:`const m = new Map(); m.set('a', 1).set('b', 2).set('c', 3);
+m.get('a'); m.delete('a'); m.set('a', 1);
+console.log([...m.keys()].join(''));`,ans:`bca`,why:`Deleting and re-inserting a key moves it to the end of the Map's iteration order. This is exactly how a Map-based LRU cache marks "recently used".`}]},
+
+{n:35,title:"UI machine coding and DOM challenges",goal:"Build accessible widgets and DOM utilities under time pressure, and explain how a virtual DOM works.",topics:[
+{id:"d35-ui-widgets",title:"Machine-coding rounds: widgets and accessibility",lv:["mid","senior"],
+eli5:`<p>A machine-coding round is "build a small working gadget in an hour". Think of building a <b>light switch panel</b>: it must work with a hand (mouse), a foot (keyboard) and a voice (screen reader). The wiring (state) must be in one place so the lights never disagree with the switches, and you test the odd cases: all switches off, flipping them very fast.</p>`,
+why:`<p>UI interviews check whether you can turn requirements into a clean component with correct state, event handling, accessibility and edge cases, without a framework. Common prompts: tabs, accordion, modal, autocomplete, star rating, todo list, carousel, infinite scroll.</p>`,
+tech:`<ul class="pts"><li><b>Approach:</b> clarify requirements → semantic HTML → state model (one source of truth) → render from state → events (delegate) → keyboard and ARIA → edge cases → polish.</li><li><b>Semantic first:</b> use <code>&lt;button&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;label&gt;</code>, <code>&lt;dialog&gt;</code>; ARIA fills gaps, it doesn't replace semantics.</li><li><b>Tabs pattern:</b> <code>role="tablist"/"tab"/"tabpanel"</code>, <code>aria-selected</code>, <code>aria-controls</code>, <b>roving tabindex</b> (only the active tab is in the tab order; arrow keys move, Home/End jump).</li><li><b>Accordion:</b> a button per header with <code>aria-expanded</code> and <code>aria-controls</code>.</li><li><b>Modal:</b> focus moves in, is trapped, Escape closes, focus returns to the trigger; the page behind is inert (<code>inert</code> attribute or <code>&lt;dialog&gt;</code> with <code>showModal()</code>).</li><li><b>Autocomplete (combobox):</b> <code>role="combobox"</code>, <code>aria-expanded</code>, <code>aria-activedescendant</code>; Down/Up/Enter/Escape; debounce and cancel stale requests (Day 30).</li><li><b>State as data:</b> model keyboard behavior as a pure function <code>(state, key) =&gt; state</code> so it can be unit-tested without the DOM.</li></ul>`,
+diagram:{html:flow([["Requirements","what + edge cases"],["Semantic HTML","button, ul, label","w"],["State","one source of truth","w"],["Events","delegate on the container","g"],["Keyboard + ARIA","roving tabindex, roles","g"],["Edge cases","empty, rapid input, resize","r"]]),steps:["Write the requirements down; ask what is out of scope.","Choose native elements so you get focus, keyboard and semantics for free.","Keep state in one object; render and ARIA attributes are derived from it.","Attach one listener to the container and decide by <code>event.target.closest()</code>.","Test with keyboard only, then think about empty and rapid-input cases."]},
+ex:[{t:"Accessible tabs (roving tabindex), tested on a detached document",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+function createTabs(doc, items){
+  const root = doc.createElement("div"), list = doc.createElement("div");
+  list.setAttribute("role", "tablist");
+  const panels = [];
+  const tabs = items.map((it, i) => {
+    const b = doc.createElement("button");
+    b.setAttribute("role", "tab"); b.id = "tab-" + i; b.setAttribute("aria-controls", "panel-" + i); b.textContent = it.title;
+    list.append(b);
+    const p = doc.createElement("div");
+    p.setAttribute("role", "tabpanel"); p.id = "panel-" + i; p.setAttribute("aria-labelledby", b.id); p.textContent = it.body;
+    panels.push(p);
+    return b;
+  });
+  function select(i){ tabs.forEach((b, j) => { b.setAttribute("aria-selected", String(i === j)); b.tabIndex = i === j ? 0 : -1; panels[j].hidden = i !== j; }); }
+  list.addEventListener("click", (e) => { const b = e.target.closest("[role=tab]"); if (b) select(tabs.indexOf(b)); });
+  list.addEventListener("keydown", (e) => {
+    const cur = tabs.findIndex((b) => b.tabIndex === 0); let n = cur;
+    if (e.key === "ArrowRight") n = (cur + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") n = (cur - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") n = 0; else if (e.key === "End") n = tabs.length - 1; else return;
+    e.preventDefault(); select(n); tabs[n].focus?.();
+  });
+  root.append(list, ...panels); select(0);
+  return { root, tabs, panels };
+}
+const doc = document.implementation.createHTMLDocument("");
+const { root, tabs, panels } = createTabs(doc, [{ title: "A", body: "a" }, { title: "B", body: "b" }, { title: "C", body: "c" }]);
+doc.body.append(root);
+const sel = () => tabs.map((t) => t.getAttribute("aria-selected")).join();
+check("first tab selected initially", sel() === "true,false,false" && !panels[0].hidden && panels[1].hidden);
+tabs[1].dispatchEvent(new Event("click", { bubbles: true }));
+check("click selects (delegated listener)", sel() === "false,true,false" && panels[0].hidden && !panels[1].hidden);
+const key = (el, k) => el.dispatchEvent(new KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true }));
+key(tabs[1], "ArrowRight"); check("ArrowRight moves to next", sel() === "false,false,true");
+key(tabs[2], "ArrowRight"); check("ArrowRight wraps around", sel() === "true,false,false");
+key(tabs[0], "End"); check("End jumps to last", sel() === "false,false,true");
+key(tabs[2], "Home"); check("Home jumps to first", sel() === "true,false,false");
+check("roving tabindex: only the active tab is tabbable", tabs.map((t) => t.tabIndex).join() === "0,-1,-1");
+check("aria wiring", tabs[0].getAttribute("aria-controls") === panels[0].id && panels[0].getAttribute("aria-labelledby") === tabs[0].id);`},
+{t:"Keyboard behavior as a pure function (autocomplete)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const nav = (s, key) => {
+  const n = s.items.length;
+  switch (key) {
+    case "ArrowDown": return { ...s, open: true, active: n ? (s.active + 1) % n : -1 };
+    case "ArrowUp": return { ...s, open: true, active: n ? (s.active <= 0 ? n - 1 : s.active - 1) : -1 };
+    case "Enter": return s.open && s.active >= 0 ? { ...s, open: false, value: s.items[s.active] } : s;
+    case "Escape": return { ...s, open: false, active: -1 };
+    default: return s;
+  }
+};
+const s0 = { items: ["apple", "apricot", "avocado"], active: -1, open: false, value: "" };
+check("ArrowDown opens and selects first", nav(s0, "ArrowDown").active === 0 && nav(s0, "ArrowDown").open);
+check("ArrowUp from nothing wraps to last", nav(s0, "ArrowUp").active === 2);
+check("ArrowDown wraps", nav({ ...s0, active: 2, open: true }, "ArrowDown").active === 0);
+check("Enter commits the active item", nav({ ...s0, active: 1, open: true }, "Enter").value === "apricot");
+check("Enter with nothing active does nothing", nav({ ...s0, open: true }, "Enter").value === "" && nav({ ...s0, open: true }, "Enter").open === true);
+check("Escape closes and clears the highlight", !nav({ ...s0, active: 1, open: true }, "Escape").open && nav({ ...s0, active: 1, open: true }, "Escape").active === -1);
+check("empty list is safe", nav({ ...s0, items: [] }, "ArrowDown").active === -1);
+check("unknown keys return the same state", nav(s0, "x") === s0);`}],
+gotchas:[`<code>div</code> with <code>onclick</code> is not keyboard accessible; use a <code>button</code>.`,`ARIA that contradicts behavior is worse than none: keep <code>aria-selected</code>/<code>aria-expanded</code> in sync with state.`,`Focus management is easy to forget: after closing a modal, return focus to the trigger.`,`Storing UI state only in the DOM makes it hard to test; keep a state object.`,`Re-rendering with <code>innerHTML</code> destroys focus and listeners; update attributes or delegate events.`,`Forgetting empty, loading and error states.`],
+best:[`Use native elements and the WAI-ARIA Authoring Practices patterns; support keyboard first.`,`Write the keyboard logic as a pure function and unit-test it.`,`Time-box: working core in 30 minutes, then accessibility and edge cases.`],
+iq:[["mid","Build a tabs component. What do you get right for accessibility?","Roles tablist/tab/tabpanel, aria-selected/aria-controls/aria-labelledby, roving tabindex with arrow/Home/End keys, only the active panel visible."],["senior","How would you build a modal?","Use dialog with showModal (or a focus trap), set inert on the rest of the page, close on Escape and backdrop click, restore focus to the trigger, prevent background scroll, label with aria-labelledby."],["senior","How do you structure a component without a framework?","State object + render function that derives DOM from state, one delegated listener, small pure functions for logic, cleanup via AbortController."]],
+practice:[`Add an accordion with <code>aria-expanded</code> and keyboard support.`,`Build a star rating (radio group semantics) with half-star keyboard control.`],
+teach:`<p>"Start with real buttons and lists, keep state in one place, attach one listener, make it work with the keyboard, and keep ARIA honest. Treat keyboard logic as plain data so you can test it."</p>`},
+
+{id:"d35-dom-challenges",title:"DOM and virtual-DOM challenges",lv:["mid","senior"],
+eli5:`<p>A <b>virtual DOM</b> is a <b>blueprint copy of the page</b>. When something changes you draw a new blueprint, <b>compare</b> it with the old one, and only repaint the walls that actually differ instead of rebuilding the house. Delegation is a doorman who handles every visitor for the whole building.</p>`,
+why:`<p>"Implement a tiny React", "write getElementsByClassName" and "build event delegation" test your understanding of the DOM tree, recursion and minimal updates. Frameworks do these things for you; the interview checks you know how.</p>`,
+tech:`<ul class="pts"><li><b>Tree traversal:</b> DFS over <code>children</code> to implement <code>getElementsByClassName</code>, <code>closest</code>, <code>querySelector</code> subsets.</li><li><b>h()/render():</b> a virtual node is a plain object <code>{type, props, children}</code>; <code>render</code> turns it into real DOM (recursively).</li><li><b>Diff/patch:</b> compare old and new nodes: missing old → create; missing new → remove; different type or changed text → replace; same type → update changed attributes and recurse into children. Real libraries add <b>keys</b> to match moved list items.</li><li><b>Order of child operations:</b> patch common children, remove extras from the end (so indexes don't shift), then append new ones.</li><li><b>Delegation helper:</b> <code>on(root, "click", ".item", handler)</code> using <code>closest</code> and a containment check.</li><li>Why a virtual DOM at all: a declarative API ("render this state") with batched, minimal DOM writes. It isn't inherently faster than hand-tuned DOM code.</li></ul>`,
+diagram:{html:flow([["state changes"],["render() → new vnode tree"],["diff(old, new)","same type? props changed? children?","w"],["patch real DOM","only changed nodes","g"]]),steps:["The app function turns state into a fresh tree of plain objects (cheap to create).","The diff walks old and new trees in parallel and records the differences.","Only the differing real DOM nodes are touched; unchanged nodes keep their identity (focus, scroll and selection survive)."]},
+ex:[{t:"A tiny virtual DOM with diffing, delegation and DOM utilities (self-checking)",code:`const check = (name, ok) => console.log((ok ? "pass  " : "FAIL  ") + name);
+const doc = document.implementation.createHTMLDocument("");
+const h = (type, props = {}, ...children) => ({ type, props: props || {}, children: children.flat().map((c) => (typeof c === "object" ? c : { type: "#text", props: {}, text: String(c) })) });
+const render = (v) => {
+  if (v.type === "#text") return doc.createTextNode(v.text);
+  const el = doc.createElement(v.type);
+  for (const [k, val] of Object.entries(v.props)) k.startsWith("on") ? el.addEventListener(k.slice(2).toLowerCase(), val) : el.setAttribute(k, val);
+  v.children.forEach((c) => el.append(render(c)));
+  return el;
+};
+function patch(parent, oldV, newV, idx = 0, ops){
+  const el = parent.childNodes[idx];
+  if (!oldV) { parent.append(render(newV)); ops.created++; return; }
+  if (!newV) { el.remove(); ops.removed++; return; }
+  if (oldV.type !== newV.type || (oldV.type === "#text" && oldV.text !== newV.text)) { parent.replaceChild(render(newV), el); ops.replaced++; return; }
+  if (newV.type === "#text") return;
+  for (const k of new Set([...Object.keys(oldV.props), ...Object.keys(newV.props)])) {
+    if (k.startsWith("on") || oldV.props[k] === newV.props[k]) continue;
+    newV.props[k] === undefined ? el.removeAttribute(k) : el.setAttribute(k, newV.props[k]); ops.attrs++;
+  }
+  const o = oldV.children, n = newV.children, common = Math.min(o.length, n.length);
+  for (let i = 0; i < common; i++) patch(el, o[i], n[i], i, ops);
+  for (let i = o.length - 1; i >= n.length; i--) patch(el, o[i], undefined, i, ops);
+  for (let i = o.length; i < n.length; i++) patch(el, undefined, n[i], i, ops);
+}
+const v1 = h("ul", { class: "a" }, h("li", {}, "one"), h("li", {}, "two"));
+const v2 = h("ul", { class: "b" }, h("li", {}, "one"), h("li", {}, "TWO"), h("li", {}, "three"));
+const root = doc.createElement("div"); root.append(render(v1));
+const firstLi = root.querySelector("li");
+const ops = { created: 0, removed: 0, replaced: 0, attrs: 0 };
+patch(root, v1, v2, 0, ops);
+check("DOM matches the new tree", root.innerHTML === '<ul class="b"><li>one</li><li>TWO</li><li>three</li></ul>');
+check("minimal operations", ops.attrs === 1 && ops.replaced === 1 && ops.created === 1 && ops.removed === 0);
+check("unchanged node keeps identity", root.querySelector("li") === firstLi);
+const ops2 = { created: 0, removed: 0, replaced: 0, attrs: 0 };
+patch(root, v2, h("ul", { class: "b" }, h("li", {}, "one")), 0, ops2);
+check("removes extras from the end", root.innerHTML === '<ul class="b"><li>one</li></ul>' && ops2.removed === 2);
+// utilities
+const findByClass = (node, cls, out = []) => { for (const c of node.children) { if (c.classList.contains(cls)) out.push(c); findByClass(c, cls, out); } return out; };
+const closest = (el, sel) => { for (let n = el; n && n.nodeType === 1; n = n.parentNode) if (n.matches(sel)) return n; return null; };
+const on = (rootEl, type, sel, fn) => rootEl.addEventListener(type, (e) => { const t = e.target.closest ? e.target.closest(sel) : null; if (t && rootEl.contains(t)) fn(e, t); });
+const tree = doc.createElement("div");
+tree.innerHTML = '<div class="x"><span class="x y"></span><p><b class="x"></b></p></div><i></i>';
+check("getElementsByClassName by DFS", findByClass(tree, "x").length === 3 && findByClass(tree, "y").length === 1);
+check("closest", closest(tree.querySelector("b"), "p").nodeName === "P" && closest(tree.querySelector("i"), "p") === null);
+const hits = []; on(tree, "click", ".x", (e, t) => hits.push(t.nodeName));
+tree.querySelector("b").dispatchEvent(new Event("click", { bubbles: true }));
+tree.querySelector("i").dispatchEvent(new Event("click", { bubbles: true }));
+check("delegation matches only the selector", hits.join() === "B");`}],
+gotchas:[`Removing children while iterating forward shifts indexes; remove from the end.`,`Using array index as identity in lists breaks when items are reordered; real diffing uses keys.`,`Replacing nodes loses focus, scroll and selection state; patch in place when types match.`,`<code>event.target</code> can be a text node in some cases (older browsers); guard with <code>closest</code> availability.`,`Event listeners on rendered nodes need handling in the diff (the toy version ignores changed handlers).`],
+best:[`Explain the algorithm in words first: create, remove, replace, update attributes, recurse.`,`Mention keys, batching and that frameworks add scheduling on top.`],
+iq:[["senior","How does a virtual DOM work?","Render state to a lightweight tree, diff against the previous tree, and apply only the differences to the real DOM, keeping unchanged nodes intact."],["senior","Why do list items need keys?","Keys let the diff match items across renders (moves, inserts, removals) instead of comparing by index, preserving state and avoiding unnecessary replacement."],["mid","Implement getElementsByClassName.","Depth-first traversal over children, collecting elements whose classList contains the class; return an array (the native one is live)."]],
+practice:[`Add keyed child diffing (a Map from key to old node) to the patch function.`,`Implement <code>querySelector</code> for simple selectors (tag, #id, .class) by traversal.`],
+teach:`<p>"A virtual DOM is a cheap blueprint of the page. Compare the old and new blueprints and only change the real nodes that differ. Delegation lets one listener serve many children."</p>`}
+],quiz:[
+{code:`const doc = document.implementation.createHTMLDocument("");
+const b = doc.createElement("button"); b.tabIndex = -1;
+console.log(b.tabIndex, b.getAttribute("tabindex"), doc.createElement("div").tabIndex);`,ans:`-1 -1 -1 (the middle value is the string "-1")`,why:`The tabIndex property is a number, getAttribute returns the string "-1", and a plain div reports tabIndex -1 by default. A button with tabindex -1 is focusable by script but removed from the tab order, which is what roving tabindex relies on.`},
+{code:`const doc = document.implementation.createHTMLDocument("");
+const d = doc.createElement("div"); d.hidden = true;
+console.log(d.hasAttribute("hidden"), JSON.stringify(d.getAttribute("hidden")), d.hidden);`,ans:`true "" true`,why:`The hidden property reflects a boolean attribute: present means true, and its attribute value is the empty string.`}]}
+]};
+</script>
+</body></html>
