@@ -11,8 +11,9 @@
   var SANS = 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
   var MONO = 'Consolas,ui-monospace,Menlo,"DejaVu Sans Mono",monospace';   /* no ligature fonts: => and === must stay literal */
   var P = { bg: '#0e151d', card: '#16212d', line: '#2a3a4d', ink: '#e6edf5', muted: '#93a4b8', acc: '#4fd1c5', warm: '#f6ad55', red: '#fc8181', green: '#68d391', blue: '#63b3ed', purple: '#b794f4', code: '#0a1119' };
-  /* day number → lesson. mp4 = the exported recording; leave it out until the file exists (no link is shown then). */
-  var LESSONS = { 1: { id: 'day1', title: 'Day 1 in motion', len: '3½ min', mp4: 'assets/motion/js-day1.mp4' } };
+  /* day number → lesson. mp4 = the exported recording (omit until it exists). voice = generated timing + transcript
+     (assets/motion/<id>-voice.js, calls JSC.motion.timing); audio = the narration track the player keeps in sync. */
+  var LESSONS = { 1: { id: 'day1', title: 'Day 1 in motion', mp4: 'assets/motion/js-day1.mp4', voice: 'assets/motion/day1-voice.js', audio: 'assets/motion/day1-voice.m4a' } };
   var defs = {}, waiting = {};
 
   function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
@@ -165,7 +166,8 @@
     K.text(def.kicker, 40, 34, { size: 17, weight: 700, color: P.acc });
     var fade = Math.min(clamp(t / 0.45), clamp((S.d - t) / 0.45));
     if (S.title) K.text(S.title, W - 40, 34, { size: 17, color: P.muted, align: 'right', a: fade });
-    g.save(); g.globalAlpha = fade; S.draw(K, t, S.d); g.restore(); g.globalAlpha = 1;
+    /* with a voice track, real time t is mapped back to the scene's authored animation time */
+    g.save(); g.globalAlpha = fade; S.draw(K, S.knots ? warp(S.knots, t) : t, S.d0 || S.d); g.restore(); g.globalAlpha = 1;
     var cap = null, ct = 0;
     (S.caps || []).forEach(function (c) { if (t >= c[0]) { cap = c[1]; ct = t - c[0]; } });
     if (cap) caption(g, K, cap, Math.min(clamp(ct / 0.35), fade));
@@ -174,9 +176,9 @@
 
   /* ---------- soft background pad (Web Audio, no files) ---------- */
   var CHORDS = [[110, 164.81, 261.63], [87.31, 130.81, 220], [130.81, 196, 329.63], [98, 146.83, 246.94]];
-  function sound(actx, dest, from, def) {
+  function sound(actx, dest, from, def, level) {
     var now = actx.currentTime + 0.05, master = actx.createGain(), nodes = [], a = 0;
-    master.gain.setValueAtTime(0, now); master.gain.linearRampToValueAtTime(1, now + 1.2); master.connect(dest);
+    master.gain.setValueAtTime(0, now); master.gain.linearRampToValueAtTime(level == null ? 1 : level, now + 1.2); master.connect(dest);
     def.scenes.forEach(function (S, k) {
       var s0 = a, s1 = a + S.d; a = s1; if (s1 <= from) return;
       var t0 = now + Math.max(0, s0 - from), t1 = now + (s1 - from);
@@ -201,20 +203,46 @@
     };
   }
 
-  /* ---------- loading scene files ---------- */
-  function load(id) {
-    if (defs[id]) return Promise.resolve(defs[id]);
-    if (!waiting[id]) waiting[id] = new Promise(function (res, rej) {
-      var s = document.createElement('script'); s.src = 'assets/motion/' + id + '.js';
-      s.onload = function () { defs[id] ? res(defs[id]) : rej(new Error(id + '.js did not call JSC.motion.define')); };
-      s.onerror = function () { delete waiting[id]; rej(new Error('Could not load assets/motion/' + id + '.js')); };
-      document.head.appendChild(s);
+  /* ---------- loading scene files (+ the optional voice timing file) ---------- */
+  function script(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script'); s.src = src; s.onload = res;
+      s.onerror = function () { rej(new Error('Could not load ' + src)); }; document.head.appendChild(s);
     });
+  }
+  function lessonOf(id) { for (var k in LESSONS) if (LESSONS[k].id === id) return LESSONS[k]; return {}; }
+  function load(id) {
+    if (!waiting[id]) {
+      var L = lessonOf(id);
+      waiting[id] = script('assets/motion/' + id + '.js').then(function () {
+        if (!defs[id]) throw new Error(id + '.js did not call JSC.motion.define');
+        return L.voice ? script(L.voice).catch(function () { /* no voice file yet: play with the authored timing */ }) : null;
+      }).then(function () { return defs[id]; }, function (e) { delete waiting[id]; throw e; });
+    }
     return waiting[id];
   }
-  function define(id, def) {
-    def.total = def.scenes.reduce(function (a, S) { return a + S.d; }, 0);
-    defs[id] = def;
+  function total(def) { def.total = def.scenes.reduce(function (a, S) { return a + S.d; }, 0); }
+  function define(id, def) { total(def); defs[id] = def; }
+  /* piecewise-linear map from real time to animation time; knots = [[real, anim], …] ascending */
+  function warp(k, t) {
+    for (var i = 1; i < k.length; i++) if (t <= k[i][0]) {
+      var a = k[i - 1], b = k[i], span = b[0] - a[0];
+      return span > 0 ? a[1] + (b[1] - a[1]) * (t - a[0]) / span : b[1];
+    }
+    return k[k.length - 1][1];
+  }
+  /* Called by the generated <id>-voice.js: per scene, the real duration and the real start of each caption cue.
+     Each gap between cues stretches (slows the animation) so the spoken line fits; captions move with it. */
+  function timing(id, data) {
+    var def = defs[id]; if (!def || def.voice) return;
+    def.scenes.forEach(function (S, k) {
+      var V = data.scenes[k]; if (!V) return;
+      S.d0 = S.d; S.d = V.d;
+      S.knots = [[0, 0]].concat(S.caps.map(function (c, i) { return [V.cues[i], c[0]]; }), [[V.d, S.d0]]);
+      S.caps = S.caps.map(function (c, i) { return [V.cues[i], c[1]]; });
+      S.say = V.say;
+    });
+    def.voice = data; total(def);
   }
 
   /* ---------- the player ---------- */
@@ -222,45 +250,63 @@
   function slot(n) {
     var L = LESSONS[n];
     return '<div class="motion" data-day="' + n + '" tabindex="0" aria-label="' + L.title + ', animated lesson">' +
-      '<div class="mv-head ui"><b>▶ Watch first: ' + L.title + '</b><span>' + L.len + ' · captions · sound optional</span></div>' +
+      '<div class="mv-head ui"><b>▶ Watch first: ' + L.title + '</b><span>captions' + (L.audio ? ' · voice-over' : '') + '</span></div>' +
       '<div class="mv-frame"><canvas width="' + W + '" height="' + H + '" role="img" aria-label="' + L.title + '"></canvas>' +
       '<button class="mv-big" type="button" aria-label="Play">▶</button></div>' +
       '<div class="mv-bar ui"><button class="btn mv-play" type="button">▶ Play</button>' +
       '<input class="mv-seek" type="range" min="0" max="1" step="0.1" value="0" aria-label="Seek">' +
       '<span class="mv-time">0:00</span><select class="btn mv-ch" aria-label="Chapters"></select>' +
-      '<button class="btn mv-snd" type="button" aria-pressed="true">Sound on</button>' +
+      (L.audio ? '<button class="btn mv-voice" type="button" aria-pressed="true">Voice on</button>' : '') +
+      '<button class="btn mv-snd" type="button" aria-pressed="true">Music on</button>' +
       (L.mp4 ? '<a class="btn mv-dl" href="' + L.mp4 + '" download>Download MP4</a>' : '') + '</div></div>';
   }
   function mount(el) {
     if (el.dataset.ready) return; el.dataset.ready = '1';
     var L = LESSONS[el.dataset.day], q = function (s) { return el.querySelector(s); };
     var cv = q('canvas'), g = cv.getContext('2d'), K = kit(g), big = q('.mv-big'), btn = q('.mv-play'), seek = q('.mv-seek'),
-      time = q('.mv-time'), ch = q('.mv-ch'), sndBtn = q('.mv-snd');
-    var def, T = 0, playing = false, T0 = 0, w0 = 0, raf = 0, actx = null, snd = null, soundOn = true;
+      time = q('.mv-time'), ch = q('.mv-ch'), sndBtn = q('.mv-snd'), vBtn = q('.mv-voice');
+    var def, T = 0, playing = false, T0 = 0, w0 = 0, raf = 0, actx = null, snd = null, soundOn = true, voiceOn = !!vBtn, au = null;
 
     function draw() {
       frame(g, def, T, K); seek.value = T; time.textContent = fmt(T) + ' / ' + fmt(def.total);
       var i = locate(def, T).i; if (ch.selectedIndex !== i) ch.selectedIndex = i;
     }
+    function hasVoice() { return voiceOn && def.voice && L.audio; }
     function startSound() {
       if (!soundOn) return;
-      try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); snd = sound(actx, actx.destination, T, def); } catch (e) { /* no audio */ }
+      try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); snd = sound(actx, actx.destination, T, def, hasVoice() ? 0.5 : 1); } catch (e) { /* no audio */ }
     }
     function stopSound() { if (snd) { snd.stop(); snd = null; } }
+    /* the voice is a plain audio file kept in step with the animation clock */
+    function startVoice() {
+      if (!hasVoice()) return;
+      if (!au) { au = new Audio(); au.preload = 'auto'; au.src = L.audio; }
+      try { au.currentTime = T; } catch (e) { /* not seekable yet */ }
+      var p = au.play(); if (p && p.catch) p.catch(function () { /* autoplay blocked or file missing */ });
+    }
+    function stopVoice() { if (au) au.pause(); }
+    function syncVoice() {
+      if (au && !au.paused && !au.seeking && Math.abs(au.currentTime - T) > 0.3) { try { au.currentTime = T; } catch (e) { /* ignore */ } }
+    }
     function loop() {
       if (!cv.isConnected) { stop(); return; }
       if (!playing) return;
       T = T0 + (performance.now() - w0) / 1000;
       if (T >= def.total) { T = def.total; stop(); draw(); return; }
-      draw(); raf = requestAnimationFrame(loop);
+      syncVoice(); draw(); raf = requestAnimationFrame(loop);
     }
-    function play() { if (T >= def.total - 0.1) T = 0; playing = true; T0 = T; w0 = performance.now(); big.hidden = true; btn.textContent = '❚❚ Pause'; startSound(); loop(); }
-    function stop() { playing = false; cancelAnimationFrame(raf); btn.textContent = '▶ Play'; big.hidden = false; stopSound(); }
+    function play() { if (T >= def.total - 0.1) T = 0; playing = true; T0 = T; w0 = performance.now(); big.hidden = true; btn.textContent = '❚❚ Pause'; startSound(); startVoice(); loop(); }
+    function stop() { playing = false; cancelAnimationFrame(raf); btn.textContent = '▶ Play'; big.hidden = false; stopSound(); stopVoice(); }
     function toggle() { if (def) (playing ? stop : play)(); }
-    function jump(t) { T = Math.max(0, Math.min(def.total, t)); if (playing) { T0 = T; w0 = performance.now(); stopSound(); startSound(); } draw(); }
+    function jump(t) {
+      T = Math.max(0, Math.min(def.total, t));
+      if (playing) { T0 = T; w0 = performance.now(); stopSound(); startSound(); startVoice(); }
+      draw();
+    }
 
     load(L.id).then(function (d) {
       def = d; seek.max = def.total;
+      q('.mv-head span').textContent = fmt(def.total) + ' · captions' + (def.voice && L.audio ? ' · voice-over' : '');
       var a = 0; ch.innerHTML = def.scenes.map(function (S, i) { var o = '<option value="' + a + '">' + (i + 1) + '. ' + S.title + '</option>'; a += S.d; return o; }).join('');
       draw(); frame(g, def, def.poster || 3, K);   /* poster frame; the controls still read 0:00 */
     }).catch(function (e) { el.querySelector('.mv-head span').textContent = e.message; });
@@ -269,8 +315,12 @@
     seek.addEventListener('input', function () { jump(+seek.value); });
     ch.addEventListener('change', function () { jump(+ch.value + 0.01); });
     sndBtn.addEventListener('click', function () {
-      soundOn = !soundOn; sndBtn.textContent = soundOn ? 'Sound on' : 'Sound off'; sndBtn.setAttribute('aria-pressed', soundOn);
+      soundOn = !soundOn; sndBtn.textContent = soundOn ? 'Music on' : 'Music off'; sndBtn.setAttribute('aria-pressed', soundOn);
       if (playing) { if (soundOn) startSound(); else stopSound(); }
+    });
+    if (vBtn) vBtn.addEventListener('click', function () {
+      voiceOn = !voiceOn; vBtn.textContent = voiceOn ? 'Voice on' : 'Voice off'; vBtn.setAttribute('aria-pressed', voiceOn);
+      if (playing) { stopSound(); startSound(); if (voiceOn) startVoice(); else stopVoice(); }
     });
     el.addEventListener('keydown', function (e) {
       if (!def || e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
@@ -294,16 +344,33 @@
       if (!mime) return Promise.reject(new Error('MediaRecorder is not available in this browser'));
       var rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: opt.bps || 6e6, audioBitsPerSecond: 128000 }), chunks = [];
       rec.ondataavailable = function (e) { if (e.data.size) chunks.push(e.data); };
+      /* opt.voice: an AudioBuffer of the whole narration (aligned to t = 0), mixed into the video.
+         opt.voiceTrack: also capture the narration alone as a small audio file for the in-page player. */
+      var vrec = null, vchunks = [], vmime = null, vdest = null;
+      if (opt.voice && opt.voiceTrack) {
+        vdest = actx.createMediaStreamDestination();
+        vmime = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'].filter(function (t) { return MediaRecorder.isTypeSupported(t); })[0];
+        vrec = new MediaRecorder(vdest.stream, { mimeType: vmime, audioBitsPerSecond: 64000 });
+        vrec.ondataavailable = function (e) { if (e.data.size) vchunks.push(e.data); };
+      }
       return actx.resume().then(function () {
         return new Promise(function (res) {
-          rec.onstop = function () { actx.close(); res(new Blob(chunks, { type: mime.split(';')[0] })); };
-          frame(g, def, 0, K); rec.start(1000);
-          var w0 = performance.now(); sound(actx, dest, 0, def);
+          var done = 0, out = {};
+          function finish() { if (++done < (vrec ? 2 : 1)) return; actx.close(); res(vrec ? out : out.video); }
+          rec.onstop = function () { out.video = new Blob(chunks, { type: mime.split(';')[0] }); finish(); };
+          if (vrec) vrec.onstop = function () { out.voice = new Blob(vchunks, { type: vmime.split(';')[0] }); finish(); };
+          frame(g, def, 0, K); rec.start(1000); if (vrec) vrec.start(1000);
+          var w0 = performance.now() + 50;   /* sound() and the voice both start 50 ms from now on the audio clock */
+          sound(actx, dest, 0, def, opt.voice ? 0.5 : 1);
+          if (opt.voice) {
+            var src = actx.createBufferSource(); src.buffer = opt.voice; src.connect(dest); if (vdest) src.connect(vdest);
+            src.start(actx.currentTime + 0.05);
+          }
           (function step() {
             var T = (performance.now() - w0) / 1000;
-            frame(g, def, Math.min(T, def.total - 0.001), K);
+            frame(g, def, Math.min(Math.max(T, 0), def.total - 0.001), K);
             if (opt.onprogress) opt.onprogress(Math.min(1, T / def.total));
-            if (T >= def.total + 0.4) return setTimeout(function () { rec.stop(); }, 150);
+            if (T >= def.total + 0.4) return setTimeout(function () { rec.stop(); if (vrec) vrec.stop(); }, 150);
             setTimeout(step, 1000 / fps / 2);
           })();
         });
@@ -318,5 +385,5 @@
     });
   }
 
-  J.motion = { has: function (n) { return !!LESSONS[n]; }, slot: slot, mountAll: mountAll, define: define, record: record, frameAt: frameAt, lessons: LESSONS };
+  J.motion = { has: function (n) { return !!LESSONS[n]; }, slot: slot, mountAll: mountAll, define: define, timing: timing, load: load, record: record, frameAt: frameAt, lessons: LESSONS };
 })(window.JSC = window.JSC || {});
