@@ -107,6 +107,7 @@
     loadWeek(view.w).then(function (W) {
       if (my !== token) return;                          /* user navigated again meanwhile */
       main.innerHTML = J.renderWeek(W);
+      if (J.motion) J.motion.mountAll(main);
       document.title = 'Week ' + W.w + ': ' + J.COURSE[W.w - 1].title + ' | JavaScript Zero to Architect';
       finish(view, key); progress(); watchTopics(W.w);
       store('jsc-last', '#week-' + W.w);

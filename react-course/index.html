@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>React: Zero to Architect</title>
+<link rel="stylesheet" href="assets/css/course.css">
+<script src="assets/js/theme.js"></script>
+</head>
+<body>
+<nav id="sidebar" aria-label="Course navigation"></nav>
+<div class="page">
+  <header id="site-header" class="topbar"></header>
+  <main id="main" tabindex="-1"><noscript><p>This course needs JavaScript enabled.</p></noscript></main>
+  <footer id="site-footer" class="sitefoot"></footer>
+</div>
+
+<!-- Home view. app.js clones this into <main> for #home and fills #grid, #examtbl (interview map), #ladtbl and #glos from course-data.js. -->
+<template id="home-tpl">
+<div class="wrap">
+<div class="hero">
+<h1>React, from your first component to architecting production apps.</h1>
+<p>Fifteen days in three weeks: <b>React foundations</b> (JSX, state, the render model, effects), <b>building real applications</b> against a FastAPI backend (data fetching, routing, auth, forms, patterns) and <b>performance, internals and architecture</b> (Fiber, concurrent rendering, SSR and Server Components, testing, deployment), ending with an interview bootcamp.</p>
+<a class="cta" href="#d1-why-react">Start at Day 1</a><a class="cta alt" id="cont" href="#" hidden>Continue where you left off</a><a class="cta alt" href="#interview">Interview map</a><a class="cta alt" href="#glossary">Glossary</a>
+</div>
+
+<h2>How every topic is taught</h2>
+<ol class="pts">
+<li><b>What it is</b>, twice: an “Explain like I’m 5” tab for the mental model and a technical tab for the exact behaviour.</li>
+<li><b>Why it exists</b>: the problem it solves and what developers did before.</li>
+<li><b>How it works</b>: a diagram with numbered steps.</li>
+<li><b>Code</b>: copy-paste TypeScript/JSX examples, with what you should see.</li>
+<li><b>Under the hood</b>: what React itself does (elements, fibers, the scheduler, the DOM).</li>
+<li><b>In production</b>: how the topic shows up in a real React → FastAPI → Redis → PostgreSQL product.</li>
+<li><b>Interview questions</b> from fresher to architect level, with model answers.</li>
+</ol>
+<p>After the seven steps come hidden edge cases, best practices, a <b>hands-on exercise</b> and a two-minute “teach it” script. Each day ends with a scenario quiz: predict what the code renders or logs.</p>
+
+<h2>Before you start</h2>
+<ul class="pts">
+<li><b>Know JavaScript first.</b> Closures, <code>this</code>, promises, modules and array methods are used everywhere. The sibling <a href="../js-course/index.html">JavaScript course</a> covers them.</li>
+<li><b>Create a playground app</b> with Node 20+ installed: <code>npm create vite@latest react-lab -- --template react-ts</code>, then <code>cd react-lab</code>, <code>npm install</code>, <code>npm run dev</code>. Paste the examples into it and change them.</li>
+<li><b>Versions:</b> the course teaches modern React (19.x) with function components and hooks only, Vite, TypeScript, React Router and TanStack Query. Where an API is new or differs between versions it says so. Check the official docs at react.dev for the latest details.</li>
+<li><b>Exercises</b> say what “done” looks like. Do them; reading alone won't get you through a machine-coding round.</li>
+<li>A <b>revision sheet</b> closes every week. Progress is saved in this browser. Use Print (Ctrl/Cmd+P) for a clean copy.</li>
+</ul>
+
+<h2>The 15-day plan</h2>
+<div class="wkgrid" id="grid"></div>
+
+<h2 id="interview">Interview map: where each round is covered</h2>
+<table id="examtbl"><thead><tr><th>Round</th><th>What they test</th><th>Days</th><th>How to prepare</th></tr></thead><tbody></tbody></table>
+
+<h2 id="ladder">Career ladder: what to master for each level</h2>
+<table id="ladtbl"><thead><tr><th>Level</th><th>Days</th><th>You should be able to…</th></tr></thead><tbody></tbody></table>
+
+<h2 id="glossary">Glossary</h2>
+<table id="glos"><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody></tbody></table>
+</div>
+</template>
+
+<script src="assets/js/course-data.js"></script>
+<script src="assets/js/render.js"></script>
+<script src="assets/js/components/header.js"></script>
+<script src="assets/js/components/sidebar.js"></script>
+<script src="assets/js/components/footer.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

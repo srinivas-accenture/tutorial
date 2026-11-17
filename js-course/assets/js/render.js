@@ -110,6 +110,7 @@
     var h = '<div class="wrap"><div class="weekhead"><div class="kicker">Week ' + W.w + ' of ' + C.length + '</div><h1>' + meta.title + '</h1><p>' + meta.sub + '</p></div>';
     W.days.forEach(function (d) {
       h += '<section class="day" id="day-' + d.n + '"><div class="dayhead"><div class="dn">Day ' + d.n + ' of ' + J.totalDays() + '</div><h2>' + d.title + '</h2><p class="goal">' + d.goal + '</p></div>';
+      if (J.motion && J.motion.has(d.n)) h += J.motion.slot(d.n);
       d.topics.forEach(function (t) { h += topic(t); });
       if (d.quiz) h += quiz(d);
       h += '<div class="daydone ui"><button class="btn" data-done="' + d.n + '"></button><span style="color:var(--muted);font-size:14px">Mark the day complete when you can teach it.</span></div></section>';
