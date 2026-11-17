@@ -13,7 +13,10 @@
   var P = { bg: '#0e151d', card: '#16212d', line: '#2a3a4d', ink: '#e6edf5', muted: '#93a4b8', acc: '#4fd1c5', warm: '#f6ad55', red: '#fc8181', green: '#68d391', blue: '#63b3ed', purple: '#b794f4', code: '#0a1119' };
   /* day number → lesson. mp4 = the exported recording (omit until it exists). voice = generated timing + transcript
      (assets/motion/<id>-voice.js, calls JSC.motion.timing); audio = the narration track the player keeps in sync. */
-  var LESSONS = { 1: { id: 'day1', title: 'Day 1 in motion', mp4: 'assets/motion/js-day1.mp4', voice: 'assets/motion/day1-voice.js', audio: 'assets/motion/day1-voice.m4a' } };
+  var DAYS = 65, VER = '?v=3';   /* bump VER whenever lesson or voice files are regenerated, so browsers don't play a cached copy */
+  var LESSONS = {};
+  for (var n = 1; n <= DAYS; n++) LESSONS[n] = { id: 'day' + n, title: 'Day ' + n + ' in motion', voice: 'assets/motion/day' + n + '-voice.js', audio: 'assets/motion/day' + n + '-voice.m4a' };
+  LESSONS[1].mp4 = 'assets/motion/js-day1.mp4';
   var defs = {}, waiting = {};
 
   function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
@@ -214,9 +217,9 @@
   function load(id) {
     if (!waiting[id]) {
       var L = lessonOf(id);
-      waiting[id] = script('assets/motion/' + id + '.js').then(function () {
+      waiting[id] = script('assets/motion/' + id + '.js' + VER).then(function () {
         if (!defs[id]) throw new Error(id + '.js did not call JSC.motion.define');
-        return L.voice ? script(L.voice).catch(function () { /* no voice file yet: play with the authored timing */ }) : null;
+        return L.voice ? script(L.voice + VER).catch(function () { /* no voice file yet: play with the authored timing */ }) : null;
       }).then(function () { return defs[id]; }, function (e) { delete waiting[id]; throw e; });
     }
     return waiting[id];
@@ -280,10 +283,17 @@
     /* the voice is a plain audio file kept in step with the animation clock */
     function startVoice() {
       if (!hasVoice()) return;
-      if (!au) { au = new Audio(); au.preload = 'auto'; au.src = L.audio; }
-      try { au.currentTime = T; } catch (e) { /* not seekable yet */ }
-      var p = au.play(); if (p && p.catch) p.catch(function () { /* autoplay blocked or file missing */ });
+      if (!au) {
+        au = new Audio(); au.preload = 'auto';
+        au.addEventListener('error', function () { note('voice track could not be loaded (' + L.audio + ')'); });
+        au.src = L.audio + VER;
+      }
+      var seekTo = function () { try { au.currentTime = T; } catch (e) { /* not seekable yet */ } };
+      if (au.readyState >= 1) seekTo(); else au.addEventListener('loadedmetadata', seekTo, { once: true });
+      var p = au.play();
+      if (p && p.catch) p.catch(function (e) { if (e && e.name !== 'AbortError') note('voice could not start: ' + (e.message || e.name)); });
     }
+    function note(msg) { var s = q('.mv-head span'); if (s) { s.textContent = msg; s.style.color = '#fc8181'; } }
     function stopVoice() { if (au) au.pause(); }
     function syncVoice() {
       if (au && !au.paused && !au.seeking && Math.abs(au.currentTime - T) > 0.3) { try { au.currentTime = T; } catch (e) { /* ignore */ } }
@@ -385,5 +395,7 @@
     });
   }
 
-  J.motion = { has: function (n) { return !!LESSONS[n]; }, slot: slot, mountAll: mountAll, define: define, timing: timing, load: load, record: record, frameAt: frameAt, lessons: LESSONS };
+  J.motion = { has: function (n) { return !!LESSONS[n]; }, slot: slot, mountAll: mountAll, define: define, timing: timing, load: load, record: record, frameAt: frameAt, lessons: LESSONS,
+    /* test hook: paint lesson `def` at time T into 2D context g (used by the lesson checker) */
+    __frame: function (g, def, T) { frame(g, def, T, kit(g)); } };
 })(window.JSC = window.JSC || {});
